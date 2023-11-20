@@ -109,10 +109,7 @@ struct FLetsGoGeneratedScale
 
 	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale, const TArray<FLetsGoMusicNotes>& Notes) : Tonic(Tonic), Scale(Scale), Notes(Notes) {}
 
-	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale) : Tonic(Tonic), Scale(Scale)
-	{
-
-	}
+	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale) : Tonic(Tonic), Scale(Scale) {}
 };
 
 /**
