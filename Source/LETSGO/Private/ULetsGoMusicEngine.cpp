@@ -177,24 +177,3 @@ FLetsGoGeneratedScale ULetsGoMusicEngine::GenerateScale(const FLetsGoMusicNotes&
 
 	return GeneratedScale;
 }
-
-
-// ELetsGoMusicNotes ULetsGoMusicEngine::GetNextNote(const ELetsGoMusicNotes& Tonic, const ELetsGoMusicNotes& CurrentNote, const FLetsGoMusicScale& Scale) {
-// 	// Find the index of the currentNote in the ELetsGoMusicNotes enum
-// 	// int currentNoteIndex = static_cast<int>(CurrentNote);
-//
-// 	const int RelativePosition = (CurrentNote - Tonic + 12) % 12;
-// 	
-// 	// Determine the stepIncrement based on the mode
-// 	// int ScaleSize = Scale.Steps.Num();
-// 	const auto [Step] = Scale.Steps[CurrentNote % Scale.Steps.Num()];
-// 	
-// 	// Calculate the index of the next note relative to the tonic
-// 	const int NextNoteRelativeIndex = (RelativePosition + Step) % 12;
-//
-// 	// Calculate the index of the next note
-// 	int NextNoteIndex = (Tonic + NextNoteRelativeIndex) % 12;
-//
-// 	// Return the next note from the ELetsGoMusicNotes enum
-// 	return static_cast<ELetsGoMusicNotes>(NextNoteIndex);
-// }

@@ -23,7 +23,7 @@ enum class ELetsGoMusicScales : uint8 {
 // For now we are only concerned with 12TET traditional western music
 // Named by circle of fifths chart. Not A#, Bb. Notation is bonkers.
 // This is an ordered list. That might have consequences down the road.
-UENUM(BlueprintType, Category = "LetsGo Music Theory")
+UENUM(BlueprintType, Category = LetsGoBlueprintCategory)
 enum ELetsGoMusicNotes : uint8 {
 	C		UMETA(DisplayName = "C"),
 	CSharp	UMETA(DisplayName = "C♯"),
@@ -88,12 +88,9 @@ struct FLetsGoMusicScale {
 };
 
 
-
-
 USTRUCT(BlueprintType, Category = LetsGoBlueprintCategory)
 struct FLetsGoGeneratedScale
 {
-	
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
