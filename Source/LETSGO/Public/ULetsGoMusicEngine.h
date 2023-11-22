@@ -137,6 +137,6 @@ public:
 	UFUNCTION(BlueprintPure, Category= LetsGoBlueprintCategory)
 	static FLetsGoMusicNotes GetNote(const ELetsGoMusicNotes Note);
 
-	UFUNCTION(BlueprintPure, Category= LetsGoBlueprintCategory)
-	static FLetsGoGeneratedScale GenerateScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale);
+	UFUNCTION(BlueprintCallable, Category= LetsGoBlueprintCategory)
+	static FLetsGoGeneratedScale GenerateScale(const FLetsGoMusicScale& Scale, const FLetsGoMusicNotes& Tonic);
 };

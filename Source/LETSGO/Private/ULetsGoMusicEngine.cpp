@@ -148,7 +148,7 @@ FLetsGoMusicNotes ULetsGoMusicEngine::GetNote(const ELetsGoMusicNotes Note)
 	return FLetsGoMusicNotes(Note);
 }
 
-FLetsGoGeneratedScale ULetsGoMusicEngine::GenerateScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale)
+FLetsGoGeneratedScale ULetsGoMusicEngine::GenerateScale(const FLetsGoMusicScale& Scale, const FLetsGoMusicNotes& Tonic)
 {
 	FLetsGoGeneratedScale GeneratedScale = FLetsGoGeneratedScale(Tonic, Scale);
 	
