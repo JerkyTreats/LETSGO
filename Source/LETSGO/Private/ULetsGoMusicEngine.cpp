@@ -163,7 +163,7 @@ FLetsGoGeneratedScale ULetsGoMusicEngine::GenerateScale(const FLetsGoMusicNotes&
 		const int Step = i.Step.GetValue();
 			
 		// Get next step, wrap around to beginning if >12
-		int Next = CurrentNote.Note.GetValue() + Step % 12;
+		int Next = (CurrentNote.Note.GetValue() + Step) % 12;
 			
 		// Get the Note enum at position "Next"
 		FLetsGoMusicNotes NextNote = FLetsGoMusicNotes(static_cast<ELetsGoMusicNotes>(Next));
