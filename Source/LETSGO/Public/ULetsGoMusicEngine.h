@@ -17,7 +17,8 @@ enum class ELetsGoMusicScales : uint8 {
 	Aeolian,
 	Locrian,
 	// Pentatonic,
-	Chromatic
+	Chromatic,
+	WholeStep
 };
 
 // For now we are only concerned with 12TET traditional western music
@@ -130,7 +131,8 @@ public:
 	static const FLetsGoMusicScale Locrian;
 	static const FLetsGoMusicScale Pentatonic;
 	static const FLetsGoMusicScale Chromatic;
-
+	static const FLetsGoMusicScale WholeStep;
+	
 	UFUNCTION(BlueprintPure, Category = LetsGoBlueprintCategory)
 	static FLetsGoMusicScale GetScale(const ELetsGoMusicScales Scale);
 

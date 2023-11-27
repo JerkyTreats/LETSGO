@@ -109,6 +109,14 @@ const FLetsGoMusicScale ULetsGoMusicEngine::Chromatic = FLetsGoMusicScale("Chrom
 	{ ELetsGoMusicScaleSteps::Half },
 });
 
+const FLetsGoMusicScale ULetsGoMusicEngine::WholeStep = FLetsGoMusicScale("WholeStep", {
+	{Whole},
+	{Whole},
+	{Whole},
+	{Whole},
+	{Whole},
+});
+
 
 FLetsGoMusicScale ULetsGoMusicEngine::GetScale(const ELetsGoMusicScales Scale)
 {
