@@ -145,6 +145,9 @@ FLetsGoMusicScale ULetsGoMusicEngine::GetScale(const ELetsGoMusicScales Scale)
 
 	case ELetsGoMusicScales::Chromatic:
 		return Chromatic;
+
+	case ELetsGoMusicScales::WholeStep:
+		return Chromatic;
 			
 	default:
 		return Ionian;
