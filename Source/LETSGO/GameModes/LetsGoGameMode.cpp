@@ -11,14 +11,14 @@ ALetsGoGameMode::ALetsGoGameMode()
 	GameStateClass = ALetsGoGameState::StaticClass();
 }
 
-UQuartzClockHandle& ALetsGoGameMode::GetMainClock()
+UQuartzClockHandle* ALetsGoGameMode::GetMainClock()
 {
-	return GetGameState<ALetsGoGameState>()->MainClock;
+	return GetGameState<ALetsGoGameState>()->MainClock.Get();
 }
 
 void ALetsGoGameMode::SetMainClock(UQuartzClockHandle* Clock)
 {
-	GetGameState<ALetsGoGameState>()->MainClock = *Clock;
+	GetGameState<ALetsGoGameState>()->MainClock = Clock;
 }
 
 // Audio::FQuartzClock ALetsGoGameMode::GetMainClock() const

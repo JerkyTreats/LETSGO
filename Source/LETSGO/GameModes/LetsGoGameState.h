@@ -20,5 +20,5 @@ public:
 	ALetsGoGameState();
 	virtual ~ALetsGoGameState() override;
 	
-	UQuartzClockHandle& MainClock;
+	TWeakObjectPtr<UQuartzClockHandle> MainClock;
 };

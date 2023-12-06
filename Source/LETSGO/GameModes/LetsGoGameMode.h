@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LetsGoGameState.h"
 #include "GameFramework/GameModeBase.h"
 #include "Quartz/AudioMixerClock.h"
 #include "Quartz/AudioMixerClockHandle.h"
@@ -24,7 +25,7 @@ public:
 	ALetsGoGameMode();
 
 	UFUNCTION(BlueprintPure, Category="LetsGo Clock")
-	virtual UQuartzClockHandle& GetMainClock();
+	UQuartzClockHandle* GetMainClock();
 	
 	// UFUNCTION(BlueprintCallable, Category="LetsGo Clock")
 	virtual void SetMainClock(UQuartzClockHandle* Clock);
