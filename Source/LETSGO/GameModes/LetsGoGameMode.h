@@ -24,10 +24,10 @@ class LETSGO_API ALetsGoGameMode : public AGameModeBase
 public:
 	ALetsGoGameMode();
 
-	UFUNCTION(BlueprintPure, Category="LetsGo Clock")
-	UQuartzClockHandle* GetMainClock();
+	UFUNCTION(BlueprintPure, Category="LetsGo|Clock")
+	UQuartzClockHandle* GetMainClock() const;
 	
-	// UFUNCTION(BlueprintCallable, Category="LetsGo Clock")
+	UFUNCTION(BlueprintCallable, Category="LetsGo|Clock")
 	virtual void SetMainClock(UQuartzClockHandle* Clock);
 	
 };

@@ -8,11 +8,13 @@
 #include "Quartz/AudioMixerClockHandle.h"
 #include "LetsGoGameState.generated.h"
 
+class UQuartzClockHandle;
+
 /**
  * 
  */
 UCLASS()
-class LETSGO_API ALetsGoGameState : public AGameState
+class LETSGO_API ALetsGoGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
@@ -20,5 +22,7 @@ public:
 	ALetsGoGameState();
 	virtual ~ALetsGoGameState() override;
 	
-	TWeakObjectPtr<UQuartzClockHandle> MainClock;
+	UPROPERTY(VisibleAnywhere, Category = "LetsGo|State")  
+	TObjectPtr<UQuartzClockHandle> MainClock;
+	
 };

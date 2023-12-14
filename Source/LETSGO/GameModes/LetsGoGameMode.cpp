@@ -11,9 +11,9 @@ ALetsGoGameMode::ALetsGoGameMode()
 	GameStateClass = ALetsGoGameState::StaticClass();
 }
 
-UQuartzClockHandle* ALetsGoGameMode::GetMainClock()
+UQuartzClockHandle* ALetsGoGameMode::GetMainClock() const
 {
-	return GetGameState<ALetsGoGameState>()->MainClock.Get();
+	return GetGameState<ALetsGoGameState>()->MainClock;;
 }
 
 void ALetsGoGameMode::SetMainClock(UQuartzClockHandle* Clock)
