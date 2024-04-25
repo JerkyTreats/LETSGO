@@ -10,7 +10,7 @@ ALetsGoGameMode::ALetsGoGameMode()
 
 UQuartzClockHandle* ALetsGoGameMode::GetMainClock() const
 {
-	return GetGameState<ALetsGoGameState>()->MainClock;;
+	return GetGameState<ALetsGoGameState>()->MainClock;
 }
 
 void ALetsGoGameMode::SetMainClock(UQuartzClockHandle* Clock)
