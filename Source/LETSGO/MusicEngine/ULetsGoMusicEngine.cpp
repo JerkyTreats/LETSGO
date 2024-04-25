@@ -117,6 +117,13 @@ const FLetsGoMusicScale ULetsGoMusicEngine::WholeStep = FLetsGoMusicScale("Whole
 	{Whole},
 });
 
+/*const FLetsGoMusicScale ULetsGoMusicEngine::MajorPentatonic = FLetsGoMusicScale("Major Pentatonic", {
+	{Whole},
+	{Whole},
+	{Whole},
+	{Whole}
+});*/
+
 
 FLetsGoMusicScale ULetsGoMusicEngine::GetScale(const ELetsGoMusicScales Scale)
 {
@@ -187,4 +194,16 @@ FLetsGoGeneratedScale ULetsGoMusicEngine::GenerateScale(const FLetsGoMusicScale&
 	}
 
 	return GeneratedScale;
+}
+
+TArray<FLetsGoGeneratedScale> ULetsGoMusicEngine::GenerateAllScales(const FLetsGoMusicNotes& Tonic)
+{
+	TArray<FLetsGoGeneratedScale> AllGeneratedScales;
+
+	for (int i = 0; i < AllScales.Num(); i++ )
+	{
+		AllGeneratedScales.Add(GenerateScale(AllScales[i], Tonic));
+	}
+	
+	return AllGeneratedScales;
 }

@@ -88,7 +88,9 @@ struct FLetsGoMusicScale {
 	FLetsGoMusicScale(const FString& ModeName, const TArray<FLetsGoMusicScaleStep>& ModeSteps) : Name(ModeName), Steps(ModeSteps) {}
 };
 
-
+// Generate a scale given a scales step pattern
+// (Scale) + (Tonic) = (Notes)
+// "Ionian" + "C" = "{ C, D, E, F, G, A, B }"
 USTRUCT(BlueprintType, Category = LetsGoBlueprintCategory)
 struct FLetsGoGeneratedScale
 {
@@ -129,9 +131,22 @@ public:
 	static const FLetsGoMusicScale Mixolydian;
 	static const FLetsGoMusicScale Aeolian;
 	static const FLetsGoMusicScale Locrian;
-	static const FLetsGoMusicScale Pentatonic;
+	// static const FLetsGoMusicScale Pentatonic;
 	static const FLetsGoMusicScale Chromatic;
 	static const FLetsGoMusicScale WholeStep;
+
+	inline static const TArray<FLetsGoMusicScale> AllScales = {
+		Ionian,
+		Dorian,
+		Phrygian,
+		Lydian,
+		Mixolydian,
+		Aeolian,
+		Locrian,
+		// Pentatonic,
+		Chromatic,
+		WholeStep,
+	};
 	
 	UFUNCTION(BlueprintPure, Category = LetsGoBlueprintCategory)
 	static FLetsGoMusicScale GetScale(const ELetsGoMusicScales Scale);
@@ -141,4 +156,8 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category= LetsGoBlueprintCategory)
 	static FLetsGoGeneratedScale GenerateScale(const FLetsGoMusicScale& Scale, const FLetsGoMusicNotes& Tonic);
+
+	UFUNCTION(BlueprintCallable, Category= LetsGoBlueprintCategory)
+	static TArray<FLetsGoGeneratedScale> GenerateAllScales(const FLetsGoMusicNotes& Tonic);
+
 };
