@@ -38,3 +38,8 @@ void UInstrument::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	// ...
 }
 
+UQuartzClockHandle* UInstrument::GetClock() const
+{
+	return Clock;
+}
+
