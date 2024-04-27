@@ -202,7 +202,8 @@ TArray<FLetsGoGeneratedScale> ULetsGoMusicEngine::GenerateAllScales(const FLetsG
 
 	for (int i = 0; i < AllScales.Num(); i++ )
 	{
-		AllGeneratedScales.Add(GenerateScale(AllScales[i], Tonic));
+		FLetsGoGeneratedScale thisScale = GenerateScale(AllScales[i], Tonic);
+		AllGeneratedScales.Add(thisScale);
 	}
 	
 	return AllGeneratedScales;
