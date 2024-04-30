@@ -14,7 +14,9 @@ UNoteContainer::UNoteContainer(const TArray<FLetsGoMusicNotes>& Notes)
 
 FLetsGoMusicNotes UNoteContainer::PopNextNote()
 {
-	return Notes.Pop();	
+	const FLetsGoMusicNotes Note = Notes[0];
+	Notes.RemoveAt(0);
+	return Note;	
 }
 
 void UNoteContainer::AddNotes(const TArray<FLetsGoMusicNotes>& NotesToAdd)

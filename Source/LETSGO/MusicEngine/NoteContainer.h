@@ -15,12 +15,13 @@ class LETSGO_API UNoteContainer : public UObject
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
-	TArray<FLetsGoMusicNotes> Notes;
 	
 public:
 	UNoteContainer();
 	UNoteContainer(const TArray<FLetsGoMusicNotes>& Notes);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FLetsGoMusicNotes> Notes;
 
 	UFUNCTION(BlueprintCallable, Category="LetsGo | AudioPlatform")
 	FLetsGoMusicNotes PopNextNote();

@@ -134,19 +134,6 @@ public:
 	// static const FLetsGoMusicScale Pentatonic;
 	static const FLetsGoMusicScale Chromatic;
 	static const FLetsGoMusicScale WholeStep;
-
-	inline static const TArray<FLetsGoMusicScale> AllScales = {
-		Ionian,
-		Dorian,
-		Phrygian,
-		Lydian,
-		Mixolydian,
-		Aeolian,
-		Locrian,
-		// Pentatonic,
-		Chromatic,
-		WholeStep,
-	};
 	
 	UFUNCTION(BlueprintPure, Category = LetsGoBlueprintCategory)
 	static FLetsGoMusicScale GetScale(const ELetsGoMusicScales Scale);

@@ -200,11 +200,27 @@ TArray<FLetsGoGeneratedScale> ULetsGoMusicEngine::GenerateAllScales(const FLetsG
 {
 	TArray<FLetsGoGeneratedScale> AllGeneratedScales;
 
+	// I originally had this defined in header as an inline static constant, which worked.
+	// Annnnd then it suddenly didn't.
+	// Defining it in here does work, which is so far the only place I need it.
+	// So that's cool. Great comment. No feedback required. 
+	TArray AllScales = {
+		Ionian,
+		Dorian,
+		Phrygian,
+		Lydian,
+		Mixolydian,
+		Aeolian,
+		Locrian,
+		// Pentatonic,
+		Chromatic,
+		WholeStep,
+	};
+
 	for (int i = 0; i < AllScales.Num(); i++ )
 	{
-		FLetsGoMusicScale thisScale = AllScales[i];
-		FLetsGoGeneratedScale generatedScale = GenerateScale(AllScales[i], Tonic);
-		AllGeneratedScales.Add(generatedScale);
+		FLetsGoGeneratedScale GeneratedScale = GenerateScale(AllScales[i], Tonic);
+		AllGeneratedScales.Add(GeneratedScale);
 	}
 	
 	return AllGeneratedScales;
