@@ -22,7 +22,7 @@ public:
 	ALetsGoGameState();
 	virtual ~ALetsGoGameState() override;
 	
-	UPROPERTY(VisibleAnywhere, Category = "LetsGo|State")  
+	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
 	TObjectPtr<UQuartzClockHandle> MainClock;
 	
 };

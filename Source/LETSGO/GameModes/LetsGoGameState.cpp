@@ -10,17 +10,5 @@ ALetsGoGameState::ALetsGoGameState(): MainClock()
 
 ALetsGoGameState::~ALetsGoGameState()
 {
-	//How to call MainClocks TWeakObjectPtr dtor? 
+
 }
-
-	// if (MainClock != nullptr)
-	// {
-	// 	delete MainClock; // Deallocate memory for MainClock
-	// 	MainClock = nullptr;
-	// }
-//}
-
-// FQuartzClock(const FName& InName,
-// const FQuartzClockSettings& InClockSettings,
-// FQuartzClockManager*
-// InOwningClockManagerPtr = nullptr);
