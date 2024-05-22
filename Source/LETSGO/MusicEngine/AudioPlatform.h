@@ -8,17 +8,20 @@
 #include "NiagaraComponent.h"
 #include "AudioPlatform.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAudioPlatformTriggerDelegate, FLetsGoMusicNotes, Note);
+
 /**
  * 
  */
-UCLASS(BlueprintType)
-class LETSGO_API UAudioPlatform : public UObject
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class LETSGO_API UAudioPlatform : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	UAudioPlatform();
+	
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatform")
+	FAudioPlatformTriggerDelegate OnAudioPlatformTriggerDelegate;
 
-	void TriggerAudioNote(FLetsGoMusicNotes Note);
-	// void Destruct(const TArray<UNiagaraComponent>& MusicParticleSystem);
 };
