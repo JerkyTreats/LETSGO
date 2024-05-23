@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
-#include "NiagaraComponent.h"
 #include "AudioPlatform.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAudioPlatformTriggerDelegate, FLetsGoMusicNotes, Note);
@@ -20,8 +19,18 @@ class LETSGO_API UAudioPlatform : public UActorComponent
 
 public:
 	UAudioPlatform();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FLetsGoMusicNotes Note;
 	
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatform")
-	FAudioPlatformTriggerDelegate OnAudioPlatformTriggerDelegate;
+	FAudioPlatformTriggerDelegate OnAudioPlatformTriggered;
 
+	
+protected:
+
+	// Called when the game starts or when spawned
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor);
+	UFUNCTION()
+	void HandlePlatformTriggeredEvent();
 };

@@ -7,4 +7,15 @@ UAudioPlatform::UAudioPlatform()
 {
 }
 
+void UAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	HandlePlatformTriggeredEvent();
+}
+
+void UAudioPlatform::HandlePlatformTriggeredEvent()
+{
+	OnAudioPlatformTriggered.Broadcast(Note);
+}
+
+
 
