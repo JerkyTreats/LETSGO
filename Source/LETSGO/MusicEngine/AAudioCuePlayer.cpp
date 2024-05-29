@@ -2,7 +2,7 @@
 
 
 #include "AAudioCuePlayer.h"
-#include "LETSGO/GameModes/LetsGoGameMode.h"
+#include "..\GameModes\ALetsGoGameMode.h"
 
 
 AAudioCuePlayer::AAudioCuePlayer()

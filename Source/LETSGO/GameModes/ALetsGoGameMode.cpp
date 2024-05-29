@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
-#include "LetsGoGameMode.h"
-#include "LetsGoGameState.h"
+#include "ALetsGoGameMode.h"
+#include "ALetsGoGameState.h"
 
 ALetsGoGameMode::ALetsGoGameMode()
 {

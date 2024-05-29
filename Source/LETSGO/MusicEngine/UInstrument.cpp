@@ -3,7 +3,7 @@
 
 #include "UInstrument.h"
 
-#include "LETSGO/GameModes/LetsGoGameMode.h"
+#include "..\GameModes\ALetsGoGameMode.h"
 
 // Sets default values for this component's properties
 UInstrument::UInstrument(): Clock()

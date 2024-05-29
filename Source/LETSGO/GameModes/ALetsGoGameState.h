@@ -6,7 +6,7 @@
 #include "GameFramework/GameState.h"
 #include "Quartz/AudioMixerClock.h"
 #include "Quartz/AudioMixerClockHandle.h"
-#include "LetsGoGameState.generated.h"
+#include "ALetsGoGameState.generated.h"
 
 class UQuartzClockHandle;
 
