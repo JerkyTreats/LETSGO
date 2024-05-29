@@ -5,20 +5,20 @@
 #include "CoreMinimal.h"
 #include "ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
-#include "AudioPlatform.generated.h"
+#include "AAudioPlatform.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAudioPlatformTriggerDelegate, FLetsGoMusicNotes, Note);
 
 /**
  * 
  */
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
-class LETSGO_API UAudioPlatform : public UActorComponent
+UCLASS(Blueprintable)
+class LETSGO_API AAudioPlatform : public AActor
 {
 	GENERATED_BODY()
 
 public:
-	UAudioPlatform();
+	AAudioPlatform();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FLetsGoMusicNotes Note;
@@ -28,9 +28,7 @@ public:
 
 	
 protected:
-
-	// Called when the game starts or when spawned
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor);
-	UFUNCTION()
-	void HandlePlatformTriggeredEvent();
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	// UFUNCTION()
+	// void HandlePlatformTriggeredEvent() const;
 };

@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
-#include "NoteContainer.generated.h"
+#include "UNoteContainer.generated.h"
 
 /**
  * A container of Notes 
