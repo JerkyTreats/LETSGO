@@ -7,7 +7,7 @@
 #include "UParticleSystemController.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(LETSGO), meta=(BlueprintSpawnableComponent))
 class LETSGO_API UParticleSystemController : public UActorComponent
 {
 	GENERATED_BODY()

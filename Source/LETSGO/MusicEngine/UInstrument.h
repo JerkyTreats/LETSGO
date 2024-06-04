@@ -8,7 +8,7 @@
 #include "UInstrument.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+UCLASS(ClassGroup=(LETSGO), meta=(BlueprintSpawnableComponent))
 class LETSGO_API UInstrument : public UActorComponent
 {
 	GENERATED_BODY()

@@ -6,10 +6,12 @@
 #include "ULetsGoMusicEngine.h"
 #include "Components/ActorComponent.h"
 #include "Quartz/AudioMixerClockHandle.h"
+#include "Sound/SoundCue.h"
 #include "UAudioCuePlayer.generated.h"
 
 
-UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+// See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
+UCLASS(Blueprintable, ClassGroup=(LETSGO), meta=(BlueprintSpawnableComponent))
 class LETSGO_API UAudioCuePlayer : public UActorComponent
 {
 	GENERATED_BODY()
@@ -18,33 +20,76 @@ public:
 	// Sets default values for this component's properties
 	UAudioCuePlayer();
 
+	// This is messy until I find a better solution
+	// Set references to the note cues
+	// The actual values are attached in AudioPlatform_BP in the Add Audio Cue Player node
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* A2_Music_Note;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* AFlat2_Music_Note;
+	
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* BFlat2_Music_Note;
+	
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* B_Music_Note;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* C3_Music_Note;
+	
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* CSharp3_Music_Note;
+	
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* D2_Music_Note;
+	
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* EFlat2_Music_Note;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* E2_Music_Note;
+	
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* F2_Music_Note;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* FSharp2_Music_Note;
+
+	UPROPERTY(EditDefaultsOnly)
+	USoundCue* G2_Music_Note;
+
+	UPROPERTY()
+	TMap<FLetsGoMusicNotes, USoundCue*> NoteCueMap;
+	
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
+
+	UPROPERTY()
+	UAudioComponent* AttachedAudioComponent;
+	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditInstanceOnly,BlueprintReadWrite)
+	// Reference to the AudioPlatform
+	// Required to Bind to the OnAudioPlatformTriggered Event
+	UPROPERTY(EditInstanceOnly,BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	class AAudioPlatform* AudioPlatformReference;
 
+	UPROPERTY()
+	FLetsGoMusicNotes Note;
+
+	// Function to fire when the OnAudioPlatformTriggered Event is received
 	UFUNCTION()
-	void OnAudioPlatformTriggered(FLetsGoMusicNotes Note);
+	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
+
+
 
 	UFUNCTION()
-	void PlayNote(FLetsGoMusicNotes Note);
-
-	UFUNCTION()
-	void OnBar(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
-
-	// https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
-	/**
-	 * @brief Function delegate. Triggers its functionality synced with the clock.
-	 * @param EventType Use a switch on this enumeration to select "CommandOnQueued". 
-	 * @param Name 
-	 */
-	UFUNCTION()
-	void FPlayQuantizedDelegate(EQuartzCommandDelegateSubType EventType, FName Name);
-
-	/** Used to bind the FPlayQuantizedDelegate in the class constructor. */
-	FOnQuartzCommandEventBP PlayQuantizationDelegate;
+	void FExecuteInClockTime(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
+	
+	FOnQuartzMetronomeEventBP ExecuteInClockTimeDelegate;
 	
 public:
 	// Called every frame

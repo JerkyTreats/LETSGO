@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UAudioCuePlayer.h"
 #include "ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
 #include "AAudioPlatform.generated.h"
@@ -26,7 +27,8 @@ public:
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatform")
 	FAudioPlatformTriggerDelegate OnAudioPlatformTriggered;
 
-	
+	UPROPERTY(EditDefaultsOnly, Blueprintable)
+	UAudioCuePlayer* AudioCuePlayer;
 protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	// UFUNCTION()
