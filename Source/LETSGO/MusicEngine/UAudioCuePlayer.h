@@ -87,6 +87,7 @@ protected:
 	UFUNCTION()
 	void FExecuteInClockTime(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
 
+	// Required to subscribe to Clock events 
 	FOnQuartzMetronomeEventBP ExecuteInClockTimeDelegate;
 
 	UFUNCTION()

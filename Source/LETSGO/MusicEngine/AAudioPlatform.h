@@ -21,7 +21,7 @@ class LETSGO_API AAudioPlatform : public AActor
 public:
 	AAudioPlatform();
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	FLetsGoMusicNotes Note;
 	
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatform")

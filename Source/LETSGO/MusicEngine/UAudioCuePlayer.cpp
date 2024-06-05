@@ -13,7 +13,9 @@ class ALetsGoGameMode;
 // Sets default values for this component's properties
 UAudioCuePlayer::UAudioCuePlayer()
 {
-	/** Creates an audio component. */
+	/** Creates an audio component.
+	 *  Audio component needed in order to play the sound quantized
+	 */
 	AttachedAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Attached Audio Component"));
 	AttachedAudioComponent->SetAutoActivate(false); // Don't play immediately
 	AttachedAudioComponent->bAllowSpatialization = false; // Don't play in world
@@ -21,8 +23,6 @@ UAudioCuePlayer::UAudioCuePlayer()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	ExecuteInClockTimeDelegate.BindUFunction(this, "FExecuteInClockTime");
 
 	// Generate the map for notes -> sound cue
 	NoteCueMap.Add(ELetsGoMusicNotes::A, A2_Music_Note);
@@ -45,7 +45,7 @@ void UAudioCuePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Bind to FAudioPlatformTriggerDelegate
+	// Bind the On Platform Triggered Event to a local function
 	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &UAudioCuePlayer::OnAudioPlatformTriggered);
 	
 	// Get Main Clock
