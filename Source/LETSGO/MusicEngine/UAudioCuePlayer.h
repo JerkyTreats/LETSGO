@@ -60,7 +60,7 @@ public:
 	USoundCue* G2_Music_Note;
 
 	UPROPERTY()
-	TMap<FLetsGoMusicNotes, USoundCue*> NoteCueMap;
+	TMap<TEnumAsByte<ELetsGoMusicNotes>, USoundCue*> NoteCueMap;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
@@ -84,12 +84,13 @@ protected:
 	UFUNCTION()
 	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
 
-
-
 	UFUNCTION()
 	void FExecuteInClockTime(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
-	
+
 	FOnQuartzMetronomeEventBP ExecuteInClockTimeDelegate;
+
+	UFUNCTION()
+	USoundCue* GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
 	
 public:
 	// Called every frame
