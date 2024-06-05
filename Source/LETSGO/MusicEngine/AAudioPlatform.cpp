@@ -15,11 +15,17 @@ void AAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (Cast<ACharacter>(OtherActor))
 	{
 		OnAudioPlatformTriggered.Broadcast(Note);
+
+		FTimerHandle MemberTimerHandle;
+		
+		// Allow slight delay then destroy this platform
+		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AAudioPlatform::DestroyActor, ActorDestroyDelay, false);
 	}
 }
 
-/*void AAudioPlatform::HandlePlatformTriggeredEvent() const
+void AAudioPlatform::DestroyActor()
 {
-	
-}*/
+	Destroy();
+}
+
 

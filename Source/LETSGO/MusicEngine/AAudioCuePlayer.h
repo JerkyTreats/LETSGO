@@ -7,18 +7,18 @@
 #include "Components/ActorComponent.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "Sound/SoundCue.h"
-#include "UAudioCuePlayer.generated.h"
+#include "AAudioCuePlayer.generated.h"
 
 
 // See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
 UCLASS(Blueprintable, ClassGroup=(LETSGO), meta=(BlueprintSpawnableComponent))
-class LETSGO_API UAudioCuePlayer : public UActorComponent
+class LETSGO_API AAudioCuePlayer : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	UAudioCuePlayer();
+	AAudioCuePlayer();
 
 	// This is messy until I find a better solution
 	// Set references to the note cues
@@ -77,16 +77,10 @@ protected:
 	UPROPERTY(EditInstanceOnly,BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	class AAudioPlatform* AudioPlatformReference;
 
-	UPROPERTY()
-	FLetsGoMusicNotes Note;
-
 	// Function to fire when the OnAudioPlatformTriggered Event is received
 	UFUNCTION()
 	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
-
-	UFUNCTION()
-	void FExecuteInClockTime(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
-
+	
 	// Required to subscribe to Clock events 
 	FOnQuartzMetronomeEventBP ExecuteInClockTimeDelegate;
 
@@ -94,10 +88,6 @@ protected:
 	USoundCue* GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
 	
 public:
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
-	                           FActorComponentTickFunction* ThisTickFunction) override;
-
 	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
 	UQuartzClockHandle* Clock;
 };

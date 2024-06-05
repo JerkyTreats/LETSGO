@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UAudioCuePlayer.h"
+#include "AAudioCuePlayer.h"
 #include "ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
 #include "AAudioPlatform.generated.h"
@@ -28,9 +28,12 @@ public:
 	FAudioPlatformTriggerDelegate OnAudioPlatformTriggered;
 
 	UPROPERTY(EditDefaultsOnly, Blueprintable)
-	UAudioCuePlayer* AudioCuePlayer;
+	AAudioCuePlayer* AudioCuePlayer;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	float ActorDestroyDelay;
+	
 protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-	// UFUNCTION()
-	// void HandlePlatformTriggeredEvent() const;
+	void DestroyActor();
 };

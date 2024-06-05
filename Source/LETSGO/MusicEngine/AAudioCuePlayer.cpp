@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "UAudioCuePlayer.h"
+#include "AAudioCuePlayer.h"
 
 #include "AAudioPlatform.h"
 #include "Components/AudioComponent.h"
@@ -11,18 +11,15 @@
 
 class ALetsGoGameMode;
 // Sets default values for this component's properties
-UAudioCuePlayer::UAudioCuePlayer()
+AAudioCuePlayer::AAudioCuePlayer()
 {
-	/** Creates an audio component.
+	/**
+	 * Creates an audio component.
 	 *  Audio component needed in order to play the sound quantized
 	 */
 	AttachedAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Attached Audio Component"));
 	AttachedAudioComponent->SetAutoActivate(false); // Don't play immediately
 	AttachedAudioComponent->bAllowSpatialization = false; // Don't play in world
-	
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
 
 	// Generate the map for notes -> sound cue
 	NoteCueMap.Add(ELetsGoMusicNotes::A, A2_Music_Note);
@@ -41,12 +38,12 @@ UAudioCuePlayer::UAudioCuePlayer()
 
 
 // Called when the game starts
-void UAudioCuePlayer::BeginPlay()
+void AAudioCuePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
 	// Bind the On Platform Triggered Event to a local function
-	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &UAudioCuePlayer::OnAudioPlatformTriggered);
+	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &AAudioCuePlayer::OnAudioPlatformTriggered);
 	
 	// Get Main Clock
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
@@ -57,28 +54,20 @@ void UAudioCuePlayer::BeginPlay()
 	
 }
 
-void UAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
+void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 {
-	Note = IncomingNote;
-	
-	USoundCue* ThisSoundCue = GetSoundCue(Note.Note);
+	USoundCue* ThisSoundCue = GetSoundCue(IncomingNote.Note);
 	AttachedAudioComponent->SetSound(ThisSoundCue);
-	
-	FExecuteInClockTime("", EQuartzCommandQuantization::None, 0, 0, 0);
-	
-}
 
-void UAudioCuePlayer::FExecuteInClockTime(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars,
-	int32 Beat, float BeatFraction)
-{
 	const FOnQuartzCommandEventBP EmptyOnQuartzCommandEventBP; 
 	AttachedAudioComponent->PlayQuantized(GetWorld(),Clock, QuartzQuantizationBoundary, EmptyOnQuartzCommandEventBP);
+
+	
 }
 
-
-USoundCue* UAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const
+// This is bad but requires a real solution to be figured out and implemented
+USoundCue* AAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const
 {
-	
 	switch (ENote)
 	{
 	case ELetsGoMusicNotes::A:
@@ -111,13 +100,3 @@ USoundCue* UAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) co
 		return CSharp3_Music_Note;
 	}
 }
-
-// Called every frame
-void UAudioCuePlayer::TickComponent(float DeltaTime, ELevelTick TickType,
-                                       FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-
