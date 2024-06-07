@@ -17,14 +17,18 @@ class LETSGO_API UNoteContainer : public UObject
 
 	
 public:
-	UNoteContainer();
-	UNoteContainer(const TArray<FLetsGoMusicNotes>& Notes);
+	UNoteContainer() {};
+
+	explicit UNoteContainer(const TArray<FLetsGoMusicNotes>& Notes)
+	{
+		this -> Notes = Notes;
+	};
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FLetsGoMusicNotes> Notes;
 
 	UFUNCTION(BlueprintCallable, Category="LetsGo | AudioPlatform")
-	FLetsGoMusicNotes PopNextNote();
+	bool PopNextNote(FLetsGoMusicNotes& PoppedNote);
 
 	UFUNCTION(BlueprintCallable, Category="LetsGo | AudioPlatform")
 	void AddNotes(const TArray<FLetsGoMusicNotes>& NotesToAdd);

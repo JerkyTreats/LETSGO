@@ -3,20 +3,15 @@
 
 #include "UNoteContainer.h"
 
-UNoteContainer::UNoteContainer()
+bool UNoteContainer::PopNextNote(FLetsGoMusicNotes& PoppedNote)
 {
-}
-
-UNoteContainer::UNoteContainer(const TArray<FLetsGoMusicNotes>& Notes)
-{
-	this -> Notes = Notes;
-}
-
-FLetsGoMusicNotes UNoteContainer::PopNextNote()
-{
-	const FLetsGoMusicNotes Note = Notes[0];
-	Notes.RemoveAt(0);
-	return Note;	
+	if (Notes.Num() > 0)
+	{
+		PoppedNote = Notes[0];
+		Notes.RemoveAt(0);
+		return true;	
+	}
+	return false;
 }
 
 void UNoteContainer::AddNotes(const TArray<FLetsGoMusicNotes>& NotesToAdd)
