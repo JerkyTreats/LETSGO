@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AAudioCuePlayer.h"
+#include "UAudioCuePlayer.h"
 
 #include "AAudioPlatform.h"
 #include "Components/AudioComponent.h"
@@ -11,7 +11,7 @@
 
 class ALetsGoGameMode;
 // Sets default values for this component's properties
-AAudioCuePlayer::AAudioCuePlayer()
+UAudioCuePlayer::UAudioCuePlayer()
 {
 	/**
 	 * Creates an audio component.
@@ -20,6 +20,7 @@ AAudioCuePlayer::AAudioCuePlayer()
 	AttachedAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Attached Audio Component"));
 	AttachedAudioComponent->SetAutoActivate(false); // Don't play immediately
 	AttachedAudioComponent->bAllowSpatialization = false; // Don't play in world
+
 
 	// Generate the map for notes -> sound cue
 	NoteCueMap.Add(ELetsGoMusicNotes::A, A2_Music_Note);
@@ -38,12 +39,12 @@ AAudioCuePlayer::AAudioCuePlayer()
 
 
 // Called when the game starts
-void AAudioCuePlayer::BeginPlay()
+void UAudioCuePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Bind the On Platform Triggered Event to a local function
-	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &AAudioCuePlayer::OnAudioPlatformTriggered);
+	// Bind function that fires when Audio is finished playing
+	AttachedAudioComponent->OnAudioFinished.AddDynamic(this, &UAudioCuePlayer::OnAudioCueFinished);
 	
 	// Get Main Clock
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
@@ -51,22 +52,22 @@ void AAudioCuePlayer::BeginPlay()
 
 	// Subscribe to Clock events (beat, bar, whole, etc.)
 	Clock->SubscribeToAllQuantizationEvents(GetWorld(), ExecuteInClockTimeDelegate, Clock);
-	
+
+
 }
 
-void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
+void UAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 {
 	USoundCue* ThisSoundCue = GetSoundCue(IncomingNote.Note);
 	AttachedAudioComponent->SetSound(ThisSoundCue);
 
 	const FOnQuartzCommandEventBP EmptyOnQuartzCommandEventBP; 
 	AttachedAudioComponent->PlayQuantized(GetWorld(),Clock, QuartzQuantizationBoundary, EmptyOnQuartzCommandEventBP);
-
 	
 }
 
 // This is bad but requires a real solution to be figured out and implemented
-USoundCue* AAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const
+USoundCue* UAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const
 {
 	switch (ENote)
 	{
@@ -99,4 +100,26 @@ USoundCue* AAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) co
 		UE_LOGFMT(LogTemp, Error, "Note does not exist in AudioCuePlayer::NoteCueMap");
 		return CSharp3_Music_Note;
 	}
+}
+
+void UAudioCuePlayer::OnAudioCueFinished()
+{
+	ReadyForCleanUp.Broadcast();
+}
+
+// Called every frame
+void UAudioCuePlayer::TickComponent(float DeltaTime, ELevelTick TickType,
+									   FActorComponentTickFunction* ThisTickFunction)
+{
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// ...
+}
+
+void UAudioCuePlayer::Initialize(AAudioPlatform* AudioPlatform, const FQuartzQuantizationBoundary& Boundary)
+{
+	QuartzQuantizationBoundary = Boundary;
+	AudioPlatformReference = AudioPlatform;
+	// Bind the On Platform Triggered Event to a local function
+	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &UAudioCuePlayer::OnAudioPlatformTriggered);
 }

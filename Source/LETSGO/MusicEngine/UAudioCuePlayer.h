@@ -7,19 +7,32 @@
 #include "Components/ActorComponent.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "Sound/SoundCue.h"
-#include "AAudioCuePlayer.generated.h"
+#include "UAudioCuePlayer.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FReadyForCleanUpDelegate);
 
 
 // See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
 UCLASS(Blueprintable, ClassGroup=(LETSGO), meta=(BlueprintSpawnableComponent))
-class LETSGO_API AAudioCuePlayer : public AActor
+class LETSGO_API UAudioCuePlayer : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	AAudioCuePlayer();
+	UAudioCuePlayer();
+	
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO")
+	FReadyForCleanUpDelegate ReadyForCleanUp;
 
+	// Reference to the AudioPlatform
+	// Required to Bind to the OnAudioPlatformTriggered Event
+	UPROPERTY(EditInstanceOnly,BlueprintReadWrite)
+	class AAudioPlatform* AudioPlatformReference;
+
+	UPROPERTY(BlueprintReadWrite)
+	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
+	
 	// This is messy until I find a better solution
 	// Set references to the note cues
 	// The actual values are attached in AudioPlatform_BP in the Add Audio Cue Player node
@@ -61,25 +74,16 @@ public:
 
 	UPROPERTY()
 	TMap<TEnumAsByte<ELetsGoMusicNotes>, USoundCue*> NoteCueMap;
-	
-	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
-	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
 
 	UPROPERTY()
 	UAudioComponent* AttachedAudioComponent;
-	
+
+	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
+	UQuartzClockHandle* Clock;
+
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	// Reference to the AudioPlatform
-	// Required to Bind to the OnAudioPlatformTriggered Event
-	UPROPERTY(EditInstanceOnly,BlueprintReadWrite, meta=(ExposeOnSpawn=true))
-	class AAudioPlatform* AudioPlatformReference;
-
-	// Function to fire when the OnAudioPlatformTriggered Event is received
-	UFUNCTION()
-	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
 	
 	// Required to subscribe to Clock events 
 	FOnQuartzMetronomeEventBP ExecuteInClockTimeDelegate;
@@ -87,7 +91,19 @@ protected:
 	UFUNCTION()
 	USoundCue* GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
 	
+	UFUNCTION()
+	void OnAudioCueFinished();
+	
+	// Function to fire when the OnAudioPlatformTriggered Event is received
+	UFUNCTION()
+	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
+	
 public:
-	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
-	UQuartzClockHandle* Clock;
+	// Called every frame
+	virtual auto TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) -> void override;
+	
+	UFUNCTION()
+	void Initialize(AAudioPlatform* AudioPlatform, const FQuartzQuantizationBoundary& Boundary);
+	
 };
