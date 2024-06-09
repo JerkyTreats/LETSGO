@@ -21,19 +21,6 @@ AAudioCuePlayer::AAudioCuePlayer()
 	AttachedAudioComponent->SetAutoActivate(false); // Don't play immediately
 	AttachedAudioComponent->bAllowSpatialization = false; // Don't play in world
 
-	// Generate the map for notes -> sound cue
-	NoteCueMap.Add(ELetsGoMusicNotes::A, A2_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::AFlat, AFlat2_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::BFlat, BFlat2_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::B, B_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::C, C3_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::CSharp, CSharp3_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::D, D2_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::EFlat, EFlat2_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::E, E2_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::F, F2_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::FSharp, FSharp2_Music_Note);
-	NoteCueMap.Add(ELetsGoMusicNotes::G, G2_Music_Note);
 }
 
 
@@ -48,9 +35,6 @@ void AAudioCuePlayer::BeginPlay()
 	// Get Main Clock
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	Clock = GameMode->GetMainClock();
-
-	// Subscribe to Clock events (beat, bar, whole, etc.)
-	Clock->SubscribeToAllQuantizationEvents(GetWorld(), ExecuteInClockTimeDelegate, Clock);
 	
 }
 
@@ -61,8 +45,6 @@ void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingN
 
 	const FOnQuartzCommandEventBP EmptyOnQuartzCommandEventBP; 
 	AttachedAudioComponent->PlayQuantized(GetWorld(),Clock, QuartzQuantizationBoundary, EmptyOnQuartzCommandEventBP);
-
-	
 }
 
 // This is bad but requires a real solution to be figured out and implemented

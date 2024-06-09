@@ -58,9 +58,6 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	USoundCue* G2_Music_Note;
-
-	UPROPERTY()
-	TMap<TEnumAsByte<ELetsGoMusicNotes>, USoundCue*> NoteCueMap;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
@@ -80,9 +77,6 @@ protected:
 	// Function to fire when the OnAudioPlatformTriggered Event is received
 	UFUNCTION()
 	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
-	
-	// Required to subscribe to Clock events 
-	FOnQuartzMetronomeEventBP ExecuteInClockTimeDelegate;
 
 	UFUNCTION()
 	USoundCue* GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
