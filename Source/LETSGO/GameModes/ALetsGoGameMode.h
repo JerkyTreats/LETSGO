@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "Quartz/AudioMixerClockHandle.h"
-#include "LetsGoGameMode.generated.h"
+#include "ALetsGoGameMode.generated.h"
 
 /**
  * Custom Game Mode for LETSGO.

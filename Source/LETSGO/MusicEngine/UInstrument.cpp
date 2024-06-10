@@ -1,11 +1,9 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Instrument.h"
+#include "UInstrument.h"
 
-#include "LETSGO/GameModes/LetsGoGameMode.h"
-#include "Kismet/GameplayStatics.h"
-
+#include "..\GameModes\ALetsGoGameMode.h"
 
 // Sets default values for this component's properties
 UInstrument::UInstrument(): Clock()
@@ -23,10 +21,8 @@ void UInstrument::BeginPlay()
 {
 	Super::BeginPlay();
 
-	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	Clock = GameMode->GetMainClock();
-	
-
 }
 
 
