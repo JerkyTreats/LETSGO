@@ -7,6 +7,8 @@
 #include "UObject/Object.h"
 #include "UNoteContainer.generated.h"
 
+
+
 /**
  * A container of Notes 
  */
@@ -15,7 +17,6 @@ class LETSGO_API UNoteContainer : public UObject
 {
 	GENERATED_BODY()
 
-	
 public:
 	UNoteContainer() {};
 
@@ -27,10 +28,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FLetsGoMusicNotes> Notes;
 
-	UFUNCTION(BlueprintCallable, Category="LetsGo | AudioPlatform")
+	UFUNCTION(BlueprintCallable, Category="LETSGO | NoteContainer")
 	bool PopNextNote(FLetsGoMusicNotes& PoppedNote);
 
-	UFUNCTION(BlueprintCallable, Category="LetsGo | AudioPlatform")
+	UFUNCTION(BlueprintCallable, Category="LETSGO | NoteContainer")
 	void AddNotes(const TArray<FLetsGoMusicNotes>& NotesToAdd);
+
+	UFUNCTION(BlueprintCallable, Category="LETSGO | NoteContainer")
+	int GetNumberOfNotes() const;
 	
 };

@@ -21,11 +21,11 @@ void USetTonic::Initialize()
 
 void USetTonic::Activate()
 {
-	// Spawn three Audio Platforms 
-	for (int i = 0; i <=3; i++)
-	{
-		AAudioPlatform* next = GetWorld()->SpawnActor<AAudioPlatform>(AAudioPlatform::StaticClass(), )
-	}
+	// // Spawn three Audio Platforms 
+	// for (int i = 0; i <=3; i++)
+	// {
+	// 	AAudioPlatform* next = GetWorld()->SpawnActor<AAudioPlatform>(AAudioPlatform::StaticClass(), );
+	// }
 }
 
 void USetTonic::Deactivate()
