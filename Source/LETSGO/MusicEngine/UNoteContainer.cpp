@@ -18,3 +18,8 @@ void UNoteContainer::AddNotes(const TArray<FLetsGoMusicNotes>& NotesToAdd)
 {
 	Notes.Append(NotesToAdd);
 }
+
+int UNoteContainer::GetNumberOfNotes() const
+{
+	return Notes.Num();
+}
