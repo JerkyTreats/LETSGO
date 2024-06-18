@@ -52,3 +52,15 @@ FTransform AAudioPlatformSpawner::GetCameraVectorForward() const
 	return VectorTransform;
 }
 
+AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLocation, FLetsGoMusicNotes Note)
+{
+	FVector Location = SpawnLocation.GetTranslation();
+	FRotator Rotation = SpawnLocation.Rotator();
+	FActorSpawnParameters SpawnInfo;
+	
+	AAudioPlatform* SpawnedPlatform = GetWorld()->SpawnActor<AAudioPlatform>(Location, Rotation, SpawnInfo);
+
+	SpawnedPlatform->Note = Note;
+	return SpawnedPlatform;
+}
+

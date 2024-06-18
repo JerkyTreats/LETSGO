@@ -36,4 +36,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FTransform GetCameraVectorForward() const;
+
+	UFUNCTION()
+	AAudioPlatform* SpawnPlatform(const FTransform& SpawnLocation, FLetsGoMusicNotes Note);
 };
