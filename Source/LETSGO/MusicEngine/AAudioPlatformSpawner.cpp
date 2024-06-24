@@ -12,7 +12,6 @@ AAudioPlatformSpawner::AAudioPlatformSpawner()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	NoteContainer = CreateDefaultSubobject<UNoteContainer>(TEXT("Note Container"));
-	
 }
 
 // Called when the game starts or when spawned
@@ -54,9 +53,9 @@ FTransform AAudioPlatformSpawner::GetCameraVectorForward() const
 
 AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLocation, FLetsGoMusicNotes Note)
 {
-	FVector Location = SpawnLocation.GetTranslation();
-	FRotator Rotation = SpawnLocation.Rotator();
-	FActorSpawnParameters SpawnInfo;
+	const FVector Location = SpawnLocation.GetTranslation();
+	const FRotator Rotation = SpawnLocation.Rotator();
+	const FActorSpawnParameters SpawnInfo;
 	
 	AAudioPlatform* SpawnedPlatform = GetWorld()->SpawnActor<AAudioPlatform>(Location, Rotation, SpawnInfo);
 

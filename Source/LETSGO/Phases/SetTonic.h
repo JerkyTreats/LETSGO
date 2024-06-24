@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "PhaseController.h"
 #include "LETSGO/MusicEngine/AAudioPlatform.h"
+#include "LETSGO/MusicEngine/AAudioPlatformSpawner.h"
 #include "UObject/Object.h"
 #include "SetTonic.generated.h"
 
@@ -28,10 +29,13 @@ class LETSGO_API USetTonic : public UObject, public IPhaseController
 
 
 public:
+	USetTonic();
+	
 	UPROPERTY()
 	TArray<AAudioPlatform*> AudioPlatforms;
 	
-
+	UPROPERTY()
+	AAudioPlatformSpawner* Spawner; 
 	
 protected:
 	bool Active = false;

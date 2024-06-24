@@ -39,4 +39,5 @@ public:
 
 	UFUNCTION()
 	AAudioPlatform* SpawnPlatform(const FTransform& SpawnLocation, FLetsGoMusicNotes Note);
+	
 };
