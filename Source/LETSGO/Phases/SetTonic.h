@@ -50,6 +50,8 @@ public:
 
 	UFUNCTION()
 	virtual void Initialize() override;
+
+	FLetsGoMusicNotes GetRandomNote();
 	
 	UFUNCTION()
 	virtual void Activate() override;
