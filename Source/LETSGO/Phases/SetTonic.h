@@ -30,6 +30,12 @@ class LETSGO_API USetTonic : public UObject, public IPhaseController
 
 public:
 	USetTonic();
+
+	UPROPERTY()
+	float OffsetAmountPerSpawnedPlatform = 40;
+
+	UPROPERTY()
+	int NumPlatformsToSpawn = 3;
 	
 	UPROPERTY()
 	TArray<AAudioPlatform*> AudioPlatforms;
@@ -51,7 +57,7 @@ public:
 	UFUNCTION()
 	virtual void Initialize() override;
 
-	FLetsGoMusicNotes GetRandomNote();
+	static FLetsGoMusicNotes GetRandomNote();
 	
 	UFUNCTION()
 	virtual void Activate() override;

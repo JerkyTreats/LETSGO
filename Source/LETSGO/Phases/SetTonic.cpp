@@ -25,36 +25,47 @@ void USetTonic::Initialize()
 {
 }
 
+// Might could move this to ULetsGoMusicEngine
 FLetsGoMusicNotes USetTonic::GetRandomNote()
 {
-	TMap<int, FLetsGoMusicNotes> Map = FMusicNoteMap.Map;
-	FMath::RandRange(0, );
+	TMap<int, FLetsGoMusicNotes> Map;
+	Map.Add(0, FLetsGoMusicNotes(C));
+	Map.Add(0, FLetsGoMusicNotes(CSharp));
+	Map.Add(0, FLetsGoMusicNotes(D));
+	Map.Add(0, FLetsGoMusicNotes(EFlat));
+	Map.Add(0, FLetsGoMusicNotes(E));
+	Map.Add(0, FLetsGoMusicNotes(F));
+	Map.Add(0, FLetsGoMusicNotes(FSharp));
+	Map.Add(0, FLetsGoMusicNotes(G));
+	Map.Add(0, FLetsGoMusicNotes(AFlat));
+	Map.Add(0, FLetsGoMusicNotes(A));
+	Map.Add(0, FLetsGoMusicNotes(BFlat));
+	Map.Add(0, FLetsGoMusicNotes(B));
+
+	const int Key = FMath::RandRange(0, Map.Num());
+
+	return Map[Key];
 }
 
 void USetTonic::Activate()
 {
 	FTransform CameraForward = Spawner->GetCameraVectorForward();
 	FVector RootLocation = CameraForward.GetTranslation();
-	const FRotator RootRotation = CameraForward.Rotator();
 	const FActorSpawnParameters SpawnInfo;
 	
-	// Add prop for number of platforms to spawn
-	// Similar to logic for spawning letter particle systems, define offset each platform from the RootLocation
-	// Spawn each platform using the OffsetLocation
 
-	float OffsetAmountPerPlatform = 40.0f;
-	int NumPlatformsToSpawn = 3;
-	int HalfLength = NumPlatformsToSpawn / 2;
+	const int HalfLength = NumPlatformsToSpawn / 2;
 	
 	// Spawn three Audio Platforms 
 	for (int i = 0; i <=NumPlatformsToSpawn; i++)
 	{
-		int YPos = (i - HalfLength) * OffsetAmountPerPlatform;
+		const int YPos = (i - HalfLength) * OffsetAmountPerSpawnedPlatform;
 
 		RootLocation.Y += YPos;
 		CameraForward.SetTranslation(RootLocation);
-		FLetsGoMusicNotes PlatformNote = GetRandomNote();
-		Spawner->SpawnPlatform(CameraForward, );
+		const FLetsGoMusicNotes PlatformNote = GetRandomNote();
+		
+		Spawner->SpawnPlatform(CameraForward, PlatformNote);
 	}
 	
 }
