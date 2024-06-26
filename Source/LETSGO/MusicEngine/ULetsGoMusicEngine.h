@@ -52,34 +52,6 @@ struct FLetsGoMusicNotes
 	explicit FLetsGoMusicNotes(const ELetsGoMusicNotes Note) : Note(Note) {}
 };
 
-USTRUCT(Blueprintable, Category = LetsGoBlueprintCategory)
-struct FMusicNoteMap
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<int, FLetsGoMusicNotes> Map;
-
-	
-	
-	FMusicNoteMap()
-	{
-		Map = TMap<int, FLetsGoMusicNotes>();
-		Map.Add(0, FLetsGoMusicNotes({C}));
-		Map.Add(1, FLetsGoMusicNotes({CSharp}));
-		Map.Add(2, FLetsGoMusicNotes({D}));
-		Map.Add(3, FLetsGoMusicNotes({EFlat}));
-		Map.Add(4, FLetsGoMusicNotes({E}));
-		Map.Add(5, FLetsGoMusicNotes({F}));
-		Map.Add(6, FLetsGoMusicNotes({FSharp}));
-		Map.Add(7, FLetsGoMusicNotes({G}));
-		Map.Add(8, FLetsGoMusicNotes({AFlat}));
-		Map.Add(9, FLetsGoMusicNotes({A}));
-		Map.Add(10, FLetsGoMusicNotes({BFlat}));
-		Map.Add(11, FLetsGoMusicNotes({B}));
-	}
-};
-
 // Scales consist of a pattern of 7 whole/half steps.
 // C -> D = Whole
 // C -> C# = Half 
