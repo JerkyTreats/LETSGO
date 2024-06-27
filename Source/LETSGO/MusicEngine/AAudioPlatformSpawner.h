@@ -8,6 +8,9 @@
 #include "GameFramework/Actor.h"
 #include "AAudioPlatformSpawner.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FSpawnerNoteTriggeredDelegate, FLetsGoMusicNotes, Note);
+
+
 UCLASS()
 class LETSGO_API AAudioPlatformSpawner : public AActor
 {
@@ -25,6 +28,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	FVector CameraVectorForwardOffsetAmount { 500.0f, 500.0f, 0 };
+
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatformSpawner")
+	FSpawnerNoteTriggeredDelegate OnAudioPlatformTriggered;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -38,6 +44,9 @@ public:
 	FTransform GetCameraVectorForward() const;
 
 	UFUNCTION()
-	AAudioPlatform* SpawnPlatform(const FTransform& SpawnLocation, FLetsGoMusicNotes Note);
+	AAudioPlatform* SpawnPlatform(const FTransform& SpawnLocation, const FLetsGoMusicNotes Note);
+
+	UFUNCTION()
+	void DestroyAllPlatforms();
 	
 };

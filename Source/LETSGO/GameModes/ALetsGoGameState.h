@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
+#include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "Quartz/AudioMixerClock.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "ALetsGoGameState.generated.h"
@@ -24,5 +25,8 @@ public:
 	
 	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
 	TObjectPtr<UQuartzClockHandle> MainClock;
+
+	UPROPERTY(VisibleAnywhere, Category= "LETSGO | State")
+	FLetsGoMusicNotes Tonic;
 	
 };

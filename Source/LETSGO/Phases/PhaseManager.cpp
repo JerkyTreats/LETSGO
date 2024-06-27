@@ -2,3 +2,8 @@
 
 
 #include "PhaseManager.h"
+
+UPhaseManager::UPhaseManager()
+{
+	
+}

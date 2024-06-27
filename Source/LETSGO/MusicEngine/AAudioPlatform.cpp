@@ -23,6 +23,9 @@ void AAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 }
 
+// MUST REARRANGE ORDER HERE
+// REMOVE DESTROY FROM OVERLAP AND PLACE HERE
+// WILL NEED TO UPDATE BLUEPRINT SPAWNER TO EXPLICITLY ORDER DESTROY OnAudioPlatformTriggered
 void AAudioPlatform::DestroyActor()
 {
 	Destroy();

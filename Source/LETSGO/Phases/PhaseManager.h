@@ -15,5 +15,14 @@ class LETSGO_API UPhaseManager : public UObject
 {
 	GENERATED_BODY()
 
-	// TArray<IPhaseController> Phases;
+	// 
+
+public:
+	UPhaseManager();
+	
+	UPROPERTY()
+	TArray<IPhaseController*> Phases;
+
+
+	
 };

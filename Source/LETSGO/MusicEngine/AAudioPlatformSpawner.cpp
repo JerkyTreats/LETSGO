@@ -51,7 +51,7 @@ FTransform AAudioPlatformSpawner::GetCameraVectorForward() const
 	return VectorTransform;
 }
 
-AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLocation, FLetsGoMusicNotes Note)
+AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLocation, const FLetsGoMusicNotes Note)
 {
 	const FVector Location = SpawnLocation.GetTranslation();
 	const FRotator Rotation = SpawnLocation.Rotator();
@@ -59,7 +59,17 @@ AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLoca
 	
 	AAudioPlatform* SpawnedPlatform = GetWorld()->SpawnActor<AAudioPlatform>(Location, Rotation, SpawnInfo);
 
+	SpawnedPlatforms.Add(SpawnedPlatform);
 	SpawnedPlatform->Note = Note;
+
 	return SpawnedPlatform;
+}
+
+void AAudioPlatformSpawner::DestroyAllPlatforms()
+{
+	for (int i = 0; i<=SpawnedPlatforms.Num(); i++)
+	{
+		SpawnedPlatforms[i]->
+	}
 }
 

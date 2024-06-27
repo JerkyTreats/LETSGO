@@ -6,6 +6,12 @@
 ALetsGoGameMode::ALetsGoGameMode()
 {
 	GameStateClass = ALetsGoGameState::StaticClass();
+	PhaseManager = CreateDefaultSubobject<UPhaseManager>(TEXT("Phase Manager"));
+}
+
+void ALetsGoGameMode::SetTonic(const FLetsGoMusicNotes Note) const
+{
+	GetGameState<ALetsGoGameState>()->Tonic = Note;
 }
 
 UQuartzClockHandle* ALetsGoGameMode::GetMainClock() const

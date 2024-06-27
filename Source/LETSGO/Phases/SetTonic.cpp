@@ -3,6 +3,7 @@
 
 #include "SetTonic.h"
 
+#include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/MusicEngine/AAudioPlatformSpawner.h"
 #include "Logging/StructuredLog.h"
 
@@ -16,10 +17,7 @@ void USetTonic::OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote)
 	
 }
 
-void USetTonic::SetTonic(FLetsGoMusicNotes Note)
-{
-	
-}
+
 
 void USetTonic::Initialize()
 {
@@ -65,11 +63,22 @@ void USetTonic::Activate()
 		CameraForward.SetTranslation(RootLocation);
 		const FLetsGoMusicNotes PlatformNote = GetRandomNote();
 		
-		Spawner->SpawnPlatform(CameraForward, PlatformNote);
+		AAudioPlatform* SpawnedPlatform = Spawner->SpawnPlatform(CameraForward, PlatformNote);
+		SpawnedPlatform->OnAudioPlatformTriggered.AddDynamic(this, &USetTonic::SetTonic);
+
+		//udioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &AAudioCuePlayer::OnAudioPlatformTriggered);
 	}
 	
 }
 
 void USetTonic::Deactivate()
 {
+}
+
+void USetTonic::SetTonic(FLetsGoMusicNotes Note)
+{
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->SetTonic(Note);
+
+	Spawner.DestroyAllPlatforms();
 }
