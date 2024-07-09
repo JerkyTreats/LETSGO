@@ -43,8 +43,12 @@ void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingN
 	USoundCue* ThisSoundCue = GetSoundCue(IncomingNote.Note);
 	AttachedAudioComponent->SetSound(ThisSoundCue);
 
+	IsSoundPlaying = true;
+	
 	const FOnQuartzCommandEventBP EmptyOnQuartzCommandEventBP; 
 	AttachedAudioComponent->PlayQuantized(GetWorld(),Clock, QuartzQuantizationBoundary, EmptyOnQuartzCommandEventBP);
+	
+	DestroyActor();
 }
 
 // This is bad but requires a real solution to be figured out and implemented
@@ -81,4 +85,22 @@ USoundCue* AAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) co
 		UE_LOGFMT(LogTemp, Error, "Note does not exist in AudioCuePlayer::NoteCueMap");
 		return CSharp3_Music_Note;
 	}
+}
+
+// Need this extra destroy function because AddDynamic complains if you try to call &AAudioCuePlayer::Destroy directly
+void AAudioCuePlayer::InitiateDestroy()
+{
+	if(IsSoundPlaying)
+	{
+		AttachedAudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
+	}
+	else
+	{
+		DestroyActor();
+	}
+}
+
+void AAudioCuePlayer::DestroyActor()
+{
+	Destroy();
 }

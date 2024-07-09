@@ -9,6 +9,11 @@ ALetsGoGameMode::ALetsGoGameMode()
 	PhaseManager = CreateDefaultSubobject<UPhaseManager>(TEXT("Phase Manager"));
 }
 
+void ALetsGoGameMode::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 void ALetsGoGameMode::SetTonic(const FLetsGoMusicNotes Note) const
 {
 	GetGameState<ALetsGoGameState>()->Tonic = Note;

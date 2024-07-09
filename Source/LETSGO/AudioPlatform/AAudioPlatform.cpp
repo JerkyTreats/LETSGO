@@ -6,6 +6,7 @@
 
 AAudioPlatform::AAudioPlatform()
 {
+	AudioCuePlayer = CreateDefaultSubobject<AAudioCuePlayer>(TEXT("Audio Cue Player"));
 }
 
 void AAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -15,11 +16,6 @@ void AAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
 	if (Cast<ACharacter>(OtherActor))
 	{
 		OnAudioPlatformTriggered.Broadcast(Note);
-
-		FTimerHandle MemberTimerHandle;
-		
-		// Allow slight delay then destroy this platform
-		GetWorldTimerManager().SetTimer(MemberTimerHandle, this, &AAudioPlatform::DestroyActor, ActorDestroyDelay, false);
 	}
 }
 
@@ -28,7 +24,13 @@ void AAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
 // WILL NEED TO UPDATE BLUEPRINT SPAWNER TO EXPLICITLY ORDER DESTROY OnAudioPlatformTriggered
 void AAudioPlatform::DestroyActor()
 {
+	AudioCuePlayer->InitiateDestroy();
 	Destroy();
+}
+
+void AAudioPlatform::SetAudioCuePlayer(AAudioCuePlayer* PlayerToSet)
+{
+	AudioCuePlayer = PlayerToSet;
 }
 
 

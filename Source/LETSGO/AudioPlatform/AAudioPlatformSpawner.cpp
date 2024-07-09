@@ -69,7 +69,7 @@ void AAudioPlatformSpawner::DestroyAllPlatforms()
 {
 	for (int i = 0; i<=SpawnedPlatforms.Num(); i++)
 	{
-		SpawnedPlatforms[i]->
+		SpawnedPlatforms[i]->DestroyActor();
 	}
 }
 

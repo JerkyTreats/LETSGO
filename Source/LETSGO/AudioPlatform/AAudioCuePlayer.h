@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "ULetsGoMusicEngine.h"
+#include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "Components/ActorComponent.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "Sound/SoundCue.h"
@@ -64,6 +64,9 @@ public:
 
 	UPROPERTY()
 	UAudioComponent* AttachedAudioComponent;
+
+	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
+	UQuartzClockHandle* Clock;
 	
 protected:
 	// Called when the game starts
@@ -74,6 +77,9 @@ protected:
 	UPROPERTY(EditInstanceOnly,BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	class AAudioPlatform* AudioPlatformReference;
 
+	UPROPERTY()
+	bool IsSoundPlaying = false;
+	
 	// Function to fire when the OnAudioPlatformTriggered Event is received
 	UFUNCTION()
 	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
@@ -82,6 +88,9 @@ protected:
 	USoundCue* GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
 	
 public:
-	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
-	UQuartzClockHandle* Clock;
+	UFUNCTION(BlueprintCallable)
+	void DestroyActor();
+
+	UFUNCTION()
+	void InitiateDestroy();
 };

@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "PhaseController.h"
-#include "LETSGO/MusicEngine/AAudioPlatform.h"
-#include "LETSGO/MusicEngine/AAudioPlatformSpawner.h"
+#include "LETSGO/AudioPlatform//AAudioPlatform.h"
+#include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
 #include "UObject/Object.h"
 #include "SetTonic.generated.h"
 

@@ -23,6 +23,10 @@ public:
 	UPROPERTY()
 	TArray<IPhaseController*> Phases;
 
-
+	UFUNCTION()
+	void Initialize();
+	
+	UFUNCTION()
+	void ProcessPhases();
 	
 };

@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AAudioCuePlayer.h"
-#include "ULetsGoMusicEngine.h"
+#include "LETSGO/AudioPlatform/AAudioCuePlayer.h"
+#include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
 #include "AAudioPlatform.generated.h"
 
@@ -35,6 +35,16 @@ public:
 	
 protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+
+
+public:
+	UFUNCTION(BlueprintCallable)
+	void SetAudioCuePlayer(AAudioCuePlayer* PlayerToSet);
+
+	UFUNCTION()
 	void DestroyActor();
+	// UFUNCTION(BlueprintCallable)
+	// void SetParticleController()
 
 };
