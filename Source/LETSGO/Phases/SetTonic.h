@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "PhaseController.h"
+#include "PhaseManager.h"
 #include "LETSGO/AudioPlatform//AAudioPlatform.h"
 #include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
 #include "UObject/Object.h"
 #include "SetTonic.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerDeactivateDelegate, IPhaseController*, PhaseController);
 
 /**
  * 
@@ -41,7 +44,10 @@ public:
 	TArray<AAudioPlatform*> AudioPlatforms;
 	
 	UPROPERTY()
-	AAudioPlatformSpawner* Spawner; 
+	AAudioPlatformSpawner* Spawner;
+	
+	UPROPERTY()
+	FPhaseControllerActivateDelegate OnPhaseDeactivate;
 	
 protected:
 	bool Active = false;
@@ -49,14 +55,15 @@ protected:
 public:
 	// Function to fire when the OnAudioPlatformTriggered Event is received
 	UFUNCTION()
-	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
+	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote) ;
 
 	UFUNCTION()
 	void SetTonic(FLetsGoMusicNotes Note);
 
 	UFUNCTION()
-	virtual void Initialize() override;
+	virtual void Initialize(UPhaseManager* PhaseManager) override;
 
+	UFUNCTION()
 	static FLetsGoMusicNotes GetRandomNote();
 	
 	UFUNCTION()

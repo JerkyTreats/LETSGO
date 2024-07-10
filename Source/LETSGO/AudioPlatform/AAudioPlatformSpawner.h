@@ -47,6 +47,9 @@ public:
 	AAudioPlatform* SpawnPlatform(const FTransform& SpawnLocation, const FLetsGoMusicNotes Note);
 
 	UFUNCTION()
+	void DestroyActor();
+	
+	UFUNCTION()
 	void DestroyAllPlatforms();
 	
 };

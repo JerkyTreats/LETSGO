@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "PhaseManager.h"
 #include "UObject/Interface.h"
 #include "PhaseController.generated.h"
 
@@ -22,7 +23,7 @@ class LETSGO_API IPhaseController
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void Initialize() = 0;
+	virtual void Initialize(UPhaseManager* PhaseManager) = 0;
 	virtual void Activate() = 0 ;
 	virtual void Deactivate() = 0;
 };

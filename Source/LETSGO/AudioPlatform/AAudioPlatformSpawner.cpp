@@ -65,6 +65,12 @@ AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLoca
 	return SpawnedPlatform;
 }
 
+void AAudioPlatformSpawner::DestroyActor()
+{
+	DestroyAllPlatforms();
+	Destroy();
+}
+
 void AAudioPlatformSpawner::DestroyAllPlatforms()
 {
 	for (int i = 0; i<=SpawnedPlatforms.Num(); i++)

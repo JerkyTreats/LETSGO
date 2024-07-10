@@ -12,15 +12,17 @@ USetTonic::USetTonic()
 	Spawner =  CreateDefaultSubobject<AAudioPlatformSpawner>(TEXT("Set Tonic Audio Platform Spawner"));
 }
 
-void USetTonic::OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote)
+void USetTonic::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote) 
 {
-	
+	SetTonic(IncomingNote);
+	Deactivate();
 }
 
 
 
-void USetTonic::Initialize()
+void USetTonic::Initialize(UPhaseManager* PhaseManager)
 {
+
 }
 
 // Might could move this to ULetsGoMusicEngine
@@ -71,12 +73,13 @@ void USetTonic::Activate()
 
 void USetTonic::Deactivate()
 {
+	OnPhaseDeactivate.Broadcast(this);
+
+	Spawner->DestroyActor();
 }
 
 void USetTonic::SetTonic(FLetsGoMusicNotes Note)
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	GameMode->SetTonic(Note);
-
-	Spawner->DestroyAllPlatforms();
 }

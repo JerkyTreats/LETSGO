@@ -7,6 +7,9 @@
 #include "UObject/Object.h"
 #include "PhaseManager.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerActivateDelegate, IPhaseController*, PhaseController);
+
+
 /**
  * 
  */
@@ -23,10 +26,21 @@ public:
 	UPROPERTY()
 	TArray<IPhaseController*> Phases;
 
+	UPROPERTY()
+	FPhaseControllerActivateDelegate OnPhaseActivate;
+
 	UFUNCTION()
 	void Initialize();
 	
 	UFUNCTION()
 	void ProcessPhases();
+
+	UFUNCTION()
+	void ActivatePhase(IPhaseController* ToActivate);
 	
+	UFUNCTION()
+	void DeactivatePhase(IPhaseController* ToDeactivate);
+
+	UFUNCTION()
+	void RemovePhase(IPhaseController* ToRemove);
 };
