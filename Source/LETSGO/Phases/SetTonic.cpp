@@ -25,28 +25,6 @@ void USetTonic::Initialize(UPhaseManager* PhaseManager)
 
 }
 
-// Might could move this to ULetsGoMusicEngine
-FLetsGoMusicNotes USetTonic::GetRandomNote()
-{
-	TMap<int, FLetsGoMusicNotes> Map;
-	Map.Add(0, FLetsGoMusicNotes(C));
-	Map.Add(0, FLetsGoMusicNotes(CSharp));
-	Map.Add(0, FLetsGoMusicNotes(D));
-	Map.Add(0, FLetsGoMusicNotes(EFlat));
-	Map.Add(0, FLetsGoMusicNotes(E));
-	Map.Add(0, FLetsGoMusicNotes(F));
-	Map.Add(0, FLetsGoMusicNotes(FSharp));
-	Map.Add(0, FLetsGoMusicNotes(G));
-	Map.Add(0, FLetsGoMusicNotes(AFlat));
-	Map.Add(0, FLetsGoMusicNotes(A));
-	Map.Add(0, FLetsGoMusicNotes(BFlat));
-	Map.Add(0, FLetsGoMusicNotes(B));
-
-	const int Key = FMath::RandRange(0, Map.Num());
-
-	return Map[Key];
-}
-
 void USetTonic::Activate()
 {
 	FTransform CameraForward = Spawner->GetCameraVectorForward();
@@ -69,17 +47,58 @@ void USetTonic::Activate()
 		SpawnedPlatform->OnAudioPlatformTriggered.AddDynamic(this, &USetTonic::SetTonic);
 	}
 	
+	Active = true;
+}
+
+bool USetTonic::IsActivated()
+{
+	return Active;
 }
 
 void USetTonic::Deactivate()
 {
-	OnPhaseDeactivate.Broadcast(this);
+	OnPhaseComplete.Broadcast(this);
 
 	Spawner->DestroyActor();
+
+	Active = false;
+}
+
+void USetTonic::Complete()
+{
+	Deactivate();
+	Completed = true;
+}
+
+bool USetTonic::IsCompleted()
+{
+	return Completed;
 }
 
 void USetTonic::SetTonic(FLetsGoMusicNotes Note)
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	GameMode->SetTonic(Note);
+}
+
+// Might could move this to ULetsGoMusicEngine
+FLetsGoMusicNotes USetTonic::GetRandomNote()
+{
+	TMap<int, FLetsGoMusicNotes> Map;
+	Map.Add(0, FLetsGoMusicNotes(C));
+	Map.Add(0, FLetsGoMusicNotes(CSharp));
+	Map.Add(0, FLetsGoMusicNotes(D));
+	Map.Add(0, FLetsGoMusicNotes(EFlat));
+	Map.Add(0, FLetsGoMusicNotes(E));
+	Map.Add(0, FLetsGoMusicNotes(F));
+	Map.Add(0, FLetsGoMusicNotes(FSharp));
+	Map.Add(0, FLetsGoMusicNotes(G));
+	Map.Add(0, FLetsGoMusicNotes(AFlat));
+	Map.Add(0, FLetsGoMusicNotes(A));
+	Map.Add(0, FLetsGoMusicNotes(BFlat));
+	Map.Add(0, FLetsGoMusicNotes(B));
+
+	const int Key = FMath::RandRange(0, Map.Num());
+
+	return Map[Key];
 }

@@ -14,7 +14,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerActivateDelegate, IP
  * 
  */
 UCLASS()
-class LETSGO_API UPhaseManager : public UObject
+class LETSGO_API UPhaseManager : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()
 
@@ -29,18 +29,40 @@ public:
 	UPROPERTY()
 	FPhaseControllerActivateDelegate OnPhaseActivate;
 
+private:
+	// The last frame number we were ticked.
+	// We don't want to tick multiple times per frame 
+	uint32 LastFrameNumberWeTicked = INDEX_NONE;
+	int EmptyListWarnAmount = 0;
+	
+public:
 	UFUNCTION()
 	void Initialize();
 	
 	UFUNCTION()
 	void ProcessPhases();
 
-	UFUNCTION()
-	void ActivatePhase(IPhaseController* ToActivate);
+	// FTickableGameObject Begin
+	virtual void Tick(float DeltaTime) override;
 	
-	UFUNCTION()
-	void DeactivatePhase(IPhaseController* ToDeactivate);
-
-	UFUNCTION()
-	void RemovePhase(IPhaseController* ToRemove);
+	virtual ETickableTickType GetTickableTickType() const override
+	{
+		return ETickableTickType::Always;
+	}
+	
+	virtual TStatId GetStatId() const override
+	{
+		RETURN_QUICK_DECLARE_CYCLE_STAT(FMyTickableThing, STATGROUP_Tickables);
+	}
+	
+	virtual bool IsTickableWhenPaused() const override
+	{
+		return true;
+	}
+	
+	virtual bool IsTickableInEditor() const override
+	{
+		return false;
+	}
+	// FTickableGameObject End
 };

@@ -10,7 +10,7 @@
 #include "UObject/Object.h"
 #include "SetTonic.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerDeactivateDelegate, IPhaseController*, PhaseController);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerCompletedDelegate, IPhaseController*, PhaseController);
 
 /**
  * 
@@ -47,11 +47,12 @@ public:
 	AAudioPlatformSpawner* Spawner;
 	
 	UPROPERTY()
-	FPhaseControllerActivateDelegate OnPhaseDeactivate;
+	FPhaseControllerCompletedDelegate OnPhaseComplete;
 	
 protected:
 	bool Active = false;
-
+	bool Completed = false;
+	
 public:
 	// Function to fire when the OnAudioPlatformTriggered Event is received
 	UFUNCTION()
@@ -60,15 +61,26 @@ public:
 	UFUNCTION()
 	void SetTonic(FLetsGoMusicNotes Note);
 
+
+	// Interface Methods
 	UFUNCTION()
 	virtual void Initialize(UPhaseManager* PhaseManager) override;
-
-	UFUNCTION()
-	static FLetsGoMusicNotes GetRandomNote();
 	
 	UFUNCTION()
 	virtual void Activate() override;
+
+	UFUNCTION()
+	virtual bool IsActivated() override;
 	
 	UFUNCTION()
 	virtual void Deactivate() override;
+
+	UFUNCTION()
+	virtual void Complete() override;
+
+	UFUNCTION()
+	virtual bool IsCompleted() override;
+
+	UFUNCTION()
+	static FLetsGoMusicNotes GetRandomNote();
 };

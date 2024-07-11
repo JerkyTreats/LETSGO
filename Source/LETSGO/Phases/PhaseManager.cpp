@@ -13,28 +13,55 @@ UPhaseManager::UPhaseManager()
 void UPhaseManager::Initialize()
 {
 	USetTonic* SetTonic = NewObject<USetTonic>();
-	SetTonic->OnPhaseDeactivate.AddDynamic(this, &UPhaseManager::UPhaseManager::DeactivatePhase);
 	
 	Phases.Emplace(SetTonic);
 }
 
 void UPhaseManager::ProcessPhases()
 {
+	if (Phases.Num() == 0)
+	{
+		if (EmptyListWarnAmount < 5)
+		{
+			// TODO create custom Log Category 
+			UE_LOG(LogTemp, Warning, TEXT("Empty Phase List"));
+			EmptyListWarnAmount++;
+			
+			if (EmptyListWarnAmount == 5 )
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Disabling Empty Phase List Warning."));
+			}
+		}
+		return;
+	}
 	
+	EmptyListWarnAmount = 0;
+
+	if (Phases[0]->IsCompleted())
+	{
+		Phases.RemoveAt(0);
+	}
+
+	if (Phases.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Last Phase In Phase List Completed"));
+		return;
+	}
+
+	// Activate next phase
+	if ( ! Phases[0]->IsActivated())
+	{
+		Phases[0]->Activate();
+	}
 }
 
-void UPhaseManager::ActivatePhase(IPhaseController* ToActivate)
+void UPhaseManager::Tick(float DeltaTime)
 {
-	ToActivate->Activate();
-}
+	if (LastFrameNumberWeTicked == GFrameCounter)
+		return;
 
-void UPhaseManager::DeactivatePhase(IPhaseController* ToDeactivate)
-{
-	Phases.Remove(ToDeactivate);
 	ProcessPhases();
-}
-
-void UPhaseManager::RemovePhase(IPhaseController* ToRemove)
-{
+	
+	LastFrameNumberWeTicked = GFrameCounter;
 }
 
