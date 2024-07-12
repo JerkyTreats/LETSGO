@@ -7,8 +7,6 @@
 #include "UObject/Object.h"
 #include "PhaseManager.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerActivateDelegate, IPhaseController*, PhaseController);
-
 
 /**
  * 
@@ -26,8 +24,6 @@ public:
 	UPROPERTY()
 	TArray<IPhaseController*> Phases;
 
-	UPROPERTY()
-	FPhaseControllerActivateDelegate OnPhaseActivate;
 
 private:
 	// The last frame number we were ticked.
@@ -52,7 +48,7 @@ public:
 	
 	virtual TStatId GetStatId() const override
 	{
-		RETURN_QUICK_DECLARE_CYCLE_STAT(FMyTickableThing, STATGROUP_Tickables);
+		RETURN_QUICK_DECLARE_CYCLE_STAT(UPhaseManager, STATGROUP_Tickables);
 	}
 	
 	virtual bool IsTickableWhenPaused() const override

@@ -20,7 +20,7 @@ void USetTonic::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 
 
 
-void USetTonic::Initialize(UPhaseManager* PhaseManager)
+void USetTonic::Initialize()
 {
 
 }

@@ -4,13 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "PhaseController.h"
-#include "PhaseManager.h"
 #include "LETSGO/AudioPlatform//AAudioPlatform.h"
 #include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
 #include "UObject/Object.h"
 #include "SetTonic.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerCompletedDelegate, IPhaseController*, PhaseController);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerCompletedDelegate, TScriptInterface<IPhaseController>, PhaseController);
 
 /**
  * 
@@ -64,7 +63,7 @@ public:
 
 	// Interface Methods
 	UFUNCTION()
-	virtual void Initialize(UPhaseManager* PhaseManager) override;
+	virtual void Initialize() override;
 	
 	UFUNCTION()
 	virtual void Activate() override;
