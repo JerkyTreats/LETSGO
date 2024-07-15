@@ -23,27 +23,33 @@ public:
 	
 	UPROPERTY()
 	TArray<IPhaseController*> Phases;
+	
+	bool TickEnabled = false;
+	
 
 
 private:
 	// The last frame number we were ticked.
 	// We don't want to tick multiple times per frame 
 	uint32 LastFrameNumberWeTicked = INDEX_NONE;
+
 	int EmptyListWarnAmount = 0;
-	
+
 public:
 	UFUNCTION()
 	void Initialize();
 	
 	UFUNCTION()
 	void ProcessPhases();
-
+	
 	// FTickableGameObject Begin
+	virtual bool IsTickable() const override;
+	
 	virtual void Tick(float DeltaTime) override;
 	
 	virtual ETickableTickType GetTickableTickType() const override
 	{
-		return ETickableTickType::Always;
+		return ETickableTickType::Conditional;
 	}
 	
 	virtual TStatId GetStatId() const override

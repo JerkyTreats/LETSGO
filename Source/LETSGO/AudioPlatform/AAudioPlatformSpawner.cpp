@@ -29,8 +29,8 @@ void AAudioPlatformSpawner::Tick(float DeltaTime)
 FTransform AAudioPlatformSpawner::GetCameraVectorForward() const
 {
 	// Assumes only a single local player in the world at index 0
-	const APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	const APlayerCameraManager* CameraManager = UGameplayStatics::GetPlayerCameraManager(GetWorld(),0);
+	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	const APlayerCameraManager* CameraManager = PlayerController->PlayerCameraManager;
 
 	const APawn* PlayerControlledPawn = PlayerController->GetPawn();
 	const FVector PawnVector = PlayerControlledPawn->GetActorLocation();

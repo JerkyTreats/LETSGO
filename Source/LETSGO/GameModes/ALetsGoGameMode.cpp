@@ -12,6 +12,10 @@ ALetsGoGameMode::ALetsGoGameMode()
 void ALetsGoGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	FTimerHandle TimerHandle;
+	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALetsGoGameMode::InitializeGameplay,5.0f,false);
+	UE_LOG(LogTemp, Display, TEXT("Wait 5"));
 }
 
 void ALetsGoGameMode::SetTonic(const FLetsGoMusicNotes Note) const
@@ -27,4 +31,10 @@ UQuartzClockHandle* ALetsGoGameMode::GetMainClock() const
 void ALetsGoGameMode::SetMainClock(UQuartzClockHandle* Clock)
 {
 	GetGameState<ALetsGoGameState>()->MainClock = Clock;
+}
+
+void ALetsGoGameMode::InitializeGameplay()
+{
+	UE_LOG(LogTemp, Display, TEXT("Enabling Tick"));
+	PhaseManager->Initialize();
 }

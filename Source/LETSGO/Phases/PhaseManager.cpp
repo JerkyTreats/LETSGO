@@ -10,11 +10,19 @@ UPhaseManager::UPhaseManager()
 	Phases = TArray<IPhaseController*>();
 }
 
+bool UPhaseManager::IsTickable() const
+{
+	return TickEnabled;
+}
+
 void UPhaseManager::Initialize()
 {
 	USetTonic* SetTonic = NewObject<USetTonic>();
 	
 	Phases.Emplace(SetTonic);
+
+	TickEnabled = true;
+
 }
 
 void UPhaseManager::ProcessPhases()

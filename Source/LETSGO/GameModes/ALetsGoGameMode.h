@@ -39,5 +39,6 @@ public:
 	UFUNCTION(BlueprintCallable, Category="LETSGO | Clock")
 	virtual void SetMainClock(UQuartzClockHandle* Clock);
 
-	
+	UFUNCTION()
+	void InitializeGameplay();
 };
