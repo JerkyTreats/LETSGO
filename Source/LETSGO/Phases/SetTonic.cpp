@@ -7,9 +7,8 @@
 #include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
 #include "Logging/StructuredLog.h"
 
-USetTonic::USetTonic()
+USetTonic::USetTonic(): Spawner(nullptr)
 {
-	Spawner =  CreateDefaultSubobject<AAudioPlatformSpawner>(TEXT("Set Tonic Audio Platform Spawner"));
 }
 
 void USetTonic::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote) 
@@ -19,10 +18,9 @@ void USetTonic::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 }
 
 
-
-void USetTonic::Initialize()
+void USetTonic::Initialize(UWorld* World)
 {
-
+	Spawner = World->SpawnActor<AAudioPlatformSpawner>();
 }
 
 void USetTonic::Activate()

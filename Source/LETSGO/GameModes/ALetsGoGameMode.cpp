@@ -13,6 +13,8 @@ void ALetsGoGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	PhaseManager->Initialize(GetWorld());
+	
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALetsGoGameMode::InitializeGameplay,5.0f,false);
 	UE_LOG(LogTemp, Display, TEXT("Wait 5"));
@@ -36,5 +38,5 @@ void ALetsGoGameMode::SetMainClock(UQuartzClockHandle* Clock)
 void ALetsGoGameMode::InitializeGameplay()
 {
 	UE_LOG(LogTemp, Display, TEXT("Enabling Tick"));
-	PhaseManager->Initialize();
+	PhaseManager->BeginTicking();
 }

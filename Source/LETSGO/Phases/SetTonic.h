@@ -60,11 +60,10 @@ public:
 	UFUNCTION()
 	void SetTonic(FLetsGoMusicNotes Note);
 
+	UFUNCTION()
+	void Initialize(UWorld* World);
 
 	// Interface Methods
-	UFUNCTION()
-	virtual void Initialize() override;
-	
 	UFUNCTION()
 	virtual void Activate() override;
 

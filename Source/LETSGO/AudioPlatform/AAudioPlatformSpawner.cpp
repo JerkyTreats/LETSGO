@@ -18,6 +18,8 @@ AAudioPlatformSpawner::AAudioPlatformSpawner()
 void AAudioPlatformSpawner::BeginPlay()
 {
 	Super::BeginPlay();
+	World = GetWorld();
+	UE_LOG(LogTemp, Display, TEXT("AudioPlatformSpawner BeginPlay complete"));
 }
 
 // Called every frame
@@ -29,7 +31,7 @@ void AAudioPlatformSpawner::Tick(float DeltaTime)
 FTransform AAudioPlatformSpawner::GetCameraVectorForward() const
 {
 	// Assumes only a single local player in the world at index 0
-	const APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	const APlayerController* PlayerController = World->GetFirstPlayerController();
 	const APlayerCameraManager* CameraManager = PlayerController->PlayerCameraManager;
 
 	const APawn* PlayerControlledPawn = PlayerController->GetPawn();

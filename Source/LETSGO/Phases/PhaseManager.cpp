@@ -15,14 +15,11 @@ bool UPhaseManager::IsTickable() const
 	return TickEnabled;
 }
 
-void UPhaseManager::Initialize()
+void UPhaseManager::Initialize(UWorld* World)
 {
 	USetTonic* SetTonic = NewObject<USetTonic>();
-	
+	SetTonic->Initialize(World);
 	Phases.Emplace(SetTonic);
-
-	TickEnabled = true;
-
 }
 
 void UPhaseManager::ProcessPhases()
@@ -61,6 +58,11 @@ void UPhaseManager::ProcessPhases()
 	{
 		Phases[0]->Activate();
 	}
+}
+
+void UPhaseManager::BeginTicking()
+{
+	TickEnabled = true;
 }
 
 void UPhaseManager::Tick(float DeltaTime)

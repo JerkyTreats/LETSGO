@@ -37,12 +37,15 @@ private:
 
 public:
 	UFUNCTION()
-	void Initialize();
+	void Initialize(UWorld* World);
 	
 	UFUNCTION()
 	void ProcessPhases();
+
 	
 	// FTickableGameObject Begin
+	void BeginTicking();
+
 	virtual bool IsTickable() const override;
 	
 	virtual void Tick(float DeltaTime) override;
