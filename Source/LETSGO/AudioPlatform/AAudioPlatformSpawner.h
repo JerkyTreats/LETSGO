@@ -31,6 +31,9 @@ public:
 
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatformSpawner")
 	FSpawnerNoteTriggeredDelegate OnAudioPlatformTriggered;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "LETSGO | AudioPlatformSpawner")
+	TSubclassOf<AAudioPlatform> BP_AudioPlatform;
 	
 protected:
 	// Called when the game starts or when spawned

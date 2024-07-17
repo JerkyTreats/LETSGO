@@ -38,6 +38,7 @@ void USetTonic::Activate()
 		const int YPos = (i - HalfLength) * OffsetAmountPerSpawnedPlatform;
 
 		RootLocation.Y += YPos;
+		RootLocation.Z = 1;
 		CameraForward.SetTranslation(RootLocation);
 		const FLetsGoMusicNotes PlatformNote = GetRandomNote();
 		
@@ -82,21 +83,21 @@ void USetTonic::SetTonic(FLetsGoMusicNotes Note)
 // Might could move this to ULetsGoMusicEngine
 FLetsGoMusicNotes USetTonic::GetRandomNote()
 {
-	TMap<int, FLetsGoMusicNotes> Map;
-	Map.Add(0, FLetsGoMusicNotes(C));
-	Map.Add(0, FLetsGoMusicNotes(CSharp));
-	Map.Add(0, FLetsGoMusicNotes(D));
-	Map.Add(0, FLetsGoMusicNotes(EFlat));
-	Map.Add(0, FLetsGoMusicNotes(E));
-	Map.Add(0, FLetsGoMusicNotes(F));
-	Map.Add(0, FLetsGoMusicNotes(FSharp));
-	Map.Add(0, FLetsGoMusicNotes(G));
-	Map.Add(0, FLetsGoMusicNotes(AFlat));
-	Map.Add(0, FLetsGoMusicNotes(A));
-	Map.Add(0, FLetsGoMusicNotes(BFlat));
-	Map.Add(0, FLetsGoMusicNotes(B));
+	TArray<FLetsGoMusicNotes> Notes = {
+		FLetsGoMusicNotes(C),
+		FLetsGoMusicNotes(CSharp),
+		FLetsGoMusicNotes(D),
+		FLetsGoMusicNotes(EFlat),
+		FLetsGoMusicNotes(E),
+		FLetsGoMusicNotes(FSharp),
+		FLetsGoMusicNotes(G),
+		FLetsGoMusicNotes(AFlat),
+		FLetsGoMusicNotes(A),
+		FLetsGoMusicNotes(BFlat),
+		FLetsGoMusicNotes(B)
+	};
 
-	const int Key = FMath::RandRange(0, Map.Num());
+	const int Key = FMath::RandRange(0, (Notes.Num() - 1) );
 
-	return Map[Key];
+	return Notes[Key];
 }

@@ -62,7 +62,7 @@ public:
 	
 	virtual bool IsTickableWhenPaused() const override
 	{
-		return true;
+		return false;
 	}
 	
 	virtual bool IsTickableInEditor() const override

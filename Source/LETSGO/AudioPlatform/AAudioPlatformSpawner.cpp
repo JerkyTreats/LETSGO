@@ -59,7 +59,7 @@ AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLoca
 	const FRotator Rotation = SpawnLocation.Rotator();
 	const FActorSpawnParameters SpawnInfo;
 	
-	AAudioPlatform* SpawnedPlatform = GetWorld()->SpawnActor<AAudioPlatform>(Location, Rotation, SpawnInfo);
+	AAudioPlatform* SpawnedPlatform = GetWorld()->SpawnActor<AAudioPlatform>(BP_AudioPlatform, Location, Rotation, SpawnInfo);
 
 	SpawnedPlatforms.Add(SpawnedPlatform);
 	SpawnedPlatform->Note = Note;

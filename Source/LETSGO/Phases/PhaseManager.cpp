@@ -54,7 +54,7 @@ void UPhaseManager::ProcessPhases()
 	}
 
 	// Activate next phase
-	if ( ! Phases[0]->IsActivated())
+	if ( Phases.Num() > 0 && ! Phases[0]->IsActivated())
 	{
 		Phases[0]->Activate();
 	}
