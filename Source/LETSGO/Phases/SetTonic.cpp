@@ -17,6 +17,9 @@ ASetTonic::ASetTonic(): Spawner()
 void ASetTonic::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UE_LOG(LogTemp, Display, TEXT("SetTonic BeginPlay complete"));
+
 }
 
 void ASetTonic::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote) 
@@ -33,24 +36,25 @@ void ASetTonic::Initialize()
 
 void ASetTonic::Activate()
 {
-	FTransform CameraForward = Spawner->GetCameraVectorForward();
+	const FTransform CameraForward = Spawner->GetCameraVectorForward();
 	FVector RootLocation = CameraForward.GetTranslation();
-	const FActorSpawnParameters SpawnInfo;
 	
 
-	const int HalfLength = NumPlatformsToSpawn / 2;
+	const int HalfLength = DivRoundClosest(NumPlatformsToSpawn, 2);
 	
 	// Spawn three Audio Platforms 
-	for (int i = 0; i <=NumPlatformsToSpawn; i++)
+	for (int i = 0; i < NumPlatformsToSpawn; i++)
 	{
-		const int YPos = (i - HalfLength) * OffsetAmountPerSpawnedPlatform;
-
-		RootLocation.Y += YPos;
-		RootLocation.Z = 1;
-		CameraForward.SetTranslation(RootLocation);
 		const FLetsGoMusicNotes PlatformNote = GetRandomNote();
 		
 		AAudioPlatform* SpawnedPlatform = Spawner->SpawnPlatform(CameraForward, PlatformNote);
+
+		const int SidePosition = i - (NumPlatformsToSpawn / 2);
+		const double YPos = SidePosition * OffsetAmountPerSpawnedPlatform;
+		RootLocation.Y += YPos;
+		RootLocation.Z = 1;
+		SpawnedPlatform->AddActorLocalOffset(FVector(0, YPos, 0));
+		
 		SpawnedPlatform->OnAudioPlatformTriggered.AddDynamic(this, &ASetTonic::SetTonic);
 	}
 	
@@ -108,4 +112,9 @@ FLetsGoMusicNotes ASetTonic::GetRandomNote()
 	const int Key = FMath::RandRange(0, (Notes.Num() - 1) );
 
 	return Notes[Key];
+}
+
+int ASetTonic::DivRoundClosest(const int n, const int d)
+{
+	return ((n < 0) == (d < 0)) ? ((n + d/2)/d) : ((n - d/2)/d);
 }

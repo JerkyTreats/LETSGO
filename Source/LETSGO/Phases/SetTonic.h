@@ -33,8 +33,8 @@ class LETSGO_API ASetTonic : public AActor, public IPhaseController
 public:
 	ASetTonic();
 
-	UPROPERTY()
-	float OffsetAmountPerSpawnedPlatform = 40;
+	UPROPERTY(BlueprintReadWrite, Category="LETSGO | Audio Platform Spawner")
+	float OffsetAmountPerSpawnedPlatform = 150.0f;
 
 	UPROPERTY()
 	int NumPlatformsToSpawn = 3;
@@ -89,4 +89,7 @@ public:
 
 	UFUNCTION()
 	static FLetsGoMusicNotes GetRandomNote();
+
+	UFUNCTION()
+	int DivRoundClosest(const int n, const int d);
 };

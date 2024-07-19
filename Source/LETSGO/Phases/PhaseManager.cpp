@@ -20,6 +20,8 @@ void APhaseManager::BeginPlay()
 	SetTonic = GetWorld()->SpawnActor<ASetTonic>(SetTonicClass);
 	Phases.Emplace(SetTonic);
 
+	UE_LOG(LogTemp, Display, TEXT("PhaseManager BeginPlay complete"));
+
 }
 
 void APhaseManager::Initialize()
