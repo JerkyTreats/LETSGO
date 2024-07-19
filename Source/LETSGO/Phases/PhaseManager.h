@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PhaseController.h"
+#include "SetTonic.h"
 #include "UObject/Object.h"
 #include "PhaseManager.generated.h"
 
@@ -12,21 +13,26 @@
  * 
  */
 UCLASS()
-class LETSGO_API UPhaseManager : public UObject, public FTickableGameObject
+class LETSGO_API APhaseManager : public AActor//, public FTickableGameObject
 {
 	GENERATED_BODY()
 
 	// 
 
 public:
-	UPhaseManager();
+	APhaseManager();
 	
 	UPROPERTY()
 	TArray<IPhaseController*> Phases;
-	
+
+	UPROPERTY()
+	ASetTonic* SetTonic;
+
+	UPROPERTY()
 	bool TickEnabled = false;
 	
-
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
+	TSubclassOf<ASetTonic> SetTonicClass;
 
 private:
 	// The last frame number we were ticked.
@@ -35,39 +41,18 @@ private:
 
 	int EmptyListWarnAmount = 0;
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
+	
 public:
 	UFUNCTION()
-	void Initialize(UWorld* World);
+	void Initialize();
 	
 	UFUNCTION()
 	void ProcessPhases();
-
-	
-	// FTickableGameObject Begin
-	void BeginTicking();
-
-	virtual bool IsTickable() const override;
 	
 	virtual void Tick(float DeltaTime) override;
 	
-	virtual ETickableTickType GetTickableTickType() const override
-	{
-		return ETickableTickType::Conditional;
-	}
-	
-	virtual TStatId GetStatId() const override
-	{
-		RETURN_QUICK_DECLARE_CYCLE_STAT(UPhaseManager, STATGROUP_Tickables);
-	}
-	
-	virtual bool IsTickableWhenPaused() const override
-	{
-		return false;
-	}
-	
-	virtual bool IsTickableInEditor() const override
-	{
-		return false;
-	}
-	// FTickableGameObject End
 };

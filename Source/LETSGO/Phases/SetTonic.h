@@ -15,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerCompletedDelegate, T
  * 
  */
 UCLASS()
-class LETSGO_API USetTonic : public UObject, public IPhaseController
+class LETSGO_API ASetTonic : public AActor, public IPhaseController
 {
 	GENERATED_BODY()
 
@@ -31,7 +31,7 @@ class LETSGO_API USetTonic : public UObject, public IPhaseController
 
 
 public:
-	USetTonic();
+	ASetTonic();
 
 	UPROPERTY()
 	float OffsetAmountPerSpawnedPlatform = 40;
@@ -44,6 +44,9 @@ public:
 	
 	UPROPERTY()
 	AAudioPlatformSpawner* Spawner;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
+	TSubclassOf<AAudioPlatformSpawner> AudioPlatformSpawnerClass;
 	
 	UPROPERTY()
 	FPhaseControllerCompletedDelegate OnPhaseComplete;
@@ -51,6 +54,11 @@ public:
 protected:
 	bool Active = false;
 	bool Completed = false;
+
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
+	
 	
 public:
 	// Function to fire when the OnAudioPlatformTriggered Event is received
@@ -61,7 +69,7 @@ public:
 	void SetTonic(FLetsGoMusicNotes Note);
 
 	UFUNCTION()
-	void Initialize(UWorld* World);
+	void Initialize();
 
 	// Interface Methods
 	UFUNCTION()

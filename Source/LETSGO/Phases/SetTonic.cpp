@@ -7,23 +7,31 @@
 #include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
 #include "Logging/StructuredLog.h"
 
-USetTonic::USetTonic(): Spawner(nullptr)
+ASetTonic::ASetTonic(): Spawner()
 {
+	PrimaryActorTick.bCanEverTick = false;
+	
+	Spawner = CreateDefaultSubobject<AAudioPlatformSpawner>(TEXT("Audio Platform Spawner"));
 }
 
-void USetTonic::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote) 
+void ASetTonic::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
+void ASetTonic::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote) 
 {
 	SetTonic(IncomingNote);
 	Deactivate();
 }
 
 
-void USetTonic::Initialize(UWorld* World)
+void ASetTonic::Initialize()
 {
-	Spawner = World->SpawnActor<AAudioPlatformSpawner>();
+	Spawner = GetWorld()->SpawnActor<AAudioPlatformSpawner>(AudioPlatformSpawnerClass);
 }
 
-void USetTonic::Activate()
+void ASetTonic::Activate()
 {
 	FTransform CameraForward = Spawner->GetCameraVectorForward();
 	FVector RootLocation = CameraForward.GetTranslation();
@@ -43,18 +51,18 @@ void USetTonic::Activate()
 		const FLetsGoMusicNotes PlatformNote = GetRandomNote();
 		
 		AAudioPlatform* SpawnedPlatform = Spawner->SpawnPlatform(CameraForward, PlatformNote);
-		SpawnedPlatform->OnAudioPlatformTriggered.AddDynamic(this, &USetTonic::SetTonic);
+		SpawnedPlatform->OnAudioPlatformTriggered.AddDynamic(this, &ASetTonic::SetTonic);
 	}
 	
 	Active = true;
 }
 
-bool USetTonic::IsActivated()
+bool ASetTonic::IsActivated()
 {
 	return Active;
 }
 
-void USetTonic::Deactivate()
+void ASetTonic::Deactivate()
 {
 	OnPhaseComplete.Broadcast(this);
 
@@ -63,25 +71,25 @@ void USetTonic::Deactivate()
 	Active = false;
 }
 
-void USetTonic::Complete()
+void ASetTonic::Complete()
 {
 	Deactivate();
 	Completed = true;
 }
 
-bool USetTonic::IsCompleted()
+bool ASetTonic::IsCompleted()
 {
 	return Completed;
 }
 
-void USetTonic::SetTonic(FLetsGoMusicNotes Note)
+void ASetTonic::SetTonic(FLetsGoMusicNotes Note)
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	GameMode->SetTonic(Note);
 }
 
 // Might could move this to ULetsGoMusicEngine
-FLetsGoMusicNotes USetTonic::GetRandomNote()
+FLetsGoMusicNotes ASetTonic::GetRandomNote()
 {
 	TArray<FLetsGoMusicNotes> Notes = {
 		FLetsGoMusicNotes(C),

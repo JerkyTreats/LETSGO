@@ -6,18 +6,24 @@
 ALetsGoGameMode::ALetsGoGameMode()
 {
 	GameStateClass = ALetsGoGameState::StaticClass();
-	PhaseManager = CreateDefaultSubobject<UPhaseManager>(TEXT("Phase Manager"));
+	PhaseManager = CreateDefaultSubobject<APhaseManager>(TEXT("Phase Manager"));
 }
 
 void ALetsGoGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	PhaseManager->Initialize(GetWorld());
+
+	PhaseManager = GetWorld()->SpawnActor<APhaseManager>(PhaseManagerClass);
 	
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALetsGoGameMode::InitializeGameplay,5.0f,false);
 	UE_LOG(LogTemp, Display, TEXT("Wait 5"));
+}
+
+void ALetsGoGameMode::InitializeGameplay()
+{
+	UE_LOG(LogTemp, Display, TEXT("Initialize Gameplay"));
+	PhaseManager->Initialize();
 }
 
 void ALetsGoGameMode::SetTonic(const FLetsGoMusicNotes Note) const
@@ -33,10 +39,4 @@ UQuartzClockHandle* ALetsGoGameMode::GetMainClock() const
 void ALetsGoGameMode::SetMainClock(UQuartzClockHandle* Clock)
 {
 	GetGameState<ALetsGoGameState>()->MainClock = Clock;
-}
-
-void ALetsGoGameMode::InitializeGameplay()
-{
-	UE_LOG(LogTemp, Display, TEXT("Enabling Tick"));
-	PhaseManager->BeginTicking();
 }

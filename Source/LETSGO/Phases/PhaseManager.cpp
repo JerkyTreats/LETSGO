@@ -5,25 +5,33 @@
 
 #include "SetTonic.h"
 
-UPhaseManager::UPhaseManager()
+APhaseManager::APhaseManager()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	Phases = TArray<IPhaseController*>();
+	SetTonic = CreateDefaultSubobject<ASetTonic>(TEXT("Set Tonic"));
 }
 
-bool UPhaseManager::IsTickable() const
+void APhaseManager::BeginPlay()
 {
-	return TickEnabled;
-}
+	Super::BeginPlay();
 
-void UPhaseManager::Initialize(UWorld* World)
-{
-	USetTonic* SetTonic = NewObject<USetTonic>();
-	SetTonic->Initialize(World);
+	SetTonic = GetWorld()->SpawnActor<ASetTonic>(SetTonicClass);
 	Phases.Emplace(SetTonic);
+
 }
 
-void UPhaseManager::ProcessPhases()
+void APhaseManager::Initialize()
 {
+	SetTonic->Initialize();
+	TickEnabled = true;
+}
+
+void APhaseManager::ProcessPhases()
+{
+
+	
 	if (Phases.Num() == 0)
 	{
 		if (EmptyListWarnAmount < 5)
@@ -60,18 +68,14 @@ void UPhaseManager::ProcessPhases()
 	}
 }
 
-void UPhaseManager::BeginTicking()
+void APhaseManager::Tick(float DeltaTime)
 {
-	TickEnabled = true;
+	Super::Tick(DeltaTime);
+
+	if (TickEnabled)
+	{
+		ProcessPhases();
+	}
 }
 
-void UPhaseManager::Tick(float DeltaTime)
-{
-	if (LastFrameNumberWeTicked == GFrameCounter)
-		return;
-
-	ProcessPhases();
-	
-	LastFrameNumberWeTicked = GFrameCounter;
-}
 

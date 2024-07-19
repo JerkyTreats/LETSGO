@@ -20,15 +20,19 @@ class LETSGO_API ALetsGoGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
+public:
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
+	TSubclassOf<APhaseManager> PhaseManagerClass;
+
+	UPROPERTY()
+	APhaseManager* PhaseManager;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 public:
 	ALetsGoGameMode();
-
-	UPROPERTY()
-	UPhaseManager* PhaseManager;
 	
 	UFUNCTION(BlueprintCallable, Category="LETSGO | Music Theory")
 	void SetTonic(FLetsGoMusicNotes Note) const; 
