@@ -9,6 +9,7 @@
 #include "AAudioPlatform.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FAudioPlatformTriggerDelegate, FLetsGoMusicNotes, Note);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAudioPlatformDestroyDelegate);
 
 /**
  * 
@@ -27,6 +28,9 @@ public:
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatform")
 	FAudioPlatformTriggerDelegate OnAudioPlatformTriggered;
 
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatform")
+	FAudioPlatformDestroyDelegate OnAudioPlatformDestroy;
+	
 	UPROPERTY(EditDefaultsOnly, Blueprintable)
 	AAudioCuePlayer* AudioCuePlayer;
 	
@@ -44,7 +48,5 @@ public:
 
 	UFUNCTION()
 	void DestroyActor();
-	// UFUNCTION(BlueprintCallable)
-	// void SetParticleController()
 
 };

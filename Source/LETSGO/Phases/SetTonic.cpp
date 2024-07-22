@@ -90,6 +90,8 @@ void ASetTonic::SetTonic(FLetsGoMusicNotes Note)
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	GameMode->SetTonic(Note);
+	
+	Complete();
 }
 
 // Might could move this to ULetsGoMusicEngine

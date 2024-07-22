@@ -24,6 +24,7 @@ void AAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
 // WILL NEED TO UPDATE BLUEPRINT SPAWNER TO EXPLICITLY ORDER DESTROY OnAudioPlatformTriggered
 void AAudioPlatform::DestroyActor()
 {
+	OnAudioPlatformDestroy.Broadcast();
 	AudioCuePlayer->InitiateDestroy();
 	Destroy();
 }
