@@ -28,13 +28,17 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	FVector CameraVectorForwardOffsetAmount { 500.0f, 500.0f, 0 };
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "LETSGO | AudioPlatformSpawner")
+	TSubclassOf<AAudioPlatform> AAudioPlatformClass;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | AudioPlatformSpawner")
+	float DestroyDelay = 0.4f;
 
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatformSpawner")
 	FSpawnerNoteTriggeredDelegate OnAudioPlatformTriggered;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "LETSGO | AudioPlatformSpawner")
-	TSubclassOf<AAudioPlatform> BP_AudioPlatform;
-	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -53,9 +57,10 @@ public:
 	AAudioPlatform* SpawnPlatform(const FTransform& SpawnLocation, const FLetsGoMusicNotes Note);
 
 	UFUNCTION()
-	void DestroyActor();
+	void InitiateDestroy();
 	
 	UFUNCTION()
-	void DestroyAllPlatforms();
+	void DestroyActor();
+
 	
 };

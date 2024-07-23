@@ -40,6 +40,8 @@ void AAudioCuePlayer::BeginPlay()
 
 void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 {
+	UE_LOG(LogTemp, Display, TEXT("AudioCuePlayer Recieved OnAudioPLatformTrigger"));
+	
 	USoundCue* ThisSoundCue = GetSoundCue(IncomingNote.Note);
 	AttachedAudioComponent->SetSound(ThisSoundCue);
 
@@ -48,7 +50,7 @@ void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingN
 	const FOnQuartzCommandEventBP EmptyOnQuartzCommandEventBP; 
 	AttachedAudioComponent->PlayQuantized(GetWorld(),Clock, QuartzQuantizationBoundary, EmptyOnQuartzCommandEventBP);
 	
-	DestroyActor();
+	// DestroyActor();
 }
 
 // This is bad but requires a real solution to be figured out and implemented

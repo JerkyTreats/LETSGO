@@ -6,6 +6,7 @@
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
 #include "Logging/StructuredLog.h"
+#include "Math/UnitConversion.h"
 
 ASetTonic::ASetTonic(): Spawner()
 {
@@ -41,13 +42,12 @@ void ASetTonic::Activate()
 	
 
 	const int HalfLength = DivRoundClosest(NumPlatformsToSpawn, 2);
-	
+	const TArray<FLetsGoMusicNotes> PlatformNotes = GetRandomNotes(NumPlatformsToSpawn);
+
 	// Spawn three Audio Platforms 
 	for (int i = 0; i < NumPlatformsToSpawn; i++)
 	{
-		const FLetsGoMusicNotes PlatformNote = GetRandomNote();
-		
-		AAudioPlatform* SpawnedPlatform = Spawner->SpawnPlatform(CameraForward, PlatformNote);
+		AAudioPlatform* SpawnedPlatform = Spawner->SpawnPlatform(CameraForward, PlatformNotes[i]);
 
 		const int SidePosition = i - (NumPlatformsToSpawn / 2);
 		const double YPos = SidePosition * OffsetAmountPerSpawnedPlatform;
@@ -68,16 +68,17 @@ bool ASetTonic::IsActivated()
 
 void ASetTonic::Deactivate()
 {
-	OnPhaseComplete.Broadcast(this);
-
-	Spawner->DestroyActor();
+	Spawner->InitiateDestroy();
 
 	Active = false;
 }
 
 void ASetTonic::Complete()
 {
+	OnPhaseComplete.Broadcast(this);
+
 	Deactivate();
+	
 	Completed = true;
 }
 
@@ -95,8 +96,9 @@ void ASetTonic::SetTonic(FLetsGoMusicNotes Note)
 }
 
 // Might could move this to ULetsGoMusicEngine
-FLetsGoMusicNotes ASetTonic::GetRandomNote()
+TArray<FLetsGoMusicNotes> ASetTonic::GetRandomNotes(int NumberOfNotes)
 {
+	TArray<FLetsGoMusicNotes> ToReturn = TArray<FLetsGoMusicNotes>();
 	TArray<FLetsGoMusicNotes> Notes = {
 		FLetsGoMusicNotes(C),
 		FLetsGoMusicNotes(CSharp),
@@ -111,9 +113,20 @@ FLetsGoMusicNotes ASetTonic::GetRandomNote()
 		FLetsGoMusicNotes(B)
 	};
 
-	const int Key = FMath::RandRange(0, (Notes.Num() - 1) );
+	if (NumberOfNotes > Notes.Num())
+	{
+		UE_LOG(LogTemp, Error, TEXT("GetRandomNotes called with NumberOfNotes > Number of posssible notes. Resizing to max"));
+		NumberOfNotes = Notes.Num();
+	}
 
-	return Notes[Key];
+	for (int i = 0; i < NumberOfNotes; i++)
+	{
+		const int Key = FMath::RandRange(0, (Notes.Num() - 1) );
+		ToReturn.Add(Notes[Key]);
+		Notes.RemoveAt(Key);	
+	}
+	
+	return ToReturn;
 }
 
 int ASetTonic::DivRoundClosest(const int n, const int d)

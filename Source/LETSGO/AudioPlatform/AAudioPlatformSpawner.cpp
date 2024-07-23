@@ -55,29 +55,31 @@ FTransform AAudioPlatformSpawner::GetCameraVectorForward() const
 
 AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLocation, const FLetsGoMusicNotes Note)
 {
-	const FVector Location = SpawnLocation.GetTranslation();
-	const FRotator Rotation = SpawnLocation.Rotator();
-	const FActorSpawnParameters SpawnInfo;
 	
-	AAudioPlatform* SpawnedPlatform = GetWorld()->SpawnActor<AAudioPlatform>(BP_AudioPlatform, Location, Rotation, SpawnInfo);
+	AAudioPlatform* SpawnedPlatform = GetWorld()->SpawnActorDeferred<AAudioPlatform>(AAudioPlatformClass, SpawnLocation);
+	SpawnedPlatform->Note = Note;
+	SpawnedPlatform->FinishSpawning(SpawnLocation);
 
 	SpawnedPlatforms.Add(SpawnedPlatform);
-	SpawnedPlatform->Note = Note;
 
 	return SpawnedPlatform;
 }
 
-void AAudioPlatformSpawner::DestroyActor()
+void AAudioPlatformSpawner::InitiateDestroy()
 {
-	DestroyAllPlatforms();
-	Destroy();
+	FTimerHandle TimerHandle;
+
+	// Controlled Destroy of Platform Spawner after set time
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AAudioPlatformSpawner::DestroyActor, DestroyDelay, false);
 }
 
-void AAudioPlatformSpawner::DestroyAllPlatforms()
+
+void AAudioPlatformSpawner::DestroyActor()
 {
 	for (int i = 0; i < SpawnedPlatforms.Num(); i++)
 	{
 		SpawnedPlatforms[i]->DestroyActor();
 	}
+	Destroy();
 }
 

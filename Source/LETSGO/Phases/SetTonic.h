@@ -33,9 +33,6 @@ class LETSGO_API ASetTonic : public AActor, public IPhaseController
 public:
 	ASetTonic();
 
-	UPROPERTY(BlueprintReadWrite, Category="LETSGO | Audio Platform Spawner")
-	float OffsetAmountPerSpawnedPlatform = 150.0f;
-
 	UPROPERTY()
 	int NumPlatformsToSpawn = 3;
 	
@@ -44,13 +41,16 @@ public:
 	
 	UPROPERTY()
 	AAudioPlatformSpawner* Spawner;
+	
+	UPROPERTY(BlueprintReadWrite, Category="LETSGO | Audio Platform Spawner")
+	float OffsetAmountPerSpawnedPlatform = 150.0f;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
 	TSubclassOf<AAudioPlatformSpawner> AudioPlatformSpawnerClass;
-	
+
 	UPROPERTY()
 	FPhaseControllerCompletedDelegate OnPhaseComplete;
-	
+
 protected:
 	bool Active = false;
 	bool Completed = false;
@@ -88,7 +88,7 @@ public:
 	virtual bool IsCompleted() override;
 
 	UFUNCTION()
-	static FLetsGoMusicNotes GetRandomNote();
+	static TArray<FLetsGoMusicNotes> GetRandomNotes(int NumberOfNotes);
 
 	UFUNCTION()
 	int DivRoundClosest(const int n, const int d);
