@@ -4,16 +4,55 @@
 
 #include "CoreMinimal.h"
 #include "PhaseController.h"
+#include "SetTonic.h"
 #include "UObject/Object.h"
 #include "PhaseManager.generated.h"
+
 
 /**
  * 
  */
 UCLASS()
-class LETSGO_API UPhaseManager : public UObject
+class LETSGO_API APhaseManager : public AActor//, public FTickableGameObject
 {
 	GENERATED_BODY()
 
-	// TArray<IPhaseController> Phases;
+	// 
+
+public:
+	APhaseManager();
+	
+	UPROPERTY()
+	TArray<IPhaseController*> Phases;
+
+	UPROPERTY()
+	ASetTonic* SetTonic;
+
+	UPROPERTY()
+	bool TickEnabled = false;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
+	TSubclassOf<ASetTonic> SetTonicClass;
+
+private:
+	// The last frame number we were ticked.
+	// We don't want to tick multiple times per frame 
+	uint32 LastFrameNumberWeTicked = INDEX_NONE;
+
+	int EmptyListWarnAmount = 0;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
+	
+public:
+	UFUNCTION()
+	void Initialize();
+	
+	UFUNCTION()
+	void ProcessPhases();
+	
+	virtual void Tick(float DeltaTime) override;
+	
 };
