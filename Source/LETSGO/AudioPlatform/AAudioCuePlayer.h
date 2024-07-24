@@ -10,7 +10,6 @@
 #include "AAudioCuePlayer.generated.h"
 
 
-// See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
 UCLASS(Blueprintable, ClassGroup=(LETSGO), meta=(BlueprintSpawnableComponent))
 class LETSGO_API AAudioCuePlayer : public AActor
 {
