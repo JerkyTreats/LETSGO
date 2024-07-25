@@ -4,20 +4,25 @@
 #include "PhaseManager.h"
 
 #include "SetTonic.h"
+#include "LETSGO/MusicEngine/StartClock.h"
 
 APhaseManager::APhaseManager()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
 	Phases = TArray<IPhaseController*>();
-	SetTonic = CreateDefaultSubobject<ASetTonic>(TEXT("Set Tonic"));
 }
 
 void APhaseManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SetTonic = GetWorld()->SpawnActor<ASetTonic>(SetTonicClass);
+	AStartClock* StartClock = GetWorld()->SpawnActor<AStartClock>();
+	StartClock->Initialize();
+	Phases.Emplace(StartClock);
+	
+	ASetTonic* SetTonic = GetWorld()->SpawnActor<ASetTonic>(SetTonicClass);
+	SetTonic->Initialize();
 	Phases.Emplace(SetTonic);
 
 	UE_LOG(LogTemp, Display, TEXT("PhaseManager BeginPlay complete"));
@@ -26,7 +31,6 @@ void APhaseManager::BeginPlay()
 
 void APhaseManager::Initialize()
 {
-	SetTonic->Initialize();
 	TickEnabled = true;
 }
 
@@ -54,7 +58,9 @@ void APhaseManager::ProcessPhases()
 
 	if (Phases[0]->IsCompleted())
 	{
+		IPhaseController* Completed = Phases[0];
 		Phases.RemoveAt(0);
+		Completed->InitiateDestroy();
 	}
 
 	if (Phases.Num() == 0)

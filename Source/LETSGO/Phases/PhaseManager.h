@@ -24,10 +24,7 @@ public:
 	
 	UPROPERTY()
 	TArray<IPhaseController*> Phases;
-
-	UPROPERTY()
-	ASetTonic* SetTonic;
-
+	
 	UPROPERTY()
 	bool TickEnabled = false;
 	

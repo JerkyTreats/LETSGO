@@ -9,8 +9,6 @@
 #include "UObject/Object.h"
 #include "SetTonic.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FPhaseControllerCompletedDelegate, TScriptInterface<IPhaseController>, PhaseController);
-
 /**
  * 
  */
@@ -47,9 +45,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
 	TSubclassOf<AAudioPlatformSpawner> AudioPlatformSpawnerClass;
-
-	UPROPERTY()
-	FPhaseControllerCompletedDelegate OnPhaseComplete;
 
 protected:
 	bool Active = false;
@@ -88,8 +83,13 @@ public:
 	virtual bool IsCompleted() override;
 
 	UFUNCTION()
+	virtual void InitiateDestroy() override;
+
+	UFUNCTION()
 	static TArray<FLetsGoMusicNotes> GetRandomNotes(int NumberOfNotes);
 
 	UFUNCTION()
 	int DivRoundClosest(const int n, const int d);
+
+
 };

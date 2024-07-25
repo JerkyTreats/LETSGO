@@ -29,4 +29,6 @@ public:
 	
 	virtual void Complete() = 0;
 	virtual bool IsCompleted() = 0;
+
+	virtual void InitiateDestroy() = 0;
 };

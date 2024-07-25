@@ -75,8 +75,6 @@ void ASetTonic::Deactivate()
 
 void ASetTonic::Complete()
 {
-	OnPhaseComplete.Broadcast(this);
-
 	Deactivate();
 	
 	Completed = true;
@@ -132,4 +130,9 @@ TArray<FLetsGoMusicNotes> ASetTonic::GetRandomNotes(int NumberOfNotes)
 int ASetTonic::DivRoundClosest(const int n, const int d)
 {
 	return ((n < 0) == (d < 0)) ? ((n + d/2)/d) : ((n - d/2)/d);
+}
+
+void ASetTonic::InitiateDestroy()
+{
+	Destroy();
 }
