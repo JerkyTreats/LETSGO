@@ -1,26 +1,26 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Clock.h"
+#include "StartClock.h"
 
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 
 // Sets default values
-AClock::AClock()
+AStartClock::AStartClock(): Clock(nullptr)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 }
 
 // Called when the game starts or when spawned
-void AClock::BeginPlay()
+void AStartClock::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
-void AClock::Initialize()
+void AStartClock::Initialize()
 {
 	/** Gets a reference from the Quartz subsystem from the world. */
 	UQuartzSubsystem* Quartz = GetWorld()->GetSubsystem<UQuartzSubsystem>();
@@ -38,37 +38,44 @@ void AClock::Initialize()
 	GameMode->SetMainClock(Clock);
 }
 
-void AClock::Activate()
+void AStartClock::Activate()
 {
-	Clock->StartClock(GetWorld(), Clock);
 	IsActive = true;
+	
+	Clock->StartClock(GetWorld(), Clock);
+	Complete();
 }
 
-bool AClock::IsActivated()
+bool AStartClock::IsActivated()
 {
 	return IsActive;
 }
 
-void AClock::Deactivate()
+void AStartClock::Deactivate()
 {
-	// Note CancelPendingEvents is false here, unsure of consequences
-	Clock ->StopClock(GetWorld(), false,Clock);
 	IsActive = false;
 }
 
 // Not expecting this phase to end?
-void AClock::Complete()
+void AStartClock::Complete()
 {
+	IsComplete = true;
+	Deactivate();
 }
 
 // Not expecting this phase to end?
-bool AClock::IsCompleted()
+bool AStartClock::IsCompleted()
 {
-	return false;
+	return IsComplete;
+}
+
+void AStartClock::InitiateDestroy()
+{
+	Destroy();
 }
 
 // Called every frame
-void AClock::Tick(float DeltaTime)
+void AStartClock::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }

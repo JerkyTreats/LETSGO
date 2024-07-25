@@ -6,17 +6,17 @@
 #include "GameFramework/Actor.h"
 #include "LETSGO/Phases/PhaseController.h"
 #include "Quartz/AudioMixerClockHandle.h"
-#include "Clock.generated.h"
+#include "StartClock.generated.h"
 
 // See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
 UCLASS()
-class LETSGO_API AClock : public AActor, public IPhaseController
+class LETSGO_API AStartClock : public AActor, public IPhaseController
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AClock();
+	AStartClock();
 
 	UPROPERTY(BlueprintReadWrite)
 	UQuartzClockHandle* Clock;
@@ -34,6 +34,9 @@ public:
 
 	UPROPERTY()
 	bool IsActive = false;
+
+	UPROPERTY()
+	bool IsComplete = false;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,4 +56,6 @@ public:
 	
 	virtual void Complete() override;
 	virtual bool IsCompleted() override;
+
+	virtual void InitiateDestroy() override;
 };
