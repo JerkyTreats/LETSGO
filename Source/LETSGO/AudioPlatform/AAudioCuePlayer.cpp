@@ -18,11 +18,11 @@ AAudioCuePlayer::AAudioCuePlayer()
 	 *  Audio component needed in order to play the sound quantized
 	 */
 	AttachedAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Attached Audio Component"));
+	SetRootComponent(AttachedAudioComponent);
+
 	AttachedAudioComponent->SetAutoActivate(false); // Don't play immediately
 	AttachedAudioComponent->bAllowSpatialization = false; // Don't play in world
-
 }
-
 
 // Called when the game starts
 void AAudioCuePlayer::BeginPlay()
@@ -35,7 +35,6 @@ void AAudioCuePlayer::BeginPlay()
 	// Get Main Clock
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	Clock = GameMode->GetMainClock();
-	
 }
 
 void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
@@ -49,8 +48,6 @@ void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingN
 	
 	const FOnQuartzCommandEventBP EmptyOnQuartzCommandEventBP; 
 	AttachedAudioComponent->PlayQuantized(GetWorld(),Clock, QuartzQuantizationBoundary, EmptyOnQuartzCommandEventBP);
-	
-	// DestroyActor();
 }
 
 // This is bad but requires a real solution to be figured out and implemented
