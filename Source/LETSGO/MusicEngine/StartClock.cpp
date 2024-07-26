@@ -28,9 +28,7 @@ void AStartClock::Initialize()
 	FQuartzClockSettings ClockSettings;
 	ClockSettings.TimeSignature = TimeSignature;
 
-	/** Creates a new clock the previous setting structures. */
 	Clock = Quartz->CreateNewClock(this, ClockName, ClockSettings, true);
-	/** Sets the tempo for the clock. */
 	Clock->SetBeatsPerMinute(this, FQuartzQuantizationBoundary(), FOnQuartzCommandEventBP(), Clock, BeatsPerMinute);
 
 	// Send Clock to GameMode state object

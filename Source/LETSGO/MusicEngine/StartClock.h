@@ -21,15 +21,15 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UQuartzClockHandle* Clock;
 
-	UPROPERTY(BlueprintReadWrite)
-	FName ClockName;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	FName ClockName = "MainClock";
 
 	// Defaults to quarter note, this is public so should be able to override as necessary
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	FQuartzTimeSignature TimeSignature = {};
 
 	// 120 is Ableton's default so why not here?
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	float BeatsPerMinute = 120.0f;
 
 	UPROPERTY()
