@@ -4,7 +4,7 @@
 #include "PhaseManager.h"
 
 #include "SetTonic.h"
-#include "LETSGO/MusicEngine/StartClock.h"
+#include "LETSGO/Phases/StartClock.h"
 
 APhaseManager::APhaseManager()
 {
