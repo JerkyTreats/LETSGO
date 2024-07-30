@@ -40,7 +40,7 @@ public:
 
 	/** Used to bind the FPlayQuantizedDelegate in the class constructor. */
 	FOnQuartzCommandEventBP PlayQuantizationDelegate;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
 	FName ClockName = "DrumsClock";
 
@@ -62,4 +62,12 @@ public:
 	*/
 	UFUNCTION()
 	void FPlayQuantizedDelegate(EQuartzCommandDelegateSubType EventType, FName Name);
+	
+
+	UFUNCTION()
+	void StartPlaying();
+
+	UFUNCTION()
+	void StopPlaying();
+
 };

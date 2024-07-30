@@ -37,20 +37,29 @@ void ADrums::BeginPlay()
 	Clock = Quartz->CreateNewClock(this, ClockName, ClockSettings, true);
 	/** Sets the tempo for the clock. */
 	Clock->SetBeatsPerMinute(this, FQuartzQuantizationBoundary(), FOnQuartzCommandEventBP(), Clock, BPM);
-
-	/** Defines settings for the FQuartzQuantizationBoundary structure. */
-	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
-	QuartzQuantizationBoundary.Quantization = EQuartzCommandQuantization::Bar;
-	QuartzQuantizationBoundary.Multiplier = 1.0f;
-	QuartzQuantizationBoundary.CountingReferencePoint = EQuarztQuantizationReference::BarRelative;
-	QuartzQuantizationBoundary.bResetClockOnQueued = true;
-
-	/** Plays the music cue from the audio component after the audio is "Queued" and loaded. Starts the clock. */
-	InstrumentAudioComponent->PlayQuantized(this, Clock, QuartzQuantizationBoundary, PlayQuantizationDelegate);
 }
 
 // Called every frame
 void ADrums::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ADrums::FPlayQuantizedDelegate(EQuartzCommandDelegateSubType EventType, FName Name)
+{
+}
+
+/*void ADrums::FPlayQuantizedDelegate(EQuartzCommandDelegateSubType EventType, FName Name)
+{
+}*/
+
+void ADrums::StartPlaying()
+{
+	/** Plays the music cue from the audio component after the audio is "Queued" and loaded. Starts the clock. */
+	InstrumentAudioComponent->PlayQuantized(this, Clock, QuartzQuantizationBoundary, PlayQuantizationDelegate);
+}
+
+void ADrums::StopPlaying()
+{
+	InstrumentAudioComponent->Stop();
 }

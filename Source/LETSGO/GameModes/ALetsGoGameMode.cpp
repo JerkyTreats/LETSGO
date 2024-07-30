@@ -31,6 +31,11 @@ void ALetsGoGameMode::SetTonic(const FLetsGoMusicNotes Note) const
 	GetGameState<ALetsGoGameState>()->Tonic = Note;
 }
 
+FLetsGoMusicNotes ALetsGoGameMode::GetTonic() const
+{
+	return GetGameState<ALetsGoGameState>()->Tonic;
+}
+
 UQuartzClockHandle* ALetsGoGameMode::GetMainClock() const
 {
 	return GetGameState<ALetsGoGameState>()->MainClock;
@@ -39,4 +44,14 @@ UQuartzClockHandle* ALetsGoGameMode::GetMainClock() const
 void ALetsGoGameMode::SetMainClock(UQuartzClockHandle* Clock)
 {
 	GetGameState<ALetsGoGameState>()->MainClock = Clock;
+}
+
+void ALetsGoGameMode::SetInstrumentRack(UInstrumentRack* Rack)
+{
+	GetGameState<ALetsGoGameState>()->InstrumentRack = Rack;
+}
+
+UInstrumentRack* ALetsGoGameMode::GetInstrumentRack()
+{
+	return GetGameState<ALetsGoGameState>()->InstrumentRack;
 }

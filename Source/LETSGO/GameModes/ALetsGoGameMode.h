@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "LETSGO/Instruments/InstrumentRack.h"
 #include "LETSGO/Phases/PhaseManager.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "ALetsGoGameMode.generated.h"
@@ -26,22 +27,35 @@ public:
 
 	UPROPERTY()
 	APhaseManager* PhaseManager;
-	
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
 public:
 	ALetsGoGameMode();
-	
-	UFUNCTION(BlueprintCallable, Category="LETSGO | Music Theory")
-	void SetTonic(FLetsGoMusicNotes Note) const; 
 
-	UFUNCTION(BlueprintPure, Category="LETSGO | Clock")
+	// Tonic
+	UFUNCTION(BlueprintCallable, Category="LETSGO")
+	void SetTonic(FLetsGoMusicNotes Note) const;
+
+	UFUNCTION(BlueprintCallable, Category="LETSGO")
+	FLetsGoMusicNotes GetTonic() const; 
+	
+
+	// Clock
+	UFUNCTION(BlueprintPure, Category="LETSGO")
 	UQuartzClockHandle* GetMainClock() const;
 	
-	UFUNCTION(BlueprintCallable, Category="LETSGO | Clock")
+	UFUNCTION(BlueprintCallable, Category="LETSGO")
 	virtual void SetMainClock(UQuartzClockHandle* Clock);
+
+	// Instrument Rack
+	UFUNCTION()
+	void SetInstrumentRack(UInstrumentRack* Rack);
+
+	UFUNCTION()
+	UInstrumentRack* GetInstrumentRack();
 
 	UFUNCTION()
 	void InitializeGameplay();
