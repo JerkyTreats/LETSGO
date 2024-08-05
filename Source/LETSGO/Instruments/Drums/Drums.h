@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AudioCuePlayerPool.h"
+#include "DrumsAudioCuePlayer.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "MetasoundSource.h"
@@ -28,25 +30,26 @@ public:
 	UMetaSoundSource* InstrumentMetaSoundSource;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
-	EQuartzCommandQuantization InQuantizationBoundary = EQuartzCommandQuantization::EighthNote;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
 	FQuartzQuantizationBoundary QuartzQuantizationBoundary = {
-		InQuantizationBoundary,
+		EQuartzCommandQuantization::Bar,
 		1.0f,
 		EQuarztQuantizationReference::BarRelative,
 		true
 	};
-
-	/** Used to bind the FPlayQuantizedDelegate in the class constructor. */
-	FOnQuartzCommandEventBP PlayQuantizationDelegate;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
 	FName ClockName = "DrumsClock";
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
 	float BPM = 120.0f;
-	
+
+	UPROPERTY()
+	FOnQuartzMetronomeEventBP PlayQuantizationDelegate;
+
+	/*
+	UPROPERTY()
+	UAudioCuePlayerPool* AudioCuePlayerPool;
+	*/
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -54,20 +57,16 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
-	/**
-	* @brief Function delegate. Triggers its functionality synced with the clock.
-	* @param EventType Use a switch on this enumeration to select "CommandOnQueued". 
-	* @param Name 
-	*/
-	UFUNCTION()
-	void FPlayQuantizedDelegate(EQuartzCommandDelegateSubType EventType, FName Name);
-	
 
+
+	
 	UFUNCTION()
 	void StartPlaying();
 
 	UFUNCTION()
 	void StopPlaying();
 
+	UFUNCTION()
+	void OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
+	
 };

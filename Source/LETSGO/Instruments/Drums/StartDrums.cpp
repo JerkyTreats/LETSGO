@@ -20,7 +20,6 @@ void AStartDrums::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Drums = GetWorld()->SpawnActor<ADrums>();
 }
 
 // Called every frame
@@ -31,6 +30,8 @@ void AStartDrums::Tick(float DeltaTime)
 
 void AStartDrums::Initialize()
 {
+	Drums = GetWorld()->SpawnActor<ADrums>(ADrumsClass);
+	
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	InstrumentRack = GameMode->GetInstrumentRack();
 	InstrumentRack->AddInstrument(Drums);

@@ -30,6 +30,9 @@ public:
 	UPROPERTY()
 	UInstrumentRack* InstrumentRack;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<ADrums> ADrumsClass;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

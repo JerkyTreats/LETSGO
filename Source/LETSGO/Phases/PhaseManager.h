@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "PhaseController.h"
 #include "SetTonic.h"
+#include "LETSGO/Instruments/Drums/StartDrums.h"
 #include "UObject/Object.h"
 #include "PhaseManager.generated.h"
 
@@ -28,8 +29,12 @@ public:
 	UPROPERTY()
 	bool TickEnabled = false;
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<ASetTonic> SetTonicClass;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AStartDrums> SetDrumsClass;
+	
 
 private:
 	// The last frame number we were ticked.

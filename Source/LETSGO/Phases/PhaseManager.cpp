@@ -27,7 +27,7 @@ void APhaseManager::BeginPlay()
 	StartClock->Initialize();
 	Phases.Emplace(StartClock);
 
-	AStartDrums* StartDrums = GetWorld()->SpawnActor<AStartDrums>();
+	AStartDrums* StartDrums = GetWorld()->SpawnActor<AStartDrums>(SetDrumsClass);
 	StartDrums->Initialize();
 	Phases.Emplace(StartDrums);
 	
