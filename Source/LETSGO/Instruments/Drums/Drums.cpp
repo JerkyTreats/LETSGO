@@ -16,10 +16,6 @@ ADrums::ADrums(): Clock(nullptr)
 
 	InstrumentMetaSoundSource = CreateDefaultSubobject<UMetaSoundSource>(TEXT("Meta Sound Source"));
 	
-	InstrumentAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Audio Component"));
-	InstrumentAudioComponent->SetAutoActivate(false);
-	SetRootComponent(InstrumentAudioComponent);
-
 	PlayQuantizationDelegate.BindUFunction(this, "OnQuantizationBoundaryTriggered");
 }
 
@@ -28,8 +24,6 @@ void ADrums::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InstrumentAudioComponent->SetSound(InstrumentMetaSoundSource);
-	
 	/** Gets a reference from the Quartz subsystem from the world. */
 	UQuartzSubsystem* Quartz = GetWorld()->GetSubsystem<UQuartzSubsystem>();
 
@@ -52,18 +46,14 @@ void ADrums::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-
-
 void ADrums::StartPlaying()
 {
 	Clock->StartClock(GetWorld(), Clock);
 	Clock->SubscribeToQuantizationEvent(GetWorld(), QuartzQuantizationBoundary.Quantization, PlayQuantizationDelegate, Clock);
-	
 }
 
 void ADrums::StopPlaying()
 {
-	InstrumentAudioComponent->Stop();
 	Clock->UnsubscribeFromAllTimeDivisions(GetWorld(), Clock);
 	Clock->StopClock(GetWorld(), true, Clock);
 }
@@ -71,7 +61,6 @@ void ADrums::StopPlaying()
 void ADrums::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
 	int32 NumBars, int32 Beat, float BeatFraction)
 {
-	
 	// AudioComponent.PlayQuantized() takes in a Quant Boundary, allowing you to schedule sound relative to the current Boundary
 	// ie. If OnQuantTriggered fired per bar, this boundary can schedule something for next bar
 	// We want to play right now

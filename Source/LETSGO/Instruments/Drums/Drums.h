@@ -21,9 +21,6 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
 	UQuartzClockHandle* Clock;
 
-	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
-	UAudioComponent* InstrumentAudioComponent;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
 	UMetaSoundSource* InstrumentMetaSoundSource;
 
@@ -41,13 +38,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
 	float BPM = 120.0f;
 
+	/**
+	 * Quantization Metronome Event Delegate
+	 * This is bound to OnQuantizationBoundaryTriggered in ctor
+	 */
 	UPROPERTY()
 	FOnQuartzMetronomeEventBP PlayQuantizationDelegate;
 
-	/*
-	UPROPERTY()
-	UAudioCuePlayerPool* AudioCuePlayerPool;
-	*/
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -55,8 +52,6 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-
 	
 	UFUNCTION()
 	void StartPlaying();
