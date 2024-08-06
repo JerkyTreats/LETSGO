@@ -8,7 +8,7 @@ public class LETSGO : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AudioMixer", "Niagara" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AudioMixer", "Niagara", "MetasoundEngine" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

@@ -23,19 +23,19 @@ public:
 	UPROPERTY(Blueprintable)
 	TArray<AAudioPlatform*> SpawnedPlatforms;
 
-	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true), Category = "LETSGO")
 	UNoteContainer* NoteContainer;
 
-	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true), Category = "LETSGO")
 	FVector CameraVectorForwardOffsetAmount { 500.0f, 500.0f, 0 };
 	
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "LETSGO | AudioPlatformSpawner")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "LETSGO")
 	TSubclassOf<AAudioPlatform> AAudioPlatformClass;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | AudioPlatformSpawner")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	float DestroyDelay = 0.4f;
 
-	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatformSpawner")
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO")
 	FSpawnerNoteTriggeredDelegate OnAudioPlatformTriggered;
 
 

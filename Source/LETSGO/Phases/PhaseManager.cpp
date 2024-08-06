@@ -4,6 +4,8 @@
 #include "PhaseManager.h"
 
 #include "SetTonic.h"
+#include "LETSGO/GameModes/ALetsGoGameMode.h"
+#include "LETSGO/Instruments/Drums/StartDrums.h"
 #include "LETSGO/Phases/StartClock.h"
 
 APhaseManager::APhaseManager()
@@ -17,9 +19,17 @@ void APhaseManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UInstrumentRack* InstrumentRack = NewObject<UInstrumentRack>();
+	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->SetInstrumentRack(InstrumentRack);
+	
 	AStartClock* StartClock = GetWorld()->SpawnActor<AStartClock>();
 	StartClock->Initialize();
 	Phases.Emplace(StartClock);
+
+	AStartDrums* StartDrums = GetWorld()->SpawnActor<AStartDrums>(SetDrumsClass);
+	StartDrums->Initialize();
+	Phases.Emplace(StartDrums);
 	
 	ASetTonic* SetTonic = GetWorld()->SpawnActor<ASetTonic>(SetTonicClass);
 	SetTonic->Initialize();
