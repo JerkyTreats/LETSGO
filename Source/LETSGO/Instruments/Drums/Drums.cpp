@@ -42,21 +42,6 @@ void ADrums::BeginPlay()
 	Clock = Quartz->CreateNewClock(this, ClockName, ClockSettings, true);
 	/** Sets the tempo for the clock. */
 	Clock->SetBeatsPerMinute(this, QuartzQuantizationBoundary, FOnQuartzCommandEventBP(), Clock, BPM);
-
-
-	/*
-
-	ADrumsAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<ADrumsAudioCuePlayer>();
-	AudioCuePlayer->Initialize(InstrumentMetaSoundSource, Clock,QuartzQuantizationBoundary);
-	FActorSpawnParameters Parameters;
-	Parameters.Template = AudioCuePlayer;
-
-	AudioCuePlayerPool = NewObject<UAudioCuePlayerPool>();
-	//AudioCuePlayerPool->InitializeCuePool(InstrumentMetaSoundSource, Clock, QuartzQuantizationBoundary);
-	AudioCuePlayerPool->Initialize(AudioCuePlayer, Parameters, GetWorld());
-
-	*/
-
 	
 	UE_LOG(LogTemp, Display, TEXT("Drums BeginPlay Complete"))
 }
@@ -73,6 +58,7 @@ void ADrums::StartPlaying()
 {
 	Clock->StartClock(GetWorld(), Clock);
 	Clock->SubscribeToQuantizationEvent(GetWorld(), QuartzQuantizationBoundary.Quantization, PlayQuantizationDelegate, Clock);
+	
 }
 
 void ADrums::StopPlaying()
@@ -85,24 +71,22 @@ void ADrums::StopPlaying()
 void ADrums::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
 	int32 NumBars, int32 Beat, float BeatFraction)
 {
-	const FOnQuartzCommandEventBP EmptyDelegate;
-
-	/* This approach will have Kick Drum cut off previous kicks if BPM too fast  */
-	// InstrumentAudioComponent->Activate();
-	// InstrumentAudioComponent->PlayQuantized(this, Clock, QuartzQuantizationBoundary, EmptyDelegate);
-
-	/* This approach is triggering 4~ kick sounds at the same time  */
-	UAudioComponent* AudioComponent = NewObject<UAudioComponent>(this);
-	AudioComponent->SetSound(InstrumentMetaSoundSource);
-	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
-
-	/* This approach is creating and playing 4~ Drum Kick audio player actors at the same time  */
-	// ADrumsAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<ADrumsAudioCuePlayer>();
-	// AudioCuePlayer->Initialize(InstrumentMetaSoundSource, Clock,QuartzQuantizationBoundary);
-	// AudioCuePlayer->PlayAndDestroy();
-
-
 	
-	// AudioCuePlayerPool->PlayFreeAudioCue();
+	// AudioComponent.PlayQuantized() takes in a Quant Boundary, allowing you to schedule sound relative to the current Boundary
+	// ie. If OnQuantTriggered fired per bar, this boundary can schedule something for next bar
+	// We want to play right now
+	const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
+		EQuartzCommandQuantization::None,
+		1.0f,
+		EQuarztQuantizationReference::BarRelative,
+		true
+	};
+
+	// Play the kick drum sound
+	// This creates an Actor wrapper around a new AudioComponent we want to play on this beat
+	// This is so we can destroy the Actor after use
+	ADrumsAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<ADrumsAudioCuePlayer>();
+	AudioCuePlayer->Initialize(InstrumentMetaSoundSource, Clock,RelativeQuartzBoundary);
+	AudioCuePlayer->PlayAndDestroy();
 	
 }

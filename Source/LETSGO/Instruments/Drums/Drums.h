@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AudioCuePlayerPool.h"
-#include "DrumsAudioCuePlayer.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "MetasoundSource.h"
@@ -66,6 +64,16 @@ public:
 	UFUNCTION()
 	void StopPlaying();
 
+	/**
+	 * Function intended to trigger on Clock Quantization Subscription event
+	 * ie. Fire this function on every Beat
+	 * The params are not necessarily used, are defined from the Clock Quantization event delegate
+	 * @param DrumClockName Clock name for this instrument
+	 * @param QuantizationType Bar, beat, half step, etc
+	 * @param NumBars ?
+	 * @param Beat ?
+	 * @param BeatFraction ? 
+	 */
 	UFUNCTION()
 	void OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
 	
