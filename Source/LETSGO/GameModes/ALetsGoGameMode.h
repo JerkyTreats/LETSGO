@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "LETSGO/Instruments/InstrumentRack.h"
+#include "LETSGO/MusicEngine/ClockSettings.h"
 #include "LETSGO/Phases/PhaseManager.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "ALetsGoGameMode.generated.h"
@@ -45,10 +46,10 @@ public:
 
 	// Clock
 	UFUNCTION(BlueprintPure, Category="LETSGO")
-	UQuartzClockHandle* GetMainClock() const;
+	AClockSettings* GetClockSettings() const;
 	
 	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	virtual void SetMainClock(UQuartzClockHandle* Clock);
+	virtual void SetClockSettings(AClockSettings* Clock);
 
 	// Instrument Rack
 	UFUNCTION()

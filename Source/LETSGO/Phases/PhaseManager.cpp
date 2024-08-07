@@ -23,7 +23,7 @@ void APhaseManager::BeginPlay()
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	GameMode->SetInstrumentRack(InstrumentRack);
 	
-	AStartClock* StartClock = GetWorld()->SpawnActor<AStartClock>();
+	AStartClock* StartClock = GetWorld()->SpawnActor<AStartClock>(StartClockClass);
 	StartClock->Initialize();
 	Phases.Emplace(StartClock);
 

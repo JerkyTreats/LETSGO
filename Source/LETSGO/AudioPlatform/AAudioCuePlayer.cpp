@@ -31,10 +31,17 @@ void AAudioCuePlayer::BeginPlay()
 
 	// Bind the On Platform Triggered Event to a local function
 	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &AAudioCuePlayer::OnAudioPlatformTriggered);
+
+	// Build Clock Name
+	FString Name = GetName();
+	Name = Name.Append("_Clock");
 	
 	// Get Main Clock
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	Clock = GameMode->GetMainClock();
+	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
+
+	Clock = ClockSettings->GetNewClock(FName(Name));
+	Clock->StartClock(GetWorld(), Clock);
 }
 
 void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)

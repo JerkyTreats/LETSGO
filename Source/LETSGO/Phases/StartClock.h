@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "LETSGO/MusicEngine/ClockSettings.h"
 #include "LETSGO/Phases/PhaseController.h"
-#include "Quartz/AudioMixerClockHandle.h"
 #include "StartClock.generated.h"
 
 // See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
@@ -18,25 +18,14 @@ public:
 	// Sets default values for this actor's properties
 	AStartClock();
 
-	UPROPERTY(BlueprintReadWrite)
-	UQuartzClockHandle* Clock;
-
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	FName ClockName = "MainClock";
-
-	// Defaults to quarter note, this is public so should be able to override as necessary
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	FQuartzTimeSignature TimeSignature = {};
-
-	// 120 is Ableton's default so why not here?
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	float BeatsPerMinute = 120.0f;
-
 	UPROPERTY()
 	bool IsActive = false;
 
 	UPROPERTY()
 	bool IsComplete = false;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AClockSettings> ClockSettingsClass;
 
 protected:
 	// Called when the game starts or when spawned

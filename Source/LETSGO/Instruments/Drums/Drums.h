@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "MetasoundSource.h"
+#include "LETSGO/MusicEngine/ClockSettings.h"
 #include "Drums.generated.h"
 
 // See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
@@ -18,32 +19,30 @@ public:
 	// Sets default values for this actor's properties
 	ADrums();
 
+	UPROPERTY()
+	AClockSettings* ClockSettings;
+	
 	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
 	UQuartzClockHandle* Clock;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
 	UMetaSoundSource* InstrumentMetaSoundSource;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
-	FQuartzQuantizationBoundary QuartzQuantizationBoundary = {
-		EQuartzCommandQuantization::Bar,
-		1.0f,
-		EQuarztQuantizationReference::BarRelative,
-		true
-	};
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
-	FName ClockName = "DrumsClock";
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
-	float BPM = 120.0f;
-
 	/**
 	 * Quantization Metronome Event Delegate
 	 * This is bound to OnQuantizationBoundaryTriggered in ctor
 	 */
 	UPROPERTY()
 	FOnQuartzMetronomeEventBP PlayQuantizationDelegate;
+
+	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
+	FQuartzQuantizationBoundary QuartzQuantizationBoundary = {
+		EQuartzCommandQuantization::Bar,
+		1.0f,
+		EQuarztQuantizationReference::BarRelative,
+		true
+	};
+
 
 protected:
 	// Called when the game starts or when spawned

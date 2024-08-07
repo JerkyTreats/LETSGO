@@ -24,19 +24,16 @@ void ADrums::BeginPlay()
 {
 	Super::BeginPlay();
 
-	/** Gets a reference from the Quartz subsystem from the world. */
-	UQuartzSubsystem* Quartz = GetWorld()->GetSubsystem<UQuartzSubsystem>();
-
-	/** Defines settings for FQuartzTimeSignature and FQuartzClockSettings structures. */
-	FQuartzTimeSignature TimeSignature;
-	FQuartzClockSettings ClockSettings;
-	ClockSettings.TimeSignature = TimeSignature;
-
-	/** Creates a new clock the previous setting structures. */
-	Clock = Quartz->CreateNewClock(this, ClockName, ClockSettings, true);
-	/** Sets the tempo for the clock. */
-	Clock->SetBeatsPerMinute(this, QuartzQuantizationBoundary, FOnQuartzCommandEventBP(), Clock, BPM);
+	// Build Clock Name
+	FString Name = GetName();
+	Name = Name.Append("_Clock");
 	
+	// Get Main Clock
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	ClockSettings = GameMode->GetClockSettings();
+
+	Clock = ClockSettings->GetNewClock(FName(Name));
+
 	UE_LOG(LogTemp, Display, TEXT("Drums BeginPlay Complete"))
 }
 

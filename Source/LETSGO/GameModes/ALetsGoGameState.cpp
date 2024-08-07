@@ -3,7 +3,7 @@
 
 #include "ALetsGoGameState.h"
 
-ALetsGoGameState::ALetsGoGameState(): MainClock()
+ALetsGoGameState::ALetsGoGameState(): ClockSettings()
 {
 	
 }

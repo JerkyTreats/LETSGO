@@ -36,14 +36,14 @@ FLetsGoMusicNotes ALetsGoGameMode::GetTonic() const
 	return GetGameState<ALetsGoGameState>()->Tonic;
 }
 
-UQuartzClockHandle* ALetsGoGameMode::GetMainClock() const
+AClockSettings* ALetsGoGameMode::GetClockSettings() const
 {
-	return GetGameState<ALetsGoGameState>()->MainClock;
+	return GetGameState<ALetsGoGameState>()->ClockSettings;
 }
 
-void ALetsGoGameMode::SetMainClock(UQuartzClockHandle* Clock)
+void ALetsGoGameMode::SetClockSettings(AClockSettings* Clock)
 {
-	GetGameState<ALetsGoGameState>()->MainClock = Clock;
+	GetGameState<ALetsGoGameState>()->ClockSettings = Clock;
 }
 
 void ALetsGoGameMode::SetInstrumentRack(UInstrumentRack* Rack)

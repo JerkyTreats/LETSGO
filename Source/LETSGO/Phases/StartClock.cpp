@@ -4,10 +4,11 @@
 #include "StartClock.h"
 
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
+#include "LETSGO/MusicEngine/ClockSettings.h"
 
 
 // Sets default values
-AStartClock::AStartClock(): Clock(nullptr)
+AStartClock::AStartClock()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
@@ -22,25 +23,15 @@ void AStartClock::BeginPlay()
 
 void AStartClock::Initialize()
 {
-	/** Gets a reference from the Quartz subsystem from the world. */
-	UQuartzSubsystem* Quartz = GetWorld()->GetSubsystem<UQuartzSubsystem>();
-
-	FQuartzClockSettings ClockSettings;
-	ClockSettings.TimeSignature = TimeSignature;
-
-	Clock = Quartz->CreateNewClock(this, ClockName, ClockSettings, true);
-	Clock->SetBeatsPerMinute(this, FQuartzQuantizationBoundary(), FOnQuartzCommandEventBP(), Clock, BeatsPerMinute);
-
-	// Send Clock to GameMode state object
+	AClockSettings* MainClock = GetWorld()->SpawnActor<AClockSettings>(ClockSettingsClass);
+	
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->SetMainClock(Clock);
+	GameMode->SetClockSettings(MainClock);
 }
 
 void AStartClock::Activate()
 {
 	IsActive = true;
-	
-	Clock->StartClock(GetWorld(), Clock);
 	Complete();
 }
 

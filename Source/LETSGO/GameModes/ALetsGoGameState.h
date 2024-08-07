@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
 #include "LETSGO/Instruments/InstrumentRack.h"
+#include "LETSGO/MusicEngine/ClockSettings.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "Quartz/AudioMixerClock.h"
 #include "Quartz/AudioMixerClockHandle.h"
@@ -25,7 +26,7 @@ public:
 	virtual ~ALetsGoGameState() override;
 	
 	UPROPERTY(VisibleAnywhere, Category = "LETSGO")  
-	TObjectPtr<UQuartzClockHandle> MainClock;
+	AClockSettings* ClockSettings;
 
 	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
 	FLetsGoMusicNotes Tonic;
