@@ -4,6 +4,7 @@
 #include "StartDrums.h"
 
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
+#include "LETSGO/Instruments/InstrumentSchedule.h"
 
 
 // Sets default values
@@ -28,14 +29,36 @@ void AStartDrums::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+FInstrumentSchedule GenerateInstrumentSchedule()
+{
+	const TArray BaseFloats = {1.0f, 3.0f};
+	const TArray FourFloats = {1.0f,2.0f,3.0f,4.0f};
+	FPerBarSchedule BasePattern = FPerBarSchedule(BaseFloats);
+	FPerBarSchedule FourFloor = FPerBarSchedule(FourFloats);
+	FInstrumentSchedule DrumPattern = FInstrumentSchedule();
+
+	for (int i = 0; i < 3; i++)
+	{
+		DrumPattern.BeatSchedule.Emplace(BasePattern);
+	}
+	DrumPattern.BeatSchedule.Emplace(FourFloats);
+
+	return DrumPattern;
+}
+
 void AStartDrums::Initialize()
 {
-	Drums = GetWorld()->SpawnActor<ADrums>(ADrumsClass);
+	const FInstrumentSchedule DrumPattern = GenerateInstrumentSchedule();
+	
+	Drums = GetWorld()->SpawnActorDeferred<ADrums>(ADrumsClass, FTransform());
+	Drums->Initialize(DrumPattern);
+	Drums->FinishSpawning(FTransform());
 	
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	InstrumentRack = GameMode->GetInstrumentRack();
 	InstrumentRack->AddInstrument(Drums);
 }
+
 
 void AStartDrums::Activate()
 {

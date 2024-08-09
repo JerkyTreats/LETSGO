@@ -6,6 +6,7 @@
 #include "DrumsAudioCuePlayer.h"
 #include "Components/AudioComponent.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
+#include "LETSGO/Instruments/InstrumentSchedule.h"
 
 
 // Sets default values
@@ -43,6 +44,11 @@ void ADrums::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ADrums::Initialize(const FInstrumentSchedule& Schedule)
+{
+	InstrumentSchedule = Schedule;
+}
+
 void ADrums::StartPlaying()
 {
 	Clock->StartClock(GetWorld(), Clock);
@@ -58,21 +64,31 @@ void ADrums::StopPlaying()
 void ADrums::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
 	int32 NumBars, int32 Beat, float BeatFraction)
 {
-	// AudioComponent.PlayQuantized() takes in a Quant Boundary, allowing you to schedule sound relative to the current Boundary
-	// ie. If OnQuantTriggered fired per bar, this boundary can schedule something for next bar
-	// We want to play right now
-	const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
-		EQuartzCommandQuantization::None,
-		1.0f,
-		EQuarztQuantizationReference::BarRelative,
-		true
-	};
+	FPerBarSchedule ThisBar = InstrumentSchedule.BeatSchedule[CurrentBar];
 
-	// Play the kick drum sound
-	// This creates an Actor wrapper around a new AudioComponent we want to play on this beat
-	// This is so we can destroy the Actor after use
-	ADrumsAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<ADrumsAudioCuePlayer>();
-	AudioCuePlayer->Initialize(InstrumentMetaSoundSource, Clock,RelativeQuartzBoundary);
-	AudioCuePlayer->PlayAndDestroy();
-	
+	for (int i = 0; i < ThisBar.BeatsInBar.Num(); i++)
+	{
+		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
+			EQuartzCommandQuantization::Beat,
+			ThisBar.BeatsInBar[i],
+			EQuarztQuantizationReference::BarRelative,
+			true
+		};
+
+		// Play the kick drum sound
+		// This creates an Actor wrapper around a new AudioComponent we want to play on this beat
+		// This is so we can destroy the Actor after use
+		ADrumsAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<ADrumsAudioCuePlayer>();
+		AudioCuePlayer->Initialize(InstrumentMetaSoundSource, Clock,RelativeQuartzBoundary);
+		AudioCuePlayer->PlayAndDestroy();
+	}
+
+	if (CurrentBar == InstrumentSchedule.BeatSchedule.Num() - 1)
+	{
+		CurrentBar = 0;
+	}
+	else
+	{
+		CurrentBar++;
+	}
 }

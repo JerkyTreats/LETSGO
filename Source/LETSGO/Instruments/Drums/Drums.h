@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "MetasoundSource.h"
+#include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ClockSettings.h"
 #include "Drums.generated.h"
 
@@ -43,6 +44,8 @@ public:
 		true
 	};
 
+	FInstrumentSchedule InstrumentSchedule;
+	int CurrentBar = 0;
 
 protected:
 	// Called when the game starts or when spawned
@@ -51,6 +54,9 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void Initialize(const FInstrumentSchedule& Schedule);
 	
 	UFUNCTION()
 	void StartPlaying();
