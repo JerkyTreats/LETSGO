@@ -4,19 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Instrument.h"
+#include "Drum/DrumData.h"
+#include "Drum/DrumSoundCueMapping.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentRack.h"
 #include "LETSGO/Phases/PhaseController.h"
-#include "StartInstrument.generated.h"
+#include "StartDrums.generated.h"
 
 UCLASS()
-class LETSGO_API AStartInstrument : public AActor, public IPhaseController
+class LETSGO_API AStartDrums : public AActor, public IPhaseController
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AStartInstrument();
+	AStartDrums();
 
 	UPROPERTY()
 	bool IsActive;
@@ -25,17 +27,36 @@ public:
 	bool IsComplete;
 
 	UPROPERTY()
-	AInstrument* Drums;
+	AInstrument* Kick; 
+
+	UPROPERTY()
+	AInstrument* Snare;
+
+	UPROPERTY()
+	AInstrument* HiHatOpen;
+
+	UPROPERTY()
+	AInstrument* HiHatClosed;
+
+	UPROPERTY()
+	AInstrument* Clap;
 
 	UPROPERTY()
 	UInstrumentRack* InstrumentRack;
+	
+	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	// TSubclassOf<AInstrument> AInstrumentClass;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	TSubclassOf<AInstrument> AInstrumentClass;
+	TSubclassOf<ADrumSoundCueMapping> ADrumSoundCueMappingClass;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	EDrumPatterns GetRandomDrumPattern();
+
+	static FDrumPattern GetDrumData(EDrumPatterns Pattern);
 
 public:
 	// Called every frame

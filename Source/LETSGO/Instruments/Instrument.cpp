@@ -2,7 +2,7 @@
 
 
 #include "Instrument.h"
-
+#include "LETSGO/MusicEngine/ClockSettings.h"
 #include "AudioCuePlayer.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
@@ -24,6 +24,11 @@ void AInstrument::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UE_LOG(LogTemp, Display, TEXT("Drums BeginPlay Complete"))
+}
+
+void AInstrument::SetClock()
+{
 	// Build Clock Name
 	FString Name = GetName();
 	Name = Name.Append("_Clock");
@@ -33,8 +38,6 @@ void AInstrument::BeginPlay()
 	ClockSettings = GameMode->GetClockSettings();
 
 	Clock = ClockSettings->GetNewClock(FName(Name));
-
-	UE_LOG(LogTemp, Display, TEXT("Drums BeginPlay Complete"))
 }
 
 // Called every frame
@@ -43,8 +46,10 @@ void AInstrument::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AInstrument::Initialize(FInstrumentSchedule Schedule)
+void AInstrument::Initialize(FInstrumentSchedule Schedule, UMetaSoundSource* MetaSoundSource)
 {
+	SetClock();
+	InstrumentMetaSoundSource = MetaSoundSource;
 	InstrumentSchedule = Schedule;
 	RelativeQuantizationResolution = Schedule.QuantizationDivision; 
 }

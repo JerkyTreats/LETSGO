@@ -6,7 +6,7 @@
 #include "PhaseController.h"
 #include "SetTonic.h"
 #include "StartClock.h"
-#include "LETSGO/Instruments/StartInstrument.h"
+#include "LETSGO/Instruments/StartDrums.h"
 #include "UObject/Object.h"
 #include "PhaseManager.generated.h"
 
@@ -34,7 +34,7 @@ public:
 	TSubclassOf<ASetTonic> SetTonicClass;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	TSubclassOf<AStartInstrument> StartInstrumentClass; 
+	TSubclassOf<AStartDrums> StartDrumsClass; 
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AStartClock> StartClockClass;
