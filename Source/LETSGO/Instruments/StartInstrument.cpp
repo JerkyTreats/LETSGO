@@ -1,30 +1,30 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "StartDrums.h"
+#include "StartInstrument.h"
 
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
 
 // Sets default values
-AStartDrums::AStartDrums()
+AStartInstrument::AStartInstrument()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	CreateDefaultSubobject<ADrums>(TEXT("Drums"));
+	CreateDefaultSubobject<AInstrument>(TEXT("Drums"));
 }
 
 // Called when the game starts or when spawned
-void AStartDrums::BeginPlay()
+void AStartInstrument::BeginPlay()
 {
 	Super::BeginPlay();
 
 }
 
 // Called every frame
-void AStartDrums::Tick(float DeltaTime)
+void AStartInstrument::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
@@ -35,7 +35,7 @@ FInstrumentSchedule GenerateInstrumentSchedule()
 	const TArray FourFloats = {1.0f,2.0f,3.0f,4.0f};
 	FPerBarSchedule BasePattern = FPerBarSchedule(BaseFloats);
 	FPerBarSchedule FourFloor = FPerBarSchedule(FourFloats);
-	FInstrumentSchedule DrumPattern = FInstrumentSchedule();
+	FInstrumentSchedule DrumPattern = FInstrumentSchedule(EQuartzCommandQuantization::Beat);
 
 	for (int i = 0; i < 3; i++)
 	{
@@ -46,11 +46,11 @@ FInstrumentSchedule GenerateInstrumentSchedule()
 	return DrumPattern;
 }
 
-void AStartDrums::Initialize()
+void AStartInstrument::Initialize()
 {
 	const FInstrumentSchedule DrumPattern = GenerateInstrumentSchedule();
 	
-	Drums = GetWorld()->SpawnActorDeferred<ADrums>(ADrumsClass, FTransform());
+	Drums = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrumentClass, FTransform());
 	Drums->Initialize(DrumPattern);
 	Drums->FinishSpawning(FTransform());
 	
@@ -60,33 +60,33 @@ void AStartDrums::Initialize()
 }
 
 
-void AStartDrums::Activate()
+void AStartInstrument::Activate()
 {
 	UE_LOG(LogTemp, Display, TEXT("Phase StartDrums Activated"))
 	Drums->StartPlaying();
 	IsComplete = true;
 }
 
-bool AStartDrums::IsActivated()
+bool AStartInstrument::IsActivated()
 {
 	return IsActive;
 }
 
-void AStartDrums::Deactivate()
+void AStartInstrument::Deactivate()
 {
 }
 
-void AStartDrums::Complete()
+void AStartInstrument::Complete()
 {
 	InitiateDestroy();
 }
 
-bool AStartDrums::IsCompleted()
+bool AStartInstrument::IsCompleted()
 {
 	return IsComplete;
 }
 
-void AStartDrums::InitiateDestroy()
+void AStartInstrument::InitiateDestroy()
 {
 	Destroy();
 }

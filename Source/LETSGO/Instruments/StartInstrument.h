@@ -3,20 +3,20 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Drums.h"
+#include "Instrument.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentRack.h"
 #include "LETSGO/Phases/PhaseController.h"
-#include "StartDrums.generated.h"
+#include "StartInstrument.generated.h"
 
 UCLASS()
-class LETSGO_API AStartDrums : public AActor, public IPhaseController
+class LETSGO_API AStartInstrument : public AActor, public IPhaseController
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AStartDrums();
+	AStartInstrument();
 
 	UPROPERTY()
 	bool IsActive;
@@ -25,13 +25,13 @@ public:
 	bool IsComplete;
 
 	UPROPERTY()
-	ADrums* Drums;
+	AInstrument* Drums;
 
 	UPROPERTY()
 	UInstrumentRack* InstrumentRack;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	TSubclassOf<ADrums> ADrumsClass;
+	TSubclassOf<AInstrument> AInstrumentClass;
 
 protected:
 	// Called when the game starts or when spawned

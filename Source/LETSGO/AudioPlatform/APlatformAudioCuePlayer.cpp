@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AAudioCuePlayer.h"
+#include "APlatformAudioCuePlayer.h"
 
 #include "AAudioPlatform.h"
 #include "Components/AudioComponent.h"
@@ -11,7 +11,7 @@
 
 class ALetsGoGameMode;
 // Sets default values for this component's properties
-AAudioCuePlayer::AAudioCuePlayer()
+APlatformAudioCuePlayer::APlatformAudioCuePlayer()
 {
 	/**
 	 * Creates an audio component.
@@ -25,12 +25,12 @@ AAudioCuePlayer::AAudioCuePlayer()
 }
 
 // Called when the game starts
-void AAudioCuePlayer::BeginPlay()
+void APlatformAudioCuePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 
 	// Bind the On Platform Triggered Event to a local function
-	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &AAudioCuePlayer::OnAudioPlatformTriggered);
+	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &APlatformAudioCuePlayer::OnAudioPlatformTriggered);
 
 	// Build Clock Name
 	FString Name = GetName();
@@ -44,7 +44,7 @@ void AAudioCuePlayer::BeginPlay()
 	Clock->StartClock(GetWorld(), Clock);
 }
 
-void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
+void APlatformAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 {
 	UE_LOG(LogTemp, Display, TEXT("AudioCuePlayer Recieved OnAudioPLatformTrigger"));
 	
@@ -58,7 +58,7 @@ void AAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingN
 }
 
 // This is bad but requires a real solution to be figured out and implemented
-USoundCue* AAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const
+USoundCue* APlatformAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const
 {
 	switch (ENote)
 	{
@@ -94,11 +94,11 @@ USoundCue* AAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) co
 }
 
 // Need this extra destroy function because AddDynamic complains if you try to call &AAudioCuePlayer::Destroy directly
-void AAudioCuePlayer::InitiateDestroy()
+void APlatformAudioCuePlayer::InitiateDestroy()
 {
 	if(IsSoundPlaying)
 	{
-		AttachedAudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
+		AttachedAudioComponent->OnAudioFinished.AddDynamic(this, &APlatformAudioCuePlayer::DestroyActor);
 	}
 	else
 	{
@@ -106,7 +106,7 @@ void AAudioCuePlayer::InitiateDestroy()
 	}
 }
 
-void AAudioCuePlayer::DestroyActor()
+void APlatformAudioCuePlayer::DestroyActor()
 {
 	Destroy();
 }

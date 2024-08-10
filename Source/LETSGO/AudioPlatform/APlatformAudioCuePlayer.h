@@ -7,17 +7,17 @@
 #include "Components/ActorComponent.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "Sound/SoundCue.h"
-#include "AAudioCuePlayer.generated.h"
+#include "APlatformAudioCuePlayer.generated.h"
 
 
 UCLASS(Blueprintable, ClassGroup=(LETSGO), meta=(BlueprintSpawnableComponent))
-class LETSGO_API AAudioCuePlayer : public AActor
+class LETSGO_API APlatformAudioCuePlayer : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this component's properties
-	AAudioCuePlayer();
+	APlatformAudioCuePlayer();
 
 	// This is messy until I find a better solution
 	// Set references to the note cues

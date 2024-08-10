@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "LETSGO/AudioPlatform/AAudioCuePlayer.h"
+#include "LETSGO/AudioPlatform/APlatformAudioCuePlayer.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
 #include "AAudioPlatform.generated.h"
@@ -32,7 +32,7 @@ public:
 	FAudioPlatformDestroyDelegate OnAudioPlatformDestroy;
 	
 	UPROPERTY(EditDefaultsOnly, Blueprintable)
-	AAudioCuePlayer* AudioCuePlayer;
+	APlatformAudioCuePlayer* AudioCuePlayer;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	float ActorDestroyDelay;
@@ -44,7 +44,7 @@ protected:
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetAudioCuePlayer(AAudioCuePlayer* PlayerToSet);
+	void SetAudioCuePlayer(APlatformAudioCuePlayer* PlayerToSet);
 
 	UFUNCTION()
 	void DestroyActor();

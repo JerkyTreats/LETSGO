@@ -6,16 +6,16 @@
 #include "MetasoundSource.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
-#include "DrumsAudioCuePlayer.generated.h"
+#include "AudioCuePlayer.generated.h"
 
 UCLASS()
-class LETSGO_API ADrumsAudioCuePlayer : public AActor
+class LETSGO_API AAudioCuePlayer : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ADrumsAudioCuePlayer();
+	AAudioCuePlayer();
 
 	UPROPERTY()
 	bool IsSoundPlaying = false;

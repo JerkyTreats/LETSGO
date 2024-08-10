@@ -5,7 +5,7 @@
 
 #include "SetTonic.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
-#include "LETSGO/Instruments/Drums/StartDrums.h"
+#include "LETSGO/Instruments/StartInstrument.h"
 #include "LETSGO/Phases/StartClock.h"
 
 APhaseManager::APhaseManager()
@@ -27,7 +27,7 @@ void APhaseManager::BeginPlay()
 	StartClock->Initialize();
 	Phases.Emplace(StartClock);
 
-	AStartDrums* StartDrums = GetWorld()->SpawnActor<AStartDrums>(SetDrumsClass);
+	AStartInstrument* StartDrums = GetWorld()->SpawnActor<AStartInstrument>(StartInstrumentClass);
 	StartDrums->Initialize();
 	Phases.Emplace(StartDrums);
 	

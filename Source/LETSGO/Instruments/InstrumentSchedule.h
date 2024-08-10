@@ -23,5 +23,13 @@ USTRUCT()
 struct FInstrumentSchedule
 {
 	GENERATED_BODY()
+
+	UPROPERTY()
+	EQuartzCommandQuantization QuantizationDivision;
+	
+	UPROPERTY()
 	TArray<FPerBarSchedule> BeatSchedule; // [[1,3],[1,3],[1,3],[1,2,3,4]] play 1-3, on 4th bar 4onfloor
+
+	FInstrumentSchedule(): QuantizationDivision() {} ;
+	explicit FInstrumentSchedule(const EQuartzCommandQuantization Quantization): QuantizationDivision(Quantization) {}
 };

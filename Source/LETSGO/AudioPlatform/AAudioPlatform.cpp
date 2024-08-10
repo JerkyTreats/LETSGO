@@ -6,7 +6,7 @@
 
 AAudioPlatform::AAudioPlatform()
 {
-	AudioCuePlayer = CreateDefaultSubobject<AAudioCuePlayer>(TEXT("Audio Cue Player"));
+	AudioCuePlayer = CreateDefaultSubobject<APlatformAudioCuePlayer>(TEXT("Audio Cue Player"));
 }
 
 void AAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -29,7 +29,7 @@ void AAudioPlatform::DestroyActor()
 	Destroy();
 }
 
-void AAudioPlatform::SetAudioCuePlayer(AAudioCuePlayer* PlayerToSet)
+void AAudioPlatform::SetAudioCuePlayer(APlatformAudioCuePlayer* PlayerToSet)
 {
 	AudioCuePlayer = PlayerToSet;
 }

@@ -1,12 +1,12 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "DrumsAudioCuePlayer.h"
+#include "AudioCuePlayer.h"
 #include "Components/AudioComponent.h"
 
 
 // Sets default values
-ADrumsAudioCuePlayer::ADrumsAudioCuePlayer()
+AAudioCuePlayer::AAudioCuePlayer()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,19 +18,19 @@ ADrumsAudioCuePlayer::ADrumsAudioCuePlayer()
 }
 
 // Called when the game starts or when spawned
-void ADrumsAudioCuePlayer::BeginPlay()
+void AAudioCuePlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void ADrumsAudioCuePlayer::Tick(float DeltaTime)
+void AAudioCuePlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void ADrumsAudioCuePlayer::Initialize(UMetaSoundSource* ParentMetaSoundSource, UQuartzClockHandle* ParentClock,
+void AAudioCuePlayer::Initialize(UMetaSoundSource* ParentMetaSoundSource, UQuartzClockHandle* ParentClock,
 	FQuartzQuantizationBoundary ParentQuartzQuantizationBoundary)
 {
 	Clock = ParentClock;
@@ -40,28 +40,28 @@ void ADrumsAudioCuePlayer::Initialize(UMetaSoundSource* ParentMetaSoundSource, U
 	AudioComponent->SetSound(MetaSoundSource);
 }
 
-void ADrumsAudioCuePlayer::Play()
+void AAudioCuePlayer::Play()
 {
 	const FOnQuartzCommandEventBP EmptyDelegate;
 	IsSoundPlaying = true;
 	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
-	AudioComponent->OnAudioFinished.AddDynamic(this, &ADrumsAudioCuePlayer::ResetAudioCue);
+	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::ResetAudioCue);
 }
 
-void ADrumsAudioCuePlayer::PlayAndDestroy()
+void AAudioCuePlayer::PlayAndDestroy()
 {
 	const FOnQuartzCommandEventBP EmptyDelegate;
 	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
-	AudioComponent->OnAudioFinished.AddDynamic(this, &ADrumsAudioCuePlayer::DestroyActor);
+	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
 }
 
-void ADrumsAudioCuePlayer::ResetAudioCue()
+void AAudioCuePlayer::ResetAudioCue()
 {
 	IsSoundPlaying = false;
 }
 
 
-void ADrumsAudioCuePlayer::DestroyActor()
+void AAudioCuePlayer::DestroyActor()
 {
 	Destroy();
 }

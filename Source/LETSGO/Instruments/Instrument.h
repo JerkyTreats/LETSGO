@@ -8,17 +8,17 @@
 #include "MetasoundSource.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ClockSettings.h"
-#include "Drums.generated.h"
+#include "Instrument.generated.h"
 
 // See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
 UCLASS()
-class LETSGO_API ADrums : public AActor
+class LETSGO_API AInstrument : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ADrums();
+	AInstrument();
 
 	UPROPERTY()
 	AClockSettings* ClockSettings;
@@ -44,8 +44,14 @@ public:
 		true
 	};
 
+	UPROPERTY()
 	FInstrumentSchedule InstrumentSchedule;
+
+	UPROPERTY()
 	int CurrentBar = 0;
+
+	UPROPERTY()
+	EQuartzCommandQuantization RelativeQuantizationResolution;
 
 protected:
 	// Called when the game starts or when spawned
@@ -56,7 +62,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void Initialize(const FInstrumentSchedule& Schedule);
+	void Initialize(FInstrumentSchedule Schedule);
 	
 	UFUNCTION()
 	void StartPlaying();

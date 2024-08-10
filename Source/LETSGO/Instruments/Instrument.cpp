@@ -1,16 +1,15 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Drums.h"
+#include "Instrument.h"
 
-#include "DrumsAudioCuePlayer.h"
-#include "Components/AudioComponent.h"
+#include "AudioCuePlayer.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
 
 // Sets default values
-ADrums::ADrums(): Clock(nullptr)
+AInstrument::AInstrument(): Clock(nullptr)
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -21,7 +20,7 @@ ADrums::ADrums(): Clock(nullptr)
 }
 
 // Called when the game starts or when spawned
-void ADrums::BeginPlay()
+void AInstrument::BeginPlay()
 {
 	Super::BeginPlay();
 
@@ -39,29 +38,30 @@ void ADrums::BeginPlay()
 }
 
 // Called every frame
-void ADrums::Tick(float DeltaTime)
+void AInstrument::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void ADrums::Initialize(const FInstrumentSchedule& Schedule)
+void AInstrument::Initialize(FInstrumentSchedule Schedule)
 {
 	InstrumentSchedule = Schedule;
+	RelativeQuantizationResolution = Schedule.QuantizationDivision; 
 }
 
-void ADrums::StartPlaying()
+void AInstrument::StartPlaying()
 {
 	Clock->StartClock(GetWorld(), Clock);
 	Clock->SubscribeToQuantizationEvent(GetWorld(), QuartzQuantizationBoundary.Quantization, PlayQuantizationDelegate, Clock);
 }
 
-void ADrums::StopPlaying()
+void AInstrument::StopPlaying()
 {
 	Clock->UnsubscribeFromAllTimeDivisions(GetWorld(), Clock);
 	Clock->StopClock(GetWorld(), true, Clock);
 }
 
-void ADrums::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
+void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
 	int32 NumBars, int32 Beat, float BeatFraction)
 {
 	FPerBarSchedule ThisBar = InstrumentSchedule.BeatSchedule[CurrentBar];
@@ -69,7 +69,7 @@ void ADrums::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommand
 	for (int i = 0; i < ThisBar.BeatsInBar.Num(); i++)
 	{
 		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
-			EQuartzCommandQuantization::Beat,
+			RelativeQuantizationResolution,
 			ThisBar.BeatsInBar[i],
 			EQuarztQuantizationReference::BarRelative,
 			true
@@ -78,7 +78,7 @@ void ADrums::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommand
 		// Play the kick drum sound
 		// This creates an Actor wrapper around a new AudioComponent we want to play on this beat
 		// This is so we can destroy the Actor after use
-		ADrumsAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<ADrumsAudioCuePlayer>();
+		AAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<AAudioCuePlayer>();
 		AudioCuePlayer->Initialize(InstrumentMetaSoundSource, Clock,RelativeQuartzBoundary);
 		AudioCuePlayer->PlayAndDestroy();
 	}
