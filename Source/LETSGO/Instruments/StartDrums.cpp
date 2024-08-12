@@ -98,6 +98,13 @@ void AStartDrums::Initialize()
 	const EDrumPatterns DrumPattern = GetRandomDrumPattern();
 	const FDrumPattern Pattern = GetDrumData(DrumPattern);
 
+	if(GEngine)
+	{
+		TEnumAsByte<EDrumPatterns> PatEnum = DrumPattern;
+		FString EnumAsString = UEnum::GetValueAsString(PatEnum.GetValue());
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, EnumAsString);	
+	}
+
 	const ADrumSoundCueMapping* SoundCueMapping = GetWorld()->SpawnActor<ADrumSoundCueMapping>(ADrumSoundCueMappingClass);
 
 	// Initialize Kick

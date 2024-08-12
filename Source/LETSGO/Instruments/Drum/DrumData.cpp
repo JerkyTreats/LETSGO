@@ -74,7 +74,7 @@ DrumData::DrumData()
 	
 	FourOnTheFloor.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+		{FPerBarSchedule({})}
 	);
 	
 	FourOnTheFloor.HiHatClosed = FInstrumentSchedule(
@@ -85,8 +85,8 @@ DrumData::DrumData()
 	);
 	
 	FourOnTheFloor.Clap = FInstrumentSchedule(
-		EQuartzCommandQuantization::QuarterNote, 
-		{}
+		EQuartzCommandQuantization::QuarterNote,
+		{FPerBarSchedule({})}
 	);
 
 	// Funk
@@ -109,7 +109,7 @@ DrumData::DrumData()
 	
 	Funk.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 	
 	Funk.HiHatClosed = FInstrumentSchedule(
@@ -121,7 +121,7 @@ DrumData::DrumData()
 	
 	Funk.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 
@@ -143,7 +143,7 @@ DrumData::DrumData()
 	
 	BossaNova.HiHatOpen =FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 		
 	BossaNova.HiHatClosed = FInstrumentSchedule(
@@ -155,7 +155,7 @@ DrumData::DrumData()
 	
 	BossaNova.Clap =  FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// Samba
@@ -176,7 +176,7 @@ DrumData::DrumData()
 	
 	Samba.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 		
 	Samba.HiHatClosed = FInstrumentSchedule(
@@ -188,7 +188,7 @@ DrumData::DrumData()
 	
 	Samba.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// Shuffle
@@ -208,7 +208,7 @@ DrumData::DrumData()
 	
 	Shuffle.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 		
 	Shuffle.HiHatClosed = FInstrumentSchedule(
@@ -220,7 +220,7 @@ DrumData::DrumData()
 	
 	Shuffle.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// HalfTimeShuffle
@@ -240,7 +240,7 @@ DrumData::DrumData()
 	
 	HalfTimeShuffle.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 		
 	HalfTimeShuffle.HiHatClosed = FInstrumentSchedule(
@@ -252,7 +252,7 @@ DrumData::DrumData()
 	
 	HalfTimeShuffle.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// DiscoGroove
@@ -286,7 +286,7 @@ DrumData::DrumData()
 	
 	DiscoGroove.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// Motown
@@ -305,7 +305,7 @@ DrumData::DrumData()
 	
 	Motown.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 	
 	Motown.HiHatClosed = FInstrumentSchedule(
@@ -317,13 +317,13 @@ DrumData::DrumData()
 	
 	Motown.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// Swing
 	Swing.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 	Swing.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNoteTriplet, 
@@ -348,7 +348,7 @@ DrumData::DrumData()
 	
 	Swing.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// Reggae
@@ -368,7 +368,7 @@ DrumData::DrumData()
 	
 	Reggae.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 	
 	Reggae.HiHatClosed = FInstrumentSchedule(
@@ -380,7 +380,7 @@ DrumData::DrumData()
 	
 	Reggae.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// Pop
@@ -400,7 +400,7 @@ DrumData::DrumData()
 	
 	Pop.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 	
 	Pop.HiHatClosed = FInstrumentSchedule(
@@ -412,7 +412,7 @@ DrumData::DrumData()
 	
 	Pop.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// Country
@@ -446,7 +446,7 @@ DrumData::DrumData()
 	
 	Country.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 
 	// SixteenthNoteGroove
@@ -480,7 +480,7 @@ DrumData::DrumData()
 	
 	SixteenthGroove.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+{FPerBarSchedule({})}
 	);
 	
 }
