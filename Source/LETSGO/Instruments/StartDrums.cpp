@@ -115,7 +115,7 @@ void AStartDrums::Initialize()
 	//Initialize Snare
 	Snare = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
 	Snare->Initialize(Pattern.Snare, SoundCueMapping->Snare);
-	Snare->FinishSpawning(FTransform());
+	Snare->FinishSpawning(FTransform());	
 
 	//Initialize HiHatOpen
 	HiHatOpen = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
@@ -132,9 +132,6 @@ void AStartDrums::Initialize()
 	Clap->Initialize(Pattern.Clap, SoundCueMapping->Clap);
 	Clap->FinishSpawning(FTransform());
 	
-	// ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	// InstrumentRack = GameMode->GetInstrumentRack();
-	// InstrumentRack->AddInstrument(Drums);
 }
 
 
