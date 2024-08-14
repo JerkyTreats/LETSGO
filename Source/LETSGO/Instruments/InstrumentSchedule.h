@@ -3,9 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MetasoundSource.h"
 #include "UObject/Object.h"
 #include "InstrumentSchedule.generated.h"
 
+
+USTRUCT()
+struct FNotesPerBar
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	float Beat;
+
+	UPROPERTY()
+	UMetaSoundSource* SoundCue;
+};
 
 USTRUCT()
 struct FPerBarSchedule
@@ -15,8 +28,12 @@ struct FPerBarSchedule
 	UPROPERTY()
 	TArray<float> BeatsInBar; // [1, 3] plays sound on first and third beat
 
+	UPROPERTY()
+	TArray<FNotesPerBar> NotesInBar; // [ { 1, CSharp1 }, { 3, CSharp2 }
+	
 	FPerBarSchedule() {}
 	explicit FPerBarSchedule(const TArray<float>& Beats) : BeatsInBar(Beats) {}
+	explicit FPerBarSchedule(const TArray<FNotesPerBar>& Notes) : NotesInBar(Notes) {}
 };
 
 USTRUCT()

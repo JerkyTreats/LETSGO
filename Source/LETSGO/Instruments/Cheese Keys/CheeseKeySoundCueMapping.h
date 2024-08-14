@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MetasoundSource.h"
 #include "GameFramework/Actor.h"
+#include "LETSGO/Instruments/InstrumentNote.h"
 #include "CheeseKeySoundCueMapping.generated.h"
 
 UCLASS()
@@ -18,7 +19,7 @@ public:
 
 	// Maybe theres a better way to do this, do some lookup mapping at construction time
 	// For now we can just manual map these
-	
+
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	UMetaSoundSource* C1_Music_Note;
 	

@@ -109,27 +109,27 @@ void AStartDrums::Initialize()
 
 	// Initialize Kick
 	Kick = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	Kick->Initialize(Pattern.Kick, SoundCueMapping->Kick);
+	Kick->Initialize(PlayByBeat, Pattern.Kick, SoundCueMapping->Kick);
 	Kick->FinishSpawning(FTransform());
 
 	//Initialize Snare
 	Snare = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	Snare->Initialize(Pattern.Snare, SoundCueMapping->Snare);
+	Snare->Initialize(PlayByBeat, Pattern.Snare, SoundCueMapping->Snare);
 	Snare->FinishSpawning(FTransform());	
 
 	//Initialize HiHatOpen
 	HiHatOpen = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	HiHatOpen->Initialize(Pattern.HiHatOpen, SoundCueMapping->HiHatOpen);
+	HiHatOpen->Initialize(PlayByBeat, Pattern.HiHatOpen, SoundCueMapping->HiHatOpen);
 	HiHatOpen->FinishSpawning(FTransform());
 
 	//Initialize HiHatOpen
 	HiHatClosed = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	HiHatClosed->Initialize(Pattern.HiHatClosed, SoundCueMapping->HiHatClosed);
+	HiHatClosed->Initialize(PlayByBeat, Pattern.HiHatClosed, SoundCueMapping->HiHatClosed);
 	HiHatClosed->FinishSpawning(FTransform());
 
 	//Initialize Clap
 	Clap = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	Clap->Initialize(Pattern.Clap, SoundCueMapping->Clap);
+	Clap->Initialize(PlayByBeat, Pattern.Clap, SoundCueMapping->Clap);
 	Clap->FinishSpawning(FTransform());
 	
 }

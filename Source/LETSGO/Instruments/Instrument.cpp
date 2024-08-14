@@ -46,12 +46,17 @@ void AInstrument::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AInstrument::Initialize(FInstrumentSchedule Schedule, UMetaSoundSource* MetaSoundSource)
+void AInstrument::Initialize(EInstrumentType Instrument, FInstrumentSchedule Schedule, UMetaSoundSource* MetaSoundSource)
 {
 	SetClock();
-	InstrumentMetaSoundSource = MetaSoundSource;
+	InstrumentType = Instrument; 
 	InstrumentSchedule = Schedule;
-	RelativeQuantizationResolution = Schedule.QuantizationDivision; 
+	RelativeQuantizationResolution = Schedule.QuantizationDivision;
+
+	if (Instrument == PlayByBeat)
+	{
+		InstrumentMetaSoundSource = MetaSoundSource;
+	}
 }
 
 void AInstrument::StartPlaying()
@@ -66,16 +71,13 @@ void AInstrument::StopPlaying()
 	Clock->StopClock(GetWorld(), true, Clock);
 }
 
-void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
-	int32 NumBars, int32 Beat, float BeatFraction)
+void AInstrument::PlayBeatsInBar(FPerBarSchedule Bar)
 {
-	FPerBarSchedule ThisBar = InstrumentSchedule.BeatSchedule[CurrentBar];
-
-	for (int i = 0; i < ThisBar.BeatsInBar.Num(); i++)
+	for (int i = 0; i < Bar.BeatsInBar.Num(); i++)
 	{
 		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
 			RelativeQuantizationResolution,
-			ThisBar.BeatsInBar[i],
+			Bar.BeatsInBar[i],
 			EQuarztQuantizationReference::BarRelative,
 			true
 		};
@@ -87,6 +89,36 @@ void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCo
 		AudioCuePlayer->Initialize(InstrumentMetaSoundSource, Clock,RelativeQuartzBoundary);
 		AudioCuePlayer->PlayAndDestroy();
 	}
+}
+
+void AInstrument::PlayNotesInBar(FPerBarSchedule Bar)
+{
+	for (int i = 0; i < Bar.NotesInBar.Num(); i++)
+	{
+		FNotesPerBar Notes = Bar.NotesInBar[i];
+		
+		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
+			RelativeQuantizationResolution,
+			Notes.Beat,
+			EQuarztQuantizationReference::BarRelative,
+			true
+		};
+
+		// Play the kick drum sound
+		// This creates an Actor wrapper around a new AudioComponent we want to play on this beat
+		// This is so we can destroy the Actor after use
+		AAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<AAudioCuePlayer>();
+		AudioCuePlayer->Initialize(Notes.SoundCue, Clock,RelativeQuartzBoundary);
+		AudioCuePlayer->PlayAndDestroy();
+	}
+}
+
+void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
+                                                  int32 NumBars, int32 Beat, float BeatFraction)
+{
+	FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[CurrentBar];
+
+	PlayBeatsInBar(BarSchedule);
 
 	if (CurrentBar == InstrumentSchedule.BeatSchedule.Num() - 1)
 	{
