@@ -116,9 +116,17 @@ void AInstrument::PlayNotesInBar(FPerBarSchedule Bar)
 void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
                                                   int32 NumBars, int32 Beat, float BeatFraction)
 {
-	FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[CurrentBar];
+	const FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[CurrentBar];
 
-	PlayBeatsInBar(BarSchedule);
+	switch (InstrumentType)
+	{
+	case PlayByBeat:
+		PlayBeatsInBar(BarSchedule);
+	case PlayByNote:
+		PlayNotesInBar(BarSchedule);
+	default:
+		UE_LOG(LogTemp, Error, TEXT("Instrument has bad InstrumentType"))
+	}
 
 	if (CurrentBar == InstrumentSchedule.BeatSchedule.Num() - 1)
 	{

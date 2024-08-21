@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "MetasoundSource.h"
-#include "UObject/Object.h"
 #include "InstrumentSchedule.generated.h"
 
 
@@ -18,6 +17,8 @@ struct FNotesPerBar
 
 	UPROPERTY()
 	UMetaSoundSource* SoundCue;
+
+	explicit FNotesPerBar(const float BeatNum, UMetaSoundSource* Cue): Beat(BeatNum), SoundCue(Cue) {}
 };
 
 USTRUCT()
