@@ -217,6 +217,9 @@ public:
 		B4_Music_Note,
 	};
 
+	UPROPERTY()
+	TArray<FCheeseKeyData> NoteData = FCheeseKeyData::GenerateKeys(Notes);
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

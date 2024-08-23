@@ -8,6 +8,16 @@ FDrumPattern::FDrumPattern()
 {
 }
 
+DrumData::DrumData(UMetaSoundSource* Kick, UMetaSoundSource* Snare, UMetaSoundSource* HiHatClosed,
+	UMetaSoundSource* HiHatOpen, UMetaSoundSource* Clap)
+{
+	KickSound = Kick;
+	SnareSound = Snare;
+	HiHatClosedSound = HiHatClosed;
+	HiHatOpenSound = HiHatOpen;
+	ClapSound = Clap;
+}
+
 DrumData::DrumData()
 {
 	BasicRock = FDrumPattern();
@@ -25,50 +35,44 @@ DrumData::DrumData()
 	BasicRock.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({1.0f, 3.0f}),
-			FPerBarSchedule({1.0f, 3.0f}),
-			FPerBarSchedule({1.0f, 3.0f}),
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f}),
+			FPerBarSchedule(KickSound, {1.0f, 3.0f}),
 		}
 	);
 	BasicRock.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({2.0f, 4.0f}),
+			FPerBarSchedule(SnareSound, {2.0f, 4.0f}),
 		}
 	);
 	
 	BasicRock.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+		{FPerBarSchedule({})}
 	);
 	
 	BasicRock.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
+			FPerBarSchedule(HiHatClosedSound, {1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
 		}
 	);
 	
 	BasicRock.Clap = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
-		{}
+		{FPerBarSchedule({})}
 	);
 
 	// Four on the Floor
 	FourOnTheFloor.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f}),
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f}),
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f}),
-			FPerBarSchedule({}),
+			FPerBarSchedule(KickSound,{1.0f, 2.0f, 3.0f, 4.0f}),
 		}
 	);
 	FourOnTheFloor.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({2.0f, 4.0f}),
+			FPerBarSchedule(SnareSound,{2.0f, 4.0f}),
 		}
 	);
 	
@@ -80,7 +84,7 @@ DrumData::DrumData()
 	FourOnTheFloor.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
 		}
 	);
 	
@@ -93,17 +97,14 @@ DrumData::DrumData()
 	Funk.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 5.0f}),
-			FPerBarSchedule({1.0f, 5.0f}),
-			FPerBarSchedule({1.0f, 5.0f}),
-			FPerBarSchedule({1.0f, 3.0f, 5.0f, 7.0f}),
+			FPerBarSchedule(KickSound,{1.0f, 5.0f}),
 		}
 	);
 	
 	Funk.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({2.0f, 4.0f}),
+			FPerBarSchedule(SnareSound,{2.0f, 4.0f}),
 		}
 	);
 	
@@ -115,7 +116,7 @@ DrumData::DrumData()
 	Funk.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
 		}
 	);
 	
@@ -129,15 +130,14 @@ DrumData::DrumData()
 	BossaNova.Kick =FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 4.0f, 5.0f, 8.0f}),
-			FPerBarSchedule({1.0f, 4.0f, 5.0f, 8.0f}),
+			FPerBarSchedule(KickSound,{1.0f, 4.0f, 5.0f, 8.0f}),
 		}
 	);
 	BossaNova.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 4.0f, 7.0f}),
-			FPerBarSchedule({3.0f, 5.0f}),
+			FPerBarSchedule(SnareSound,{1.0f, 4.0f, 7.0f}),
+			FPerBarSchedule(SnareSound,{3.0f, 5.0f}),
 		}
 	);
 	
@@ -149,7 +149,7 @@ DrumData::DrumData()
 	BossaNova.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
 		}
 	);
 	
@@ -162,15 +162,14 @@ DrumData::DrumData()
 	Samba.Kick = FInstrumentSchedule(
 	EQuartzCommandQuantization::EighthNote, 
 	{
-		FPerBarSchedule({1.0f, 4.0f, 5.0f, 8.0f}),
-		FPerBarSchedule({1.0f, 4.0f, 5.0f, 8.0f}),
+		FPerBarSchedule(KickSound,{1.0f, 4.0f, 5.0f, 8.0f}),
 		}
 	);
 	
 	Samba.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::SixteenthNote, 
 		{
-			FPerBarSchedule({1.0f, 4.0f, 7.0f, 10.0f}),
+			FPerBarSchedule(SnareSound,{1.0f, 4.0f, 7.0f, 10.0f}),
 		}
 	);
 	
@@ -182,7 +181,7 @@ DrumData::DrumData()
 	Samba.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::SixteenthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0f, 14.0f, 15.0f, 16.0f}),
 		}
 	);
 	
@@ -195,14 +194,14 @@ DrumData::DrumData()
 	Shuffle.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({1.0f, 3.0f}),
+			FPerBarSchedule(KickSound,{1.0f, 3.0f}),
 		}
 	);
 	
 	Shuffle.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({2.0f, 4.0f}),
+			FPerBarSchedule(SnareSound,{2.0f, 4.0f}),
 		}
 	);
 	
@@ -214,7 +213,7 @@ DrumData::DrumData()
 	Shuffle.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNoteTriplet, 
 		{
-			FPerBarSchedule({1.0f, 3.0f, 4.0f, 6.0f, 7.0f, 9.0f, 10.0, 12.0}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 3.0f, 4.0f, 6.0f, 7.0f, 9.0f, 10.0, 12.0}),
 		}
 	);
 	
@@ -227,14 +226,14 @@ DrumData::DrumData()
 	HalfTimeShuffle.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({1.0f, 3.0f}),
+			FPerBarSchedule(KickSound,{1.0f, 3.0f}),
 		}
 	);
 	
 	HalfTimeShuffle.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNoteTriplet, 
 		{
-			FPerBarSchedule({2.0f, 5.0f, 7.0f, 8.0f, 11.0f}),
+			FPerBarSchedule(SnareSound,{2.0f, 5.0f, 7.0f, 8.0f, 11.0f}),
 		}
 	);
 	
@@ -246,7 +245,7 @@ DrumData::DrumData()
 	HalfTimeShuffle.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNoteTriplet, 
 		{
-			FPerBarSchedule({1.0f, 3.0f, 4.0f, 6.0f, 7.0f, 9.0f, 10.0, 12.0}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 3.0f, 4.0f, 6.0f, 7.0f, 9.0f, 10.0, 12.0}),
 		}
 	);
 	
@@ -259,28 +258,28 @@ DrumData::DrumData()
 	DiscoGroove.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f}),
+			FPerBarSchedule(KickSound,{1.0f, 2.0f, 3.0f, 4.0f}),
 		}
 	);
 	
 	DiscoGroove.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({2.0f, 4.0f}),
+			FPerBarSchedule(SnareSound,{2.0f, 4.0f}),
 		}
 	);
 	
 	DiscoGroove.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote,
 		{
-			FPerBarSchedule({2.0f, 4.0f, 6.0f, 8.0f}),
+			FPerBarSchedule(HiHatOpenSound,{2.0f, 4.0f, 6.0f, 8.0f}),
 		}
 	);
 		
 	DiscoGroove.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 3.0f, 5.0f, 7.0f }),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 3.0f, 5.0f, 7.0f }),
 		}
 	);
 	
@@ -293,13 +292,13 @@ DrumData::DrumData()
 	Motown.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 3.0f, 5.0f, 6.0f, 8.0}),
+			FPerBarSchedule(KickSound,{1.0f, 3.0f, 5.0f, 6.0f, 8.0}),
 		}
 	);
 	Motown.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 3.0f, 5.0f, 7.0}),
+			FPerBarSchedule(SnareSound,{1.0f, 3.0f, 5.0f, 7.0}),
 		}
 	);
 	
@@ -311,7 +310,7 @@ DrumData::DrumData()
 	Motown.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
 		}
 	);
 	
@@ -328,21 +327,21 @@ DrumData::DrumData()
 	Swing.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNoteTriplet, 
 		{
-			FPerBarSchedule({3.0f, 7.0f}),
+			FPerBarSchedule(SnareSound,{3.0f, 7.0f}),
 		}
 	);
 	
 	Swing.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNoteTriplet, 
 		{
-			FPerBarSchedule({1.0f, 4.0f, 6.0f, 7.0f, 10.0f, 12.0f}),
+			FPerBarSchedule(HiHatOpenSound,{1.0f, 4.0f, 6.0f, 7.0f, 10.0f, 12.0f}),
 		}
 	);
 	
 	Swing.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({2.0f, 4.0f}),
+			FPerBarSchedule(HiHatClosedSound, {2.0f, 4.0f}),
 		}
 	);
 	
@@ -355,14 +354,14 @@ DrumData::DrumData()
 	Reggae.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({3.0f, 7.0f}),
+			FPerBarSchedule(KickSound,{3.0f, 7.0f}),
 		}
 	);
 	
 	Reggae.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({3.0f, 7.0f}),
+			FPerBarSchedule(SnareSound,{3.0f, 7.0f}),
 		}
 	);
 	
@@ -374,7 +373,7 @@ DrumData::DrumData()
 	Reggae.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
 		}
 	);
 	
@@ -387,14 +386,14 @@ DrumData::DrumData()
 	Pop.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 6.0f}),
+			FPerBarSchedule(KickSound,{1.0f, 6.0f}),
 		}
 	);
 	
 	Pop.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({3.0f, 7.0f}),
+			FPerBarSchedule(SnareSound,{3.0f, 7.0f}),
 		}
 	);
 	
@@ -406,7 +405,7 @@ DrumData::DrumData()
 	Pop.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f}),
 		}
 	);
 	
@@ -419,28 +418,28 @@ DrumData::DrumData()
 	Country.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f}),
+			FPerBarSchedule(KickSound,{1.0f, 2.0f, 3.0f, 4.0f}),
 		}
 	);
 	
 	Country.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::SixteenthNote, 
 		{
-			FPerBarSchedule({3.0f, 7.0f, 11.0f, 12.0f, 14.0f, 15.0f}),
+			FPerBarSchedule(SnareSound,{3.0f, 7.0f, 11.0f, 12.0f, 14.0f, 15.0f}),
 		}
 	);
 	
 	Country.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({2.0f, 4.0f, 6.0f, 8.0f}),
+			FPerBarSchedule(HiHatOpenSound,{2.0f, 4.0f, 6.0f, 8.0f}),
 		}
 	);
 	
 	Country.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::SixteenthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 4.0f, 5.0f, 6.0f, 8.0f, 9.0f, 10.0f, 13.0, 16.0}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 4.0f, 5.0f, 6.0f, 8.0f, 9.0f, 10.0f, 13.0, 16.0}),
 		}
 	);
 	
@@ -453,28 +452,28 @@ DrumData::DrumData()
 	SixteenthGroove.Kick = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({1.0f, 5.0f, 6.0f}),
+			FPerBarSchedule(KickSound,{1.0f, 5.0f, 6.0f}),
 		}
 	);
 	
 	SixteenthGroove.Snare = FInstrumentSchedule(
 		EQuartzCommandQuantization::QuarterNote, 
 		{
-			FPerBarSchedule({2.0f,4.0f}),
+			FPerBarSchedule(SnareSound,{2.0f,4.0f}),
 		}
 	);
 	
 	SixteenthGroove.HiHatOpen = FInstrumentSchedule(
 		EQuartzCommandQuantization::EighthNote, 
 		{
-			FPerBarSchedule({2.0f, 4.0f, 6.0f, 8.0f}),
+			FPerBarSchedule(HiHatOpenSound,{2.0f, 4.0f, 6.0f, 8.0f}),
 		}
 	);
 	
 	SixteenthGroove.HiHatClosed = FInstrumentSchedule(
 		EQuartzCommandQuantization::SixteenthNote, 
 		{
-			FPerBarSchedule({1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0, 14.0f, 15.0f, 16.0}),
+			FPerBarSchedule(HiHatClosedSound,{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f, 9.0f, 10.0f, 11.0f, 12.0f, 13.0, 14.0f, 15.0f, 16.0}),
 		}
 	);
 	

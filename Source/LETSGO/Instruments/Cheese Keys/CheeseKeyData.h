@@ -28,6 +28,5 @@ struct FCheeseKeyData {
 
 	FCheeseKeyData(int SetOctave, ELetsGoMusicNotes SetNote, UMetaSoundSource* SetSound);
 	
-	UFUNCTION()
 	static TArray<FCheeseKeyData> GenerateKeys(TArray<UMetaSoundSource*> Sounds);
 };

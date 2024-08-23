@@ -48,7 +48,8 @@ EDrumPatterns AStartDrums::GetRandomDrumPattern()
 
 FDrumPattern AStartDrums::GetDrumData(const EDrumPatterns Pattern)
 {
-	DrumData Data = DrumData();
+	const ADrumSoundCueMapping* SoundCueMapping = GetWorld()->SpawnActor<ADrumSoundCueMapping>(ADrumSoundCueMappingClass);
+	DrumData Data = DrumData(SoundCueMapping->Kick,SoundCueMapping->Snare,SoundCueMapping->HiHatClosed,SoundCueMapping->HiHatOpen,SoundCueMapping->Clap);
 	
 	switch (Pattern)
 	{
@@ -105,31 +106,30 @@ void AStartDrums::Initialize()
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, EnumAsString);	
 	}
 
-	const ADrumSoundCueMapping* SoundCueMapping = GetWorld()->SpawnActor<ADrumSoundCueMapping>(ADrumSoundCueMappingClass);
 
 	// Initialize Kick
 	Kick = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	Kick->Initialize(PlayByBeat, Pattern.Kick, SoundCueMapping->Kick);
+	Kick->Initialize(Pattern.Kick);
 	Kick->FinishSpawning(FTransform());
 
 	//Initialize Snare
 	Snare = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	Snare->Initialize(PlayByBeat, Pattern.Snare, SoundCueMapping->Snare);
+	Snare->Initialize(Pattern.Snare);
 	Snare->FinishSpawning(FTransform());	
 
 	//Initialize HiHatOpen
 	HiHatOpen = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	HiHatOpen->Initialize(PlayByBeat, Pattern.HiHatOpen, SoundCueMapping->HiHatOpen);
+	HiHatOpen->Initialize(Pattern.HiHatOpen);
 	HiHatOpen->FinishSpawning(FTransform());
 
 	//Initialize HiHatOpen
 	HiHatClosed = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	HiHatClosed->Initialize(PlayByBeat, Pattern.HiHatClosed, SoundCueMapping->HiHatClosed);
+	HiHatClosed->Initialize(Pattern.HiHatClosed);
 	HiHatClosed->FinishSpawning(FTransform());
 
 	//Initialize Clap
 	Clap = GetWorld()->SpawnActorDeferred<AInstrument>(AInstrument::StaticClass(), FTransform());
-	Clap->Initialize(PlayByBeat, Pattern.Clap, SoundCueMapping->Clap);
+	Clap->Initialize(Pattern.Clap);
 	Clap->FinishSpawning(FTransform());
 	
 }

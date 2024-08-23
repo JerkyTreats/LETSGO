@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "Components/ActorComponent.h"
+#include "LETSGO/Instruments/Instrument.h"
+#include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "Sound/SoundCue.h"
 #include "APlatformAudioCuePlayer.generated.h"
@@ -18,45 +20,6 @@ class LETSGO_API APlatformAudioCuePlayer : public AActor
 public:
 	// Sets default values for this component's properties
 	APlatformAudioCuePlayer();
-
-	// This is messy until I find a better solution
-	// Set references to the note cues
-	// The actual values are attached in AudioPlatform_BP in the Add Audio Cue Player node
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* A2_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* AFlat2_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* BFlat2_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* B_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* C3_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* CSharp3_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* D2_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* EFlat2_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* E2_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* F2_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* FSharp2_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* G2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
@@ -66,6 +29,13 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
 	UQuartzClockHandle* Clock;
+
+	//Instrument Data
+	UPROPERTY()
+	ACheeseKeySoundCueMapping* CheeseKeyData;
+
+	UPROPERTY()
+	AInstrument* Instrument;
 	
 protected:
 	// Called when the game starts
@@ -84,7 +54,7 @@ protected:
 	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
 
 	UFUNCTION()
-	USoundCue* GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
+	FInstrumentSchedule BuildInstrumentSchedule(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
 	
 public:
 	UFUNCTION(BlueprintCallable)
