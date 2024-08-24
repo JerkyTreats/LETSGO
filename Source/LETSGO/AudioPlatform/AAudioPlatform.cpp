@@ -19,19 +19,20 @@ void AAudioPlatform::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 }
 
-// MUST REARRANGE ORDER HERE
-// REMOVE DESTROY FROM OVERLAP AND PLACE HERE
-// WILL NEED TO UPDATE BLUEPRINT SPAWNER TO EXPLICITLY ORDER DESTROY OnAudioPlatformTriggered
+void AAudioPlatform::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AudioCuePlayer = GetWorld()->SpawnActorDeferred<APlatformAudioCuePlayer>(AudioCuePlayerClass, FTransform());
+	AudioCuePlayer-> AudioPlatformReference = this;
+	AudioCuePlayer->FinishSpawning(FTransform());
+}
+
 void AAudioPlatform::DestroyActor()
 {
 	OnAudioPlatformDestroy.Broadcast();
 	AudioCuePlayer->InitiateDestroy();
 	Destroy();
-}
-
-void AAudioPlatform::SetAudioCuePlayer(APlatformAudioCuePlayer* PlayerToSet)
-{
-	AudioCuePlayer = PlayerToSet;
 }
 
 

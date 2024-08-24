@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "Components/ActorComponent.h"
+#include "LETSGO/Instruments/Instrument.h"
+#include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "Sound/SoundCue.h"
 #include "APlatformAudioCuePlayer.generated.h"
@@ -18,63 +20,38 @@ class LETSGO_API APlatformAudioCuePlayer : public AActor
 public:
 	// Sets default values for this component's properties
 	APlatformAudioCuePlayer();
-
-	// This is messy until I find a better solution
-	// Set references to the note cues
-	// The actual values are attached in AudioPlatform_BP in the Add Audio Cue Player node
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* A2_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* AFlat2_Music_Note;
 	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* BFlat2_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* B_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* C3_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* CSharp3_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* D2_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* EFlat2_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* E2_Music_Note;
-	
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* F2_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* FSharp2_Music_Note;
-
-	UPROPERTY(EditDefaultsOnly)
-	USoundCue* G2_Music_Note;
+	UPROPERTY(EditInstanceOnly,BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	class AAudioPlatform* AudioPlatformReference;
 	
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
-	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
+	FQuartzQuantizationBoundary QuartzQuantizationBoundary = {
+		EQuartzCommandQuantization::Beat,
+		1.0f,
+		EQuarztQuantizationReference::BarRelative,
+		true
+	};;
 
 	UPROPERTY()
 	UAudioComponent* AttachedAudioComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = "LETSGO | State")  
 	UQuartzClockHandle* Clock;
+
+	//Instrument Data
+	UPROPERTY()
+	ACheeseKeySoundCueMapping* CheeseKeyData;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<ACheeseKeySoundCueMapping> CheeseKeyClass;
+
+	UPROPERTY()
+	AInstrument* Instrument;
+
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	// Reference to the AudioPlatform
-	// Required to Bind to the OnAudioPlatformTriggered Event
-	UPROPERTY(EditInstanceOnly,BlueprintReadWrite, meta=(ExposeOnSpawn=true))
-	class AAudioPlatform* AudioPlatformReference;
 
 	UPROPERTY()
 	bool IsSoundPlaying = false;
@@ -84,7 +61,7 @@ protected:
 	void OnAudioPlatformTriggered(FLetsGoMusicNotes IncomingNote);
 
 	UFUNCTION()
-	USoundCue* GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
+	FInstrumentSchedule BuildInstrumentSchedule(TEnumAsByte<ELetsGoMusicNotes> ENote) const;
 	
 public:
 	UFUNCTION(BlueprintCallable)

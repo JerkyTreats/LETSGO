@@ -18,22 +18,22 @@ struct FNotesPerBar
 	UPROPERTY()
 	UMetaSoundSource* SoundCue;
 
+	FNotesPerBar(): Beat(0), SoundCue(nullptr){}
+
 	explicit FNotesPerBar(const float BeatNum, UMetaSoundSource* Cue): Beat(BeatNum), SoundCue(Cue) {}
+	explicit FNotesPerBar(const float BeatNum): Beat(BeatNum), SoundCue(nullptr) {}
 };
 
 USTRUCT()
 struct FPerBarSchedule
 {
 	GENERATED_BODY()
-	
-	UPROPERTY()
-	TArray<float> BeatsInBar; // [1, 3] plays sound on first and third beat
 
 	UPROPERTY()
 	TArray<FNotesPerBar> NotesInBar; // [ { 1, CSharp1 }, { 3, CSharp2 }
 	
 	FPerBarSchedule() {}
-	explicit FPerBarSchedule(const TArray<float>& Beats) : BeatsInBar(Beats) {}
+	explicit FPerBarSchedule(UMetaSoundSource* SoundCue, TArray<float> Beats);
 	explicit FPerBarSchedule(const TArray<FNotesPerBar>& Notes) : NotesInBar(Notes) {}
 };
 

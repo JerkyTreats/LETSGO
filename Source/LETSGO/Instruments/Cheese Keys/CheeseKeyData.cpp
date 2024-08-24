@@ -39,7 +39,7 @@ TArray<FCheeseKeyData> FCheeseKeyData::GenerateKeys(TArray<UMetaSoundSource*> So
 	TArray<FCheeseKeyData> KeyData = TArray<FCheeseKeyData>();
 	int CurrentOctave = 1;
 	
-	for (int i = 0; i <= Sounds.Num(); i++)
+	for (int i = 0; i < Sounds.Num(); i++)
 	{
 		if (i % 12 == 0)
 		{

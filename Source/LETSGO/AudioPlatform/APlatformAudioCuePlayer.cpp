@@ -13,15 +13,7 @@ class ALetsGoGameMode;
 // Sets default values for this component's properties
 APlatformAudioCuePlayer::APlatformAudioCuePlayer()
 {
-	/**
-	 * Creates an audio component.
-	 *  Audio component needed in order to play the sound quantized
-	 */
-	AttachedAudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("Attached Audio Component"));
-	SetRootComponent(AttachedAudioComponent);
-
-	AttachedAudioComponent->SetAutoActivate(false); // Don't play immediately
-	AttachedAudioComponent->bAllowSpatialization = false; // Don't play in world
+	Instrument = CreateDefaultSubobject<AInstrument>(TEXT("DefaultInstrument"));
 }
 
 // Called when the game starts
@@ -31,66 +23,44 @@ void APlatformAudioCuePlayer::BeginPlay()
 
 	// Bind the On Platform Triggered Event to a local function
 	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &APlatformAudioCuePlayer::OnAudioPlatformTriggered);
-
-	// Build Clock Name
-	FString Name = GetName();
-	Name = Name.Append("_Clock");
 	
-	// Get Main Clock
-	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
+	CheeseKeyData = GetWorld()->SpawnActor<ACheeseKeySoundCueMapping>(CheeseKeyClass, FTransform());
+	Instrument = GetWorld()->SpawnActor<AInstrument>();
 
-	Clock = ClockSettings->GetNewClock(FName(Name));
-	Clock->StartClock(GetWorld(), Clock);
+	// Set Instrument to play on next beat, defaults wait for next bar
+	Instrument->QuartzQuantizationBoundary = QuartzQuantizationBoundary;
+	Instrument-> RelativeQuantizationResolution = EQuartzCommandQuantization::Beat;
+	Instrument->RelativeQuantizationReference = EQuarztQuantizationReference::Count;
+	const FInstrumentSchedule Schedule = BuildInstrumentSchedule(AudioPlatformReference->Note.Note);
+	Instrument->Initialize(Schedule);
 }
 
 void APlatformAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 {
 	UE_LOG(LogTemp, Display, TEXT("AudioCuePlayer Recieved OnAudioPLatformTrigger"));
-	
-	USoundCue* ThisSoundCue = GetSoundCue(IncomingNote.Note);
-	AttachedAudioComponent->SetSound(ThisSoundCue);
 
-	IsSoundPlaying = true;
+	Instrument->StartPlaying();
 	
-	const FOnQuartzCommandEventBP EmptyOnQuartzCommandEventBP; 
-	AttachedAudioComponent->PlayQuantized(GetWorld(),Clock, QuartzQuantizationBoundary, EmptyOnQuartzCommandEventBP);
 }
 
-// This is bad but requires a real solution to be figured out and implemented
-USoundCue* APlatformAudioCuePlayer::GetSoundCue(TEnumAsByte<ELetsGoMusicNotes> ENote) const
+FInstrumentSchedule APlatformAudioCuePlayer::BuildInstrumentSchedule(TEnumAsByte<ELetsGoMusicNotes> ENote) const
 {
-	switch (ENote)
+	int Octave = 3;
+
+	// Filter the array
+	TArray<FCheeseKeyData> FilteredNotes = CheeseKeyData->NoteData.FilterByPredicate([&] (const FCheeseKeyData& Data){
+		return Data.Octave == Octave && Data.Note == ENote;
+	});
+	
+	if (FilteredNotes.Num() != 1)
 	{
-	case ELetsGoMusicNotes::A:
-		return A2_Music_Note;
-	case ELetsGoMusicNotes::AFlat:
-		return AFlat2_Music_Note;
-	case ELetsGoMusicNotes::B:
-		return B_Music_Note;
-	case ELetsGoMusicNotes::BFlat:
-		return BFlat2_Music_Note;
-	case ELetsGoMusicNotes::C:
-		return CSharp3_Music_Note;
-	case ELetsGoMusicNotes::CSharp:
-		return CSharp3_Music_Note;
-	case ELetsGoMusicNotes::D:
-		return D2_Music_Note;
-	case ELetsGoMusicNotes::EFlat:
-		return EFlat2_Music_Note;
-	case ELetsGoMusicNotes::E:
-		return E2_Music_Note;
-	case ELetsGoMusicNotes::F:
-		return FSharp2_Music_Note;
-	case ELetsGoMusicNotes::FSharp:
-		return FSharp2_Music_Note;
-	case ELetsGoMusicNotes::G:
-		return G2_Music_Note;
-	default:
-		// TODO Build Custom Logging Section
-		UE_LOGFMT(LogTemp, Error, "Note does not exist in AudioCuePlayer::NoteCueMap");
-		return CSharp3_Music_Note;
+		UE_LOG(LogTemp, Error, TEXT("FilteredNote predicate did not return 1 Note"))
+		return FInstrumentSchedule();
 	}
+
+	FPerBarSchedule PerBar = FPerBarSchedule(FilteredNotes[0].Sound,{1.0f});
+	FInstrumentSchedule Schedule = FInstrumentSchedule(EQuartzCommandQuantization::Beat, {PerBar});
+	return Schedule;
 }
 
 // Need this extra destroy function because AddDynamic complains if you try to call &AAudioCuePlayer::Destroy directly
@@ -108,5 +78,6 @@ void APlatformAudioCuePlayer::InitiateDestroy()
 
 void APlatformAudioCuePlayer::DestroyActor()
 {
+	Instrument->Destroy();
 	Destroy();
 }

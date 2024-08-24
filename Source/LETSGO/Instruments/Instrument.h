@@ -10,13 +10,6 @@
 #include "LETSGO/MusicEngine/ClockSettings.h"
 #include "Instrument.generated.h"
 
-UENUM()
-enum EInstrumentType
-{
-	PlayByBeat,
-	PlayByNote
-};
-
 // See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
 UCLASS()
 class LETSGO_API AInstrument : public AActor
@@ -32,12 +25,6 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
 	UQuartzClockHandle* Clock;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="LETSGO")
-	UMetaSoundSource* InstrumentMetaSoundSource;
-
-	UPROPERTY()
-	TEnumAsByte<EInstrumentType> InstrumentType;
 	
 	/**
 	 * Quantization Metronome Event Delegate
@@ -63,6 +50,9 @@ public:
 	UPROPERTY()
 	EQuartzCommandQuantization RelativeQuantizationResolution;
 
+	UPROPERTY()
+	EQuarztQuantizationReference RelativeQuantizationReference = EQuarztQuantizationReference::BarRelative;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -74,19 +64,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void Initialize(EInstrumentType Instrument, FInstrumentSchedule Schedule, UMetaSoundSource* MetaSoundSource);
+	void Initialize(const FInstrumentSchedule& Schedule);
 	
 	UFUNCTION()
 	void StartPlaying();
 
 	UFUNCTION()
 	void StopPlaying();
-
-	UFUNCTION()
-	void PlayBeatsInBar(FPerBarSchedule Bar);
-
-	UFUNCTION()
-	void PlayNotesInBar(FPerBarSchedule Bar);
 	
 	/**
 	 * Function intended to trigger on Clock Quantization Subscription event

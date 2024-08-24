@@ -46,6 +46,13 @@ struct FDrumPattern
 class LETSGO_API DrumData
 {
 public:
+
+	UMetaSoundSource* KickSound;
+	UMetaSoundSource* SnareSound;
+	UMetaSoundSource* HiHatClosedSound;
+	UMetaSoundSource* HiHatOpenSound;
+	UMetaSoundSource* ClapSound;
+	
 	FDrumPattern BasicRock;
 	FDrumPattern FourOnTheFloor;
 	FDrumPattern Funk;
@@ -61,6 +68,7 @@ public:
 	FDrumPattern Country;
 	FDrumPattern SixteenthGroove;
 	
+	DrumData(UMetaSoundSource* Kick, UMetaSoundSource* Snare, UMetaSoundSource* HiHatClosed, UMetaSoundSource* HiHatOpen, UMetaSoundSource* Clap);
 	DrumData();
 	~DrumData();
 };

@@ -3,18 +3,19 @@
 
 #include "InstrumentSchedule.h"
 
+FPerBarSchedule::FPerBarSchedule(UMetaSoundSource* SoundCue, TArray<float> Beats)
+{
+	
+	for (int i = 0; i<Beats.Num(); i++)
+	{
+		FNotesPerBar PerBar = FNotesPerBar(Beats[i], SoundCue);
+		NotesInBar.Emplace(PerBar);
+	}
+}
+
 FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quantization, const TArray<FPerBarSchedule>& Pattern)
 {
 	QuantizationDivision = Quantization;
 	BeatSchedule = Pattern;
 }
 
-
-/*FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quantization, const TArray<float>& Pattern)
-{
-	QuantizationDivision = Quantization;
-
-	const FPerBarSchedule PerBar = FPerBarSchedule(Pattern);
-	const TArray PerBarArr = { PerBar };
-	BeatSchedule = PerBarArr;
-}*/

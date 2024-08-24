@@ -56,7 +56,7 @@ protected:
 
 	EDrumPatterns GetRandomDrumPattern();
 
-	static FDrumPattern GetDrumData(EDrumPatterns Pattern);
+	FDrumPattern GetDrumData(EDrumPatterns Pattern);
 
 public:
 	// Called every frame

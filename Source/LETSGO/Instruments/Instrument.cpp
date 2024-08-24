@@ -14,8 +14,6 @@ AInstrument::AInstrument(): Clock(nullptr)
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	InstrumentMetaSoundSource = CreateDefaultSubobject<UMetaSoundSource>(TEXT("Meta Sound Source"));
-	
 	PlayQuantizationDelegate.BindUFunction(this, "OnQuantizationBoundaryTriggered");
 }
 
@@ -46,17 +44,11 @@ void AInstrument::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AInstrument::Initialize(EInstrumentType Instrument, FInstrumentSchedule Schedule, UMetaSoundSource* MetaSoundSource)
+void AInstrument::Initialize(const FInstrumentSchedule& Schedule)
 {
 	SetClock();
-	InstrumentType = Instrument; 
 	InstrumentSchedule = Schedule;
 	RelativeQuantizationResolution = Schedule.QuantizationDivision;
-
-	if (Instrument == PlayByBeat)
-	{
-		InstrumentMetaSoundSource = MetaSoundSource;
-	}
 }
 
 void AInstrument::StartPlaying()
@@ -71,36 +63,19 @@ void AInstrument::StopPlaying()
 	Clock->StopClock(GetWorld(), true, Clock);
 }
 
-void AInstrument::PlayBeatsInBar(FPerBarSchedule Bar)
+void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
+                                                  int32 NumBars, int32 Beat, float BeatFraction)
 {
-	for (int i = 0; i < Bar.BeatsInBar.Num(); i++)
-	{
-		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
-			RelativeQuantizationResolution,
-			Bar.BeatsInBar[i],
-			EQuarztQuantizationReference::BarRelative,
-			true
-		};
+	const FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[CurrentBar];
 
-		// Play the kick drum sound
-		// This creates an Actor wrapper around a new AudioComponent we want to play on this beat
-		// This is so we can destroy the Actor after use
-		AAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<AAudioCuePlayer>();
-		AudioCuePlayer->Initialize(InstrumentMetaSoundSource, Clock,RelativeQuartzBoundary);
-		AudioCuePlayer->PlayAndDestroy();
-	}
-}
-
-void AInstrument::PlayNotesInBar(FPerBarSchedule Bar)
-{
-	for (int i = 0; i < Bar.NotesInBar.Num(); i++)
+	for (int i = 0; i < BarSchedule.NotesInBar.Num(); i++)
 	{
-		FNotesPerBar Notes = Bar.NotesInBar[i];
+		const FNotesPerBar Notes = BarSchedule.NotesInBar[i];
 		
 		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
 			RelativeQuantizationResolution,
 			Notes.Beat,
-			EQuarztQuantizationReference::BarRelative,
+			RelativeQuantizationReference,
 			true
 		};
 
@@ -110,22 +85,6 @@ void AInstrument::PlayNotesInBar(FPerBarSchedule Bar)
 		AAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<AAudioCuePlayer>();
 		AudioCuePlayer->Initialize(Notes.SoundCue, Clock,RelativeQuartzBoundary);
 		AudioCuePlayer->PlayAndDestroy();
-	}
-}
-
-void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
-                                                  int32 NumBars, int32 Beat, float BeatFraction)
-{
-	const FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[CurrentBar];
-
-	switch (InstrumentType)
-	{
-	case PlayByBeat:
-		PlayBeatsInBar(BarSchedule);
-	case PlayByNote:
-		PlayNotesInBar(BarSchedule);
-	default:
-		UE_LOG(LogTemp, Error, TEXT("Instrument has bad InstrumentType"))
 	}
 
 	if (CurrentBar == InstrumentSchedule.BeatSchedule.Num() - 1)
