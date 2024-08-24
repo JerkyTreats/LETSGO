@@ -3,12 +3,13 @@
 
 #include "InstrumentSchedule.h"
 
-FPerBarSchedule::FPerBarSchedule(UMetaSoundSource* SoundCue, const TArray<float>& Beats)
+FPerBarSchedule::FPerBarSchedule(UMetaSoundSource* SoundCue, TArray<float> Beats)
 {
 	
 	for (int i = 0; i<Beats.Num(); i++)
 	{
-		NotesInBar.Emplace(FNotesPerBar(Beats[i], SoundCue));
+		FNotesPerBar PerBar = FNotesPerBar(Beats[i], SoundCue);
+		NotesInBar.Emplace(PerBar);
 	}
 }
 

@@ -15,7 +15,7 @@ ACheeseKeySoundCueMapping::ACheeseKeySoundCueMapping()
 void ACheeseKeySoundCueMapping::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	NoteData = FCheeseKeyData::GenerateKeys(Notes);
 }
 
 // Called every frame

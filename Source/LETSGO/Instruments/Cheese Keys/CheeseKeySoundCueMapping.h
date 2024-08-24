@@ -218,7 +218,7 @@ public:
 	};
 
 	UPROPERTY()
-	TArray<FCheeseKeyData> NoteData = FCheeseKeyData::GenerateKeys(Notes);
+	TArray<FCheeseKeyData> NoteData;
 	
 protected:
 	// Called when the game starts or when spawned

@@ -38,25 +38,29 @@ void APlatformAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes I
 	
 }
 
-// This is bad but requires a real solution to be figured out and implemented
 FInstrumentSchedule APlatformAudioCuePlayer::BuildInstrumentSchedule(TEnumAsByte<ELetsGoMusicNotes> ENote) const
 {
 	int Octave = 2;
 	// MyArrayOfInts.FindByPredicate([](int32 n){ return n % 1; }));
-	TArray<FCheeseKeyData> FilteredNotes = CheeseKeyData->NoteData.FilterByPredicate([](FCheeseKeyData KeyData, TEnumAsByte<ELetsGoMusicNotes> Note = ENote, int Oct = Octave)
+	/*TArray<FCheeseKeyData> FilteredNotes = CheeseKeyData->NoteData.FilterByPredicate(&
 	{
-		return KeyData.Note == Note && KeyData.Octave == Oct;
-	});
+		return Data.Note == Note && KeyData.Octave == Oct;
+	});*/
 
+	// Filter the array
+	TArray<FCheeseKeyData> FilteredNotes = CheeseKeyData->NoteData.FilterByPredicate([&] (const FCheeseKeyData& Data){
+		return Data.Octave == Octave && Data.Note == ENote;
+	});
+	
 	if (FilteredNotes.Num() != 1)
 	{
 		UE_LOG(LogTemp, Error, TEXT("FilteredNote predicate did not return 1 Note"))
 		return FInstrumentSchedule();
 	}
 
-	FCheeseKeyData Note = FilteredNotes[0];
-	FPerBarSchedule PerBar = FPerBarSchedule(Note.Sound,{1.0f});
+	FPerBarSchedule PerBar = FPerBarSchedule(FilteredNotes[0].Sound,{1.0f});
 	FInstrumentSchedule Schedule = FInstrumentSchedule(EQuartzCommandQuantization::Beat, {PerBar});
+	return Schedule;
 }
 
 // Need this extra destroy function because AddDynamic complains if you try to call &AAudioCuePlayer::Destroy directly

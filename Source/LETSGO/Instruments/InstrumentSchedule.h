@@ -33,7 +33,7 @@ struct FPerBarSchedule
 	TArray<FNotesPerBar> NotesInBar; // [ { 1, CSharp1 }, { 3, CSharp2 }
 	
 	FPerBarSchedule() {}
-	explicit FPerBarSchedule(UMetaSoundSource* SoundCue, const TArray<float>& Beats);
+	explicit FPerBarSchedule(UMetaSoundSource* SoundCue, TArray<float> Beats);
 	explicit FPerBarSchedule(const TArray<FNotesPerBar>& Notes) : NotesInBar(Notes) {}
 };
 
