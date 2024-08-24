@@ -50,6 +50,9 @@ public:
 	UPROPERTY()
 	EQuartzCommandQuantization RelativeQuantizationResolution;
 
+	UPROPERTY()
+	EQuarztQuantizationReference RelativeQuantizationReference = EQuarztQuantizationReference::BarRelative;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

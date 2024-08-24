@@ -21,8 +21,16 @@ public:
 	// Sets default values for this component's properties
 	APlatformAudioCuePlayer();
 	
+	UPROPERTY(EditInstanceOnly,BlueprintReadWrite, meta=(ExposeOnSpawn=true))
+	class AAudioPlatform* AudioPlatformReference;
+	
 	UPROPERTY(BlueprintReadWrite, meta=(ExposeOnSpawn=true))
-	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
+	FQuartzQuantizationBoundary QuartzQuantizationBoundary = {
+		EQuartzCommandQuantization::Beat,
+		1.0f,
+		EQuarztQuantizationReference::BarRelative,
+		true
+	};;
 
 	UPROPERTY()
 	UAudioComponent* AttachedAudioComponent;
@@ -34,17 +42,16 @@ public:
 	UPROPERTY()
 	ACheeseKeySoundCueMapping* CheeseKeyData;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<ACheeseKeySoundCueMapping> CheeseKeyClass;
+
 	UPROPERTY()
 	AInstrument* Instrument;
+
 	
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
-
-	// Reference to the AudioPlatform
-	// Required to Bind to the OnAudioPlatformTriggered Event
-	UPROPERTY(EditInstanceOnly,BlueprintReadWrite, meta=(ExposeOnSpawn=true))
-	class AAudioPlatform* AudioPlatformReference;
 
 	UPROPERTY()
 	bool IsSoundPlaying = false;

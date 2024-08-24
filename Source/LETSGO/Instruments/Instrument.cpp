@@ -75,7 +75,7 @@ void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCo
 		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
 			RelativeQuantizationResolution,
 			Notes.Beat,
-			EQuarztQuantizationReference::BarRelative,
+			RelativeQuantizationReference,
 			true
 		};
 

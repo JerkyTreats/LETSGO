@@ -13,7 +13,7 @@ class ALetsGoGameMode;
 // Sets default values for this component's properties
 APlatformAudioCuePlayer::APlatformAudioCuePlayer()
 {
-
+	Instrument = CreateDefaultSubobject<AInstrument>(TEXT("DefaultInstrument"));
 }
 
 // Called when the game starts
@@ -24,28 +24,28 @@ void APlatformAudioCuePlayer::BeginPlay()
 	// Bind the On Platform Triggered Event to a local function
 	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &APlatformAudioCuePlayer::OnAudioPlatformTriggered);
 	
-	CheeseKeyData = GetWorld()->SpawnActor<ACheeseKeySoundCueMapping>();
+	CheeseKeyData = GetWorld()->SpawnActor<ACheeseKeySoundCueMapping>(CheeseKeyClass, FTransform());
 	Instrument = GetWorld()->SpawnActor<AInstrument>();
-	
+
+	// Set Instrument to play on next beat, defaults wait for next bar
+	Instrument->QuartzQuantizationBoundary = QuartzQuantizationBoundary;
+	Instrument-> RelativeQuantizationResolution = EQuartzCommandQuantization::Beat;
+	Instrument->RelativeQuantizationReference = EQuarztQuantizationReference::Count;
+	const FInstrumentSchedule Schedule = BuildInstrumentSchedule(AudioPlatformReference->Note.Note);
+	Instrument->Initialize(Schedule);
 }
 
 void APlatformAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 {
 	UE_LOG(LogTemp, Display, TEXT("AudioCuePlayer Recieved OnAudioPLatformTrigger"));
-	
-	FInstrumentSchedule Schedule = BuildInstrumentSchedule(IncomingNote.Note);
-	Instrument->Initialize(Schedule);
+
+	Instrument->StartPlaying();
 	
 }
 
 FInstrumentSchedule APlatformAudioCuePlayer::BuildInstrumentSchedule(TEnumAsByte<ELetsGoMusicNotes> ENote) const
 {
-	int Octave = 2;
-	// MyArrayOfInts.FindByPredicate([](int32 n){ return n % 1; }));
-	/*TArray<FCheeseKeyData> FilteredNotes = CheeseKeyData->NoteData.FilterByPredicate(&
-	{
-		return Data.Note == Note && KeyData.Octave == Oct;
-	});*/
+	int Octave = 3;
 
 	// Filter the array
 	TArray<FCheeseKeyData> FilteredNotes = CheeseKeyData->NoteData.FilterByPredicate([&] (const FCheeseKeyData& Data){
@@ -78,5 +78,6 @@ void APlatformAudioCuePlayer::InitiateDestroy()
 
 void APlatformAudioCuePlayer::DestroyActor()
 {
+	Instrument->Destroy();
 	Destroy();
 }

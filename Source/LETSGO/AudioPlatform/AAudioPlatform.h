@@ -25,14 +25,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	FLetsGoMusicNotes Note;
 	
-	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatform")
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO")
 	FAudioPlatformTriggerDelegate OnAudioPlatformTriggered;
 
-	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO | AudioPlatform")
+	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO")
 	FAudioPlatformDestroyDelegate OnAudioPlatformDestroy;
-	
-	UPROPERTY(EditDefaultsOnly, Blueprintable)
+
+	UPROPERTY()
 	APlatformAudioCuePlayer* AudioCuePlayer;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category="LETSGO")
+	TSubclassOf<APlatformAudioCuePlayer> AudioCuePlayerClass;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta=(ExposeOnSpawn=true))
 	float ActorDestroyDelay;
@@ -40,12 +43,10 @@ public:
 protected:
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
-
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void SetAudioCuePlayer(APlatformAudioCuePlayer* PlayerToSet);
-
 	UFUNCTION()
 	void DestroyActor();
 
