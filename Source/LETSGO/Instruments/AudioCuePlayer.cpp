@@ -30,34 +30,28 @@ void AAudioCuePlayer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AAudioCuePlayer::Initialize(UMetaSoundSource* ParentMetaSoundSource, UQuartzClockHandle* ParentClock,
-	FQuartzQuantizationBoundary ParentQuartzQuantizationBoundary)
+void AAudioCuePlayer::Initialize(const FMetaSoundPlayerData& MetaSoundData, UQuartzClockHandle* ParentClock,
+                                 const FQuartzQuantizationBoundary& ParentQuartzQuantizationBoundary)
 {
 	Clock = ParentClock;
-	MetaSoundSource = ParentMetaSoundSource;
 	QuartzQuantizationBoundary = ParentQuartzQuantizationBoundary;
 
-	AudioComponent->SetSound(MetaSoundSource);
+	AudioComponent->SetSound(MetaSoundPlayer);
+	InitializeMetaSoundPlayer(MetaSoundData);
 }
 
-void AAudioCuePlayer::Play()
+void AAudioCuePlayer::InitializeMetaSoundPlayer(const FMetaSoundPlayerData& Data) const
 {
-	const FOnQuartzCommandEventBP EmptyDelegate;
-	IsSoundPlaying = true;
-	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
-	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::ResetAudioCue);
+	AudioComponent->SetWaveParameter(Data.WaveAssetName, Data.WaveAsset);
+	AudioComponent->SetFloatParameter(Data.OutputVolumeName, Data.OutputVolume);
 }
+
 
 void AAudioCuePlayer::PlayAndDestroy()
 {
 	const FOnQuartzCommandEventBP EmptyDelegate;
 	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
 	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
-}
-
-void AAudioCuePlayer::ResetAudioCue()
-{
-	IsSoundPlaying = false;
 }
 
 

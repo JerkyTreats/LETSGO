@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MetaSoundPlayerData.h"
 #include "MetasoundSource.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
@@ -23,8 +24,8 @@ public:
 	UPROPERTY()
 	UAudioComponent* AudioComponent;
 
-	UPROPERTY()
-	UMetaSoundSource* MetaSoundSource;
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UMetaSoundSource* MetaSoundPlayer;
 
 	UPROPERTY()
 	UQuartzClockHandle* Clock;
@@ -41,18 +42,14 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void Initialize(UMetaSoundSource* ParentMetaSoundSource, UQuartzClockHandle* ParentClock, FQuartzQuantizationBoundary ParentQuartzQuantizationBoundary);
+	void Initialize(const FMetaSoundPlayerData& MetaSoundData, UQuartzClockHandle* ParentClock, const FQuartzQuantizationBoundary& ParentQuartzQuantizationBoundary);
 
 	UFUNCTION()
-	void Play();
-
+	void InitializeMetaSoundPlayer(const FMetaSoundPlayerData& Data) const;
+	
 	UFUNCTION()
 	void PlayAndDestroy();
 	
 	UFUNCTION()
-	void ResetAudioCue();
-	
-	UFUNCTION()
 	void DestroyActor();
-	
 };

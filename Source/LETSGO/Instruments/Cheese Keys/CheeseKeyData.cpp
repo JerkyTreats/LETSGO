@@ -19,7 +19,7 @@ FCheeseKeyData::FCheeseKeyData(const int SetOctave, const ELetsGoMusicNotes SetN
  * I'm going to continue on with this until it's end-to-end working though
  * I've decided to go with the most naive possible approach then iterate a better solution
  */ 
-TArray<FCheeseKeyData> FCheeseKeyData::GenerateKeys(TArray<UMetaSoundSource*> Sounds)
+TArray<FCheeseKeyData> FCheeseKeyData::GenerateKeys(TArray<USoundCue*> Sounds)
 {
 	TArray<ELetsGoMusicNotes> AssumedNoteOrder = {
 		C,

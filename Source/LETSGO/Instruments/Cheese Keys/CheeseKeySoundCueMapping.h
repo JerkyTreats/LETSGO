@@ -7,6 +7,7 @@
 #include "MetasoundSource.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentNote.h"
+#include "Sound/SoundCue.h"
 #include "CheeseKeySoundCueMapping.generated.h"
 
 UCLASS()
@@ -22,151 +23,151 @@ public:
 	// For now we can just manual map these
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* C1_Music_Note;
+	USoundCue* C1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* CSharp1_Music_Note;
+	USoundCue* CSharp1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* D1_Music_Note;
+	USoundCue* D1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* DSharp1_Music_Note;
+	USoundCue* DSharp1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* E1_Music_Note;
+	USoundCue* E1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* F1_Music_Note;
+	USoundCue* F1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* FSharp1_Music_Note;
+	USoundCue* FSharp1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* G1_Music_Note;
+	USoundCue* G1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* GSharp1_Music_Note;
+	USoundCue* GSharp1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* A1_Music_Note;
+	USoundCue* A1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* ASharp1_Music_Note;
+	USoundCue* ASharp1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* B1_Music_Note;
+	USoundCue* B1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* C2_Music_Note;
+	USoundCue* C2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* CSharp2_Music_Note;
+	USoundCue* CSharp2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* D2_Music_Note;
+	USoundCue* D2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* DSharp2_Music_Note;
+	USoundCue* DSharp2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* E2_Music_Note;
+	USoundCue* E2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* F2_Music_Note;
+	USoundCue* F2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* FSharp2_Music_Note;
+	USoundCue* FSharp2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* G2_Music_Note;
+	USoundCue* G2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* GSharp2_Music_Note;
+	USoundCue* GSharp2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* A2_Music_Note;
+	USoundCue* A2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* ASharp2_Music_Note;
+	USoundCue* ASharp2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* B2_Music_Note;
+	USoundCue* B2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* C3_Music_Note;
+	USoundCue* C3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* CSharp3_Music_Note;
+	USoundCue* CSharp3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* D3_Music_Note;
+	USoundCue* D3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* DSharp3_Music_Note;
+	USoundCue* DSharp3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* E3_Music_Note;
+	USoundCue* E3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* F3_Music_Note;
+	USoundCue* F3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* FSharp3_Music_Note;
+	USoundCue* FSharp3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* G3_Music_Note;
+	USoundCue* G3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* GSharp3_Music_Note;
+	USoundCue* GSharp3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* A3_Music_Note;
+	USoundCue* A3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* ASharp3_Music_Note;
+	USoundCue* ASharp3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* B3_Music_Note;
+	USoundCue* B3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* C4_Music_Note;
+	USoundCue* C4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* CSharp4_Music_Note;
+	USoundCue* CSharp4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* D4_Music_Note;
+	USoundCue* D4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* DSharp4_Music_Note;
+	USoundCue* DSharp4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* E4_Music_Note;
+	USoundCue* E4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* F4_Music_Note;
+	USoundCue* F4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* FSharp4_Music_Note;
+	USoundCue* FSharp4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* G4_Music_Note;
+	USoundCue* G4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* GSharp4_Music_Note;
+	USoundCue* GSharp4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* A4_Music_Note;
+	USoundCue* A4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* ASharp4_Music_Note;
+	USoundCue* ASharp4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	UMetaSoundSource* B4_Music_Note;
+	USoundCue* B4_Music_Note;
 
 	UPROPERTY()
-	TArray<UMetaSoundSource*> Notes;
+	TArray<USoundCue*> Notes;
 
 	UPROPERTY()
 	TArray<FCheeseKeyData> NoteData;

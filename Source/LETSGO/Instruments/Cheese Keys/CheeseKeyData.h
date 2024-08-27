@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MetasoundSource.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
+#include "Sound/SoundCue.h"
 #include "UObject/Object.h"
 #include "CheeseKeyData.generated.h"
 
@@ -28,5 +29,5 @@ struct FCheeseKeyData {
 
 	FCheeseKeyData(int SetOctave, ELetsGoMusicNotes SetNote, UMetaSoundSource* SetSound);
 	
-	static TArray<FCheeseKeyData> GenerateKeys(TArray<UMetaSoundSource*> Sounds);
+	static TArray<FCheeseKeyData> GenerateKeys(TArray<USoundCue*> Sounds);
 };
