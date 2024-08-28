@@ -17,19 +17,19 @@ public:
 	ADrumSoundCueMapping();
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	UMetaSoundSource* Kick;
+	USoundWave* Kick;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	UMetaSoundSource* Snare;
+	USoundWave* Snare;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	UMetaSoundSource* HiHatOpen;
+	USoundWave* HiHatOpen;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	UMetaSoundSource* HiHatClosed;
+	USoundWave* HiHatClosed;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	UMetaSoundSource* Clap;
+	USoundWave* Clap;
 
 protected:
 	// Called when the game starts or when spawned

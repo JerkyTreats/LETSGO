@@ -13,10 +13,15 @@ DrumData::DrumData(): KickSound(nullptr), SnareSound(nullptr), HiHatClosedSound(
 {
 }
 
-DrumData::DrumData(UMetaSoundSource* Kick, UMetaSoundSource* Snare, UMetaSoundSource* HiHatClosed,
-                   UMetaSoundSource* HiHatOpen, UMetaSoundSource* Clap): KickSound(Kick), SnareSound(Snare), HiHatClosedSound(HiHatClosed), HiHatOpenSound(HiHatOpen),
-                                                                         ClapSound(nullptr)
+DrumData::DrumData(USoundWave* Kick, USoundWave* Snare, USoundWave* HiHatClosed,
+                   USoundWave* HiHatOpen, USoundWave* Clap)
 {
+	KickSound = Kick;
+	SnareSound = Snare;
+	HiHatClosedSound = HiHatClosed;
+	HiHatOpenSound = HiHatOpen;
+	ClapSound = Clap;
+	
 	BasicRock = FDrumPattern();
 	FourOnTheFloor = FDrumPattern();
 	Funk = FDrumPattern();

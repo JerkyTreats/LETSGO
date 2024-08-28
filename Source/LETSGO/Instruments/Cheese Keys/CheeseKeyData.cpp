@@ -3,15 +3,17 @@
 
 #include "CheeseKeyData.h"
 
-FCheeseKeyData::FCheeseKeyData()
+#include "LETSGO/Instruments/MetaSoundPlayerData.h"
+
+FCheeseKeyData::FCheeseKeyData(): Octave(2), Note(C)
 {
 }
 
-FCheeseKeyData::FCheeseKeyData(const int SetOctave, const ELetsGoMusicNotes SetNote, UMetaSoundSource* SetSound)
+FCheeseKeyData::FCheeseKeyData(const int SetOctave, const ELetsGoMusicNotes SetNote, const FMetaSoundPlayerData& SetData)
 {
 	Octave = SetOctave;
 	Note = SetNote;
-	Sound = SetSound;
+	SoundData = SetData;
 }
 
 /**
@@ -19,7 +21,7 @@ FCheeseKeyData::FCheeseKeyData(const int SetOctave, const ELetsGoMusicNotes SetN
  * I'm going to continue on with this until it's end-to-end working though
  * I've decided to go with the most naive possible approach then iterate a better solution
  */ 
-TArray<FCheeseKeyData> FCheeseKeyData::GenerateKeys(TArray<USoundCue*> Sounds)
+TArray<FCheeseKeyData> FCheeseKeyData::GenerateKeys(TArray<USoundWave*> Sounds)
 {
 	TArray<ELetsGoMusicNotes> AssumedNoteOrder = {
 		C,
@@ -48,7 +50,8 @@ TArray<FCheeseKeyData> FCheeseKeyData::GenerateKeys(TArray<USoundCue*> Sounds)
 
 		const ELetsGoMusicNotes Note = AssumedNoteOrder[i % 12];
 
-		FCheeseKeyData Key = FCheeseKeyData(CurrentOctave, Note, Sounds[i]);
+		FMetaSoundPlayerData SoundData = FMetaSoundPlayerData(Sounds[i]);
+		FCheeseKeyData Key = FCheeseKeyData(CurrentOctave, Note, SoundData);
 		KeyData.Emplace(Key);
 	}
 

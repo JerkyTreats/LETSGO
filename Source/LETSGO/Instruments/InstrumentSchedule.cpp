@@ -3,7 +3,7 @@
 
 #include "InstrumentSchedule.h"
 
-FPerBarSchedule::FPerBarSchedule(UMetaSoundSource* SoundCue, TArray<float> Beats)
+FPerBarSchedule::FPerBarSchedule(USoundWave* SoundCue, TArray<float> Beats)
 {
 	
 	for (int i = 0; i<Beats.Num(); i++)

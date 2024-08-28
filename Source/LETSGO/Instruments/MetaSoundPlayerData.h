@@ -21,10 +21,10 @@ public:
 	~FMetaSoundPlayerData();
 
 	UPROPERTY()
-	const FName WaveAssetName = FName("WaveAsset");
+	FName WaveAssetName = FName(TEXT("WaveAsset"));
 
 	UPROPERTY()
-	const FName OutputVolumeName = FName("OutputVolume");
+	FName OutputVolumeName = FName(TEXT("OutputVolume"));
 
 	UPROPERTY()
 	USoundWave* WaveAsset;

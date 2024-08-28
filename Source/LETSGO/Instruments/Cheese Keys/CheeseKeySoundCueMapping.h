@@ -23,151 +23,151 @@ public:
 	// For now we can just manual map these
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* C1_Music_Note;
+	USoundWave* C1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* CSharp1_Music_Note;
+	USoundWave* CSharp1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* D1_Music_Note;
+	USoundWave* D1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* DSharp1_Music_Note;
+	USoundWave* DSharp1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* E1_Music_Note;
+	USoundWave* E1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* F1_Music_Note;
+	USoundWave* F1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* FSharp1_Music_Note;
+	USoundWave* FSharp1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* G1_Music_Note;
+	USoundWave* G1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* GSharp1_Music_Note;
+	USoundWave* GSharp1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* A1_Music_Note;
+	USoundWave* A1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* ASharp1_Music_Note;
+	USoundWave* ASharp1_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* B1_Music_Note;
+	USoundWave* B1_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* C2_Music_Note;
+	USoundWave* C2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* CSharp2_Music_Note;
+	USoundWave* CSharp2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* D2_Music_Note;
+	USoundWave* D2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* DSharp2_Music_Note;
+	USoundWave* DSharp2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* E2_Music_Note;
+	USoundWave* E2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* F2_Music_Note;
+	USoundWave* F2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* FSharp2_Music_Note;
+	USoundWave* FSharp2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* G2_Music_Note;
+	USoundWave* G2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* GSharp2_Music_Note;
+	USoundWave* GSharp2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* A2_Music_Note;
+	USoundWave* A2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* ASharp2_Music_Note;
+	USoundWave* ASharp2_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* B2_Music_Note;
+	USoundWave* B2_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* C3_Music_Note;
+	USoundWave* C3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* CSharp3_Music_Note;
+	USoundWave* CSharp3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* D3_Music_Note;
+	USoundWave* D3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* DSharp3_Music_Note;
+	USoundWave* DSharp3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* E3_Music_Note;
+	USoundWave* E3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* F3_Music_Note;
+	USoundWave* F3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* FSharp3_Music_Note;
+	USoundWave* FSharp3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* G3_Music_Note;
+	USoundWave* G3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* GSharp3_Music_Note;
+	USoundWave* GSharp3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* A3_Music_Note;
+	USoundWave* A3_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* ASharp3_Music_Note;
+	USoundWave* ASharp3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* B3_Music_Note;
+	USoundWave* B3_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* C4_Music_Note;
+	USoundWave* C4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* CSharp4_Music_Note;
+	USoundWave* CSharp4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* D4_Music_Note;
+	USoundWave* D4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* DSharp4_Music_Note;
+	USoundWave* DSharp4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* E4_Music_Note;
+	USoundWave* E4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* F4_Music_Note;
+	USoundWave* F4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* FSharp4_Music_Note;
+	USoundWave* FSharp4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* G4_Music_Note;
+	USoundWave* G4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* GSharp4_Music_Note;
+	USoundWave* GSharp4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* A4_Music_Note;
+	USoundWave* A4_Music_Note;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* ASharp4_Music_Note;
+	USoundWave* ASharp4_Music_Note;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	USoundCue* B4_Music_Note;
+	USoundWave* B4_Music_Note;
 
 	UPROPERTY()
-	TArray<USoundCue*> Notes;
+	TArray<USoundWave*> Notes;
 
 	UPROPERTY()
 	TArray<FCheeseKeyData> NoteData;
