@@ -24,7 +24,7 @@ public:
 	UPROPERTY()
 	UAudioComponent* AudioComponent;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
 	UMetaSoundSource* MetaSoundPlayer;
 
 	UPROPERTY()
@@ -33,7 +33,7 @@ public:
 	UPROPERTY()
 	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category="LETSGO")
 	FMetaSoundPlayerData SoundPlayerData;
 	
 protected:

@@ -9,7 +9,7 @@
 /**
  * 
  */
-USTRUCT()
+USTRUCT(Blueprintable)
 struct LETSGO_API FMetaSoundPlayerData
 {
 	GENERATED_BODY()
@@ -20,15 +20,15 @@ public:
 	FMetaSoundPlayerData(USoundWave* Cue, const float Volume);
 	~FMetaSoundPlayerData();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category="LETSGO")
 	FName WaveAssetName = FName(TEXT("WaveAsset"));
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category="LETSGO")
 	FName OutputVolumeName = FName(TEXT("OutputVolume"));
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category="LETSGO")
 	USoundWave* WaveAsset;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, Category="LETSGO")
 	float OutputVolume = 1.0f;
 };
