@@ -36,21 +36,28 @@ void AAudioCuePlayer::Initialize(const FMetaSoundPlayerData& MetaSoundData, UQua
 	Clock = ParentClock;
 	QuartzQuantizationBoundary = ParentQuartzQuantizationBoundary;
 
+	SoundPlayerData = MetaSoundData;
 	AudioComponent->SetSound(MetaSoundPlayer);
-	InitializeMetaSoundPlayer(MetaSoundData);
+
 }
 
 void AAudioCuePlayer::InitializeMetaSoundPlayer(const FMetaSoundPlayerData& Data) const
 {
 	AudioComponent->SetWaveParameter(Data.WaveAssetName, Data.WaveAsset);
 	AudioComponent->SetFloatParameter(Data.OutputVolumeName, Data.OutputVolume);
+
 }
 
 
 void AAudioCuePlayer::PlayAndDestroy()
 {
 	const FOnQuartzCommandEventBP EmptyDelegate;
+
+	AudioComponent->Activate();
+
 	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
+	InitializeMetaSoundPlayer(SoundPlayerData);
+
 	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
 }
 

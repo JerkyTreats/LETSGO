@@ -24,7 +24,7 @@ public:
 	UPROPERTY()
 	UAudioComponent* AudioComponent;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	UMetaSoundSource* MetaSoundPlayer;
 
 	UPROPERTY()
@@ -32,6 +32,9 @@ public:
 
 	UPROPERTY()
 	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
+
+	UPROPERTY()
+	FMetaSoundPlayerData SoundPlayerData;
 	
 protected:
 	// Called when the game starts or when spawned
