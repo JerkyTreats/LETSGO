@@ -40,6 +40,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -48,7 +49,10 @@ public:
 	void Initialize(const FMetaSoundPlayerData& MetaSoundData, UQuartzClockHandle* ParentClock, const FQuartzQuantizationBoundary& ParentQuartzQuantizationBoundary);
 
 	UFUNCTION()
-	void InitializeMetaSoundPlayer(const FMetaSoundPlayerData& Data) const;
+	void OnPlayStateChange(EAudioComponentPlayState PlayState);
+	
+	UFUNCTION()
+	void InitializeMetaSoundPlayer();
 	
 	UFUNCTION()
 	void PlayAndDestroy();

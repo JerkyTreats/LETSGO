@@ -107,11 +107,12 @@ void AStartDrums::Initialize()
 	}
 
 
+
 	// Initialize Kick
 	Kick = GetWorld()->SpawnActorDeferred<AInstrument>(InstrumentClass, FTransform());
 	Kick->Initialize(Pattern.Kick);
 	Kick->FinishSpawning(FTransform());
-
+	
 	//Initialize Snare
 	Snare = GetWorld()->SpawnActorDeferred<AInstrument>(InstrumentClass, FTransform());
 	Snare->Initialize(Pattern.Snare);
@@ -131,6 +132,7 @@ void AStartDrums::Initialize()
 	Clap = GetWorld()->SpawnActorDeferred<AInstrument>(InstrumentClass, FTransform());
 	Clap->Initialize(Pattern.Clap);
 	Clap->FinishSpawning(FTransform());
+	
 	
 }
 
