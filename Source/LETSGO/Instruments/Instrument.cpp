@@ -79,11 +79,11 @@ void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCo
 			true
 		};
 
-		// Play the kick drum sound
+		// Play the sound
 		// This creates an Actor wrapper around a new AudioComponent we want to play on this beat
-		// This is so we can destroy the Actor after use
+		// This is so we can easily destroy the Actor after use
 		AAudioCuePlayer* AudioCuePlayer = GetWorld()->SpawnActor<AAudioCuePlayer>(AudioCueClass);
-		AudioCuePlayer->Initialize(Notes.SoundData, Clock,RelativeQuartzBoundary);
+		AudioCuePlayer->Initialize(Notes.SoundData, Clock, RelativeQuartzBoundary);
 		AudioCuePlayer->PlayAndDestroy();
 	}
 

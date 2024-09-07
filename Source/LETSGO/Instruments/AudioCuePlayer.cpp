@@ -17,7 +17,6 @@ AAudioCuePlayer::AAudioCuePlayer()
 	SetRootComponent(AudioComponent);
 	AudioComponent->SetAutoActivate(false); // Don't play immediately
 	AudioComponent->bAllowSpatialization = false; // Don't play in world
-	AudioComponent->OnAudioPlayStateChanged.AddDynamic(this, &AAudioCuePlayer::OnPlayStateChange);
 }
 
 // Called when the game starts or when spawned
@@ -40,24 +39,31 @@ void AAudioCuePlayer::Initialize(const FMetaSoundPlayerData& MetaSoundData, UQua
 
 	SoundPlayerData = MetaSoundData;
 	AudioComponent->SetSound(MetaSoundPlayer);
-}
+	AudioComponent->Activate();
+	InitializeMetaSoundPlayer();
 
-void AAudioCuePlayer::OnPlayStateChange(EAudioComponentPlayState PlayState)
-{
-	switch (PlayState)
-	{
-	case EAudioComponentPlayState::Playing:
-		UE_LOG(LogTemp, Display, TEXT("Playing"))
-		InitializeMetaSoundPlayer();
-	default: return;
-	}
 }
 
 void AAudioCuePlayer::InitializeMetaSoundPlayer() 
 {
+
+	
+	/*
+	TArray<FAudioParameter> SoundParams = {
+		FAudioParameter(SoundPlayerData.WaveAssetName, SoundPlayerData.WaveAsset),
+		FAudioParameter(SoundPlayerData.OutputVolumeName, SoundPlayerData.OutputVolume),
+	};
+	MetaSoundPlayer->InitParameters(SoundParams, FName());
+
+
+	TArray<FAudioParameter> ParamsCopy = AudioComponent->DefaultParameters;
+	FAudioParameter::Merge(MoveTemp(ParamsCopy), SoundParams);
+
+	AudioComponent->DefaultParameters = SoundParams;
+	*/
+	
 	AudioComponent->SetWaveParameter(SoundPlayerData.WaveAssetName, SoundPlayerData.WaveAsset);
 	AudioComponent->SetFloatParameter(SoundPlayerData.OutputVolumeName, SoundPlayerData.OutputVolume);
-
 }
 
 
@@ -65,8 +71,9 @@ void AAudioCuePlayer::PlayAndDestroy()
 {
 	const FOnQuartzCommandEventBP EmptyDelegate;
 
+	// AudioComponent->Play();
 	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
-	
+
 	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
 }
 

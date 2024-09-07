@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MetaSoundPlayerData.h"
 #include "MetasoundSource.h"
+#include "Audio/ActorSoundParameterInterface.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "AudioCuePlayer.generated.h"
@@ -48,8 +49,7 @@ public:
 	UFUNCTION()
 	void Initialize(const FMetaSoundPlayerData& MetaSoundData, UQuartzClockHandle* ParentClock, const FQuartzQuantizationBoundary& ParentQuartzQuantizationBoundary);
 
-	UFUNCTION()
-	void OnPlayStateChange(EAudioComponentPlayState PlayState);
+
 	
 	UFUNCTION()
 	void InitializeMetaSoundPlayer();

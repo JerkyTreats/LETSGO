@@ -31,6 +31,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	USoundWave* Clap;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	UMetaSoundSource* MetaSoundTest;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
