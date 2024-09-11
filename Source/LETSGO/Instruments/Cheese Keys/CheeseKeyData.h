@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MetasoundSource.h"
+#include "LETSGO/Instruments/MetaSoundPlayerData.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
 #include "CheeseKeyData.generated.h"
@@ -22,11 +22,11 @@ struct FCheeseKeyData {
 	TEnumAsByte<ELetsGoMusicNotes> Note;
 
 	UPROPERTY()
-	UMetaSoundSource* Sound;
+	FMetaSoundPlayerData SoundData;
 
 	FCheeseKeyData();
 
-	FCheeseKeyData(int SetOctave, ELetsGoMusicNotes SetNote, UMetaSoundSource* SetSound);
+	FCheeseKeyData(int SetOctave, ELetsGoMusicNotes SetNote, const FMetaSoundPlayerData& SetData);
 	
-	static TArray<FCheeseKeyData> GenerateKeys(TArray<UMetaSoundSource*> Sounds);
+	static TArray<FCheeseKeyData> GenerateKeys(TArray<USoundWave*> Sounds);
 };

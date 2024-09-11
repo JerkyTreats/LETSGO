@@ -50,6 +50,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<ADrumSoundCueMapping> ADrumSoundCueMappingClass;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AInstrument> InstrumentClass;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

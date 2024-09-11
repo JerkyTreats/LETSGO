@@ -45,7 +45,7 @@ public:
 	
 
 	// Clock
-	UFUNCTION(BlueprintPure, Category="LETSGO")
+	UFUNCTION(BlueprintCallable, Category="LETSGO")
 	AClockSettings* GetClockSettings() const;
 	
 	UFUNCTION(BlueprintCallable, Category="LETSGO")

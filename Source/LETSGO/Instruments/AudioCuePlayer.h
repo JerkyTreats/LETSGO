@@ -3,7 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MetaSoundPlayerData.h"
 #include "MetasoundSource.h"
+#include "Audio/ActorSoundParameterInterface.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "AudioCuePlayer.generated.h"
@@ -23,36 +25,36 @@ public:
 	UPROPERTY()
 	UAudioComponent* AudioComponent;
 
-	UPROPERTY()
-	UMetaSoundSource* MetaSoundSource;
+	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
+	UMetaSoundSource* MetaSoundPlayer;
 
 	UPROPERTY()
 	UQuartzClockHandle* Clock;
 
 	UPROPERTY()
 	FQuartzQuantizationBoundary QuartzQuantizationBoundary;
+
+	UPROPERTY(BlueprintReadOnly, Category="LETSGO")
+	FMetaSoundPlayerData SoundPlayerData;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
 
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void Initialize(UMetaSoundSource* ParentMetaSoundSource, UQuartzClockHandle* ParentClock, FQuartzQuantizationBoundary ParentQuartzQuantizationBoundary);
-
+	void Initialize(const FMetaSoundPlayerData& MetaSoundData, UQuartzClockHandle* ParentClock, const FQuartzQuantizationBoundary& ParentQuartzQuantizationBoundary);
+	
 	UFUNCTION()
-	void Play();
-
+	void InitializeMetaSoundPlayer();
+	
 	UFUNCTION()
 	void PlayAndDestroy();
 	
 	UFUNCTION()
-	void ResetAudioCue();
-	
-	UFUNCTION()
 	void DestroyActor();
-	
 };

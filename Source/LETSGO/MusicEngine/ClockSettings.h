@@ -43,5 +43,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable, Category="LETSGO")
 	UQuartzClockHandle* GetNewClock(FName ClockIdentifier) const;
 };

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MetaSoundPlayerData.h"
 #include "MetasoundSource.h"
 #include "InstrumentSchedule.generated.h"
 
@@ -16,12 +17,12 @@ struct FNotesPerBar
 	float Beat;
 
 	UPROPERTY()
-	UMetaSoundSource* SoundCue;
+	FMetaSoundPlayerData SoundData;
 
-	FNotesPerBar(): Beat(0), SoundCue(nullptr){}
+	FNotesPerBar(): Beat(0) {}
 
-	explicit FNotesPerBar(const float BeatNum, UMetaSoundSource* Cue): Beat(BeatNum), SoundCue(Cue) {}
-	explicit FNotesPerBar(const float BeatNum): Beat(BeatNum), SoundCue(nullptr) {}
+	explicit FNotesPerBar(const float BeatNum, USoundWave* Sound): Beat(BeatNum), SoundData(FMetaSoundPlayerData(Sound)) {}
+	explicit FNotesPerBar(const float BeatNum, const FMetaSoundPlayerData& Data): Beat(BeatNum), SoundData(Data) {}
 };
 
 USTRUCT()
@@ -30,10 +31,10 @@ struct FPerBarSchedule
 	GENERATED_BODY()
 
 	UPROPERTY()
-	TArray<FNotesPerBar> NotesInBar; // [ { 1, CSharp1 }, { 3, CSharp2 }
+	TArray<FNotesPerBar> NotesInBar; // [ { 1, [ Note: CSharp1, Vol: 0.5 ] } ... ]
 	
 	FPerBarSchedule() {}
-	explicit FPerBarSchedule(UMetaSoundSource* SoundCue, TArray<float> Beats);
+	explicit FPerBarSchedule(USoundWave* SoundCue, TArray<float> Beats);
 	explicit FPerBarSchedule(const TArray<FNotesPerBar>& Notes) : NotesInBar(Notes) {}
 };
 

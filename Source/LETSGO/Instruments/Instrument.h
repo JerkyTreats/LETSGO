@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AudioCuePlayer.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
 #include "MetasoundSource.h"
@@ -23,7 +24,7 @@ public:
 	UPROPERTY()
 	AClockSettings* ClockSettings;
 	
-	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
+	UPROPERTY(BlueprintReadWrite, Category="LETSGO")	
 	UQuartzClockHandle* Clock;
 	
 	/**
@@ -52,6 +53,9 @@ public:
 
 	UPROPERTY()
 	EQuarztQuantizationReference RelativeQuantizationReference = EQuarztQuantizationReference::BarRelative;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	TSubclassOf<AAudioCuePlayer> AudioCueClass;
 
 protected:
 	// Called when the game starts or when spawned

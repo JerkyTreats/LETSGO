@@ -2,6 +2,8 @@
 
 
 #include "AudioCuePlayer.h"
+
+#include "AsyncTreeDifferences.h"
 #include "Components/AudioComponent.h"
 
 
@@ -21,7 +23,6 @@ AAudioCuePlayer::AAudioCuePlayer()
 void AAudioCuePlayer::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 // Called every frame
@@ -30,34 +31,33 @@ void AAudioCuePlayer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AAudioCuePlayer::Initialize(UMetaSoundSource* ParentMetaSoundSource, UQuartzClockHandle* ParentClock,
-	FQuartzQuantizationBoundary ParentQuartzQuantizationBoundary)
+void AAudioCuePlayer::Initialize(const FMetaSoundPlayerData& MetaSoundData, UQuartzClockHandle* ParentClock,
+                                 const FQuartzQuantizationBoundary& ParentQuartzQuantizationBoundary)
 {
 	Clock = ParentClock;
-	MetaSoundSource = ParentMetaSoundSource;
 	QuartzQuantizationBoundary = ParentQuartzQuantizationBoundary;
 
-	AudioComponent->SetSound(MetaSoundSource);
+	SoundPlayerData = MetaSoundData;
+	AudioComponent->SetSound(MetaSoundPlayer);
+	AudioComponent->Activate();
+	InitializeMetaSoundPlayer();
+
 }
 
-void AAudioCuePlayer::Play()
+void AAudioCuePlayer::InitializeMetaSoundPlayer()
 {
-	const FOnQuartzCommandEventBP EmptyDelegate;
-	IsSoundPlaying = true;
-	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
-	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::ResetAudioCue);
+	AudioComponent->SetWaveParameter(SoundPlayerData.WaveAssetName, SoundPlayerData.WaveAsset);
+	AudioComponent->SetFloatParameter(SoundPlayerData.OutputVolumeName, SoundPlayerData.OutputVolume);
 }
+
 
 void AAudioCuePlayer::PlayAndDestroy()
 {
 	const FOnQuartzCommandEventBP EmptyDelegate;
-	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
-	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
-}
 
-void AAudioCuePlayer::ResetAudioCue()
-{
-	IsSoundPlaying = false;
+	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
+
+	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
 }
 
 

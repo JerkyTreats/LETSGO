@@ -24,8 +24,8 @@ void APlatformAudioCuePlayer::BeginPlay()
 	// Bind the On Platform Triggered Event to a local function
 	AudioPlatformReference->OnAudioPlatformTriggered.AddDynamic(this, &APlatformAudioCuePlayer::OnAudioPlatformTriggered);
 	
-	CheeseKeyData = GetWorld()->SpawnActor<ACheeseKeySoundCueMapping>(CheeseKeyClass, FTransform());
-	Instrument = GetWorld()->SpawnActor<AInstrument>();
+	CheeseKeyData = GetWorld()->SpawnActor<ACheeseKeySoundCueMapping>(CheeseKeyClass);
+	Instrument = GetWorld()->SpawnActor<AInstrument>(InstrumentClass);
 
 	// Set Instrument to play on next beat, defaults wait for next bar
 	Instrument->QuartzQuantizationBoundary = QuartzQuantizationBoundary;
@@ -58,7 +58,8 @@ FInstrumentSchedule APlatformAudioCuePlayer::BuildInstrumentSchedule(TEnumAsByte
 		return FInstrumentSchedule();
 	}
 
-	FPerBarSchedule PerBar = FPerBarSchedule(FilteredNotes[0].Sound,{1.0f});
+	FNotesPerBar NotesPerBar = FNotesPerBar(1.0f, FilteredNotes[0].SoundData);
+	FPerBarSchedule PerBar = FPerBarSchedule({NotesPerBar});
 	FInstrumentSchedule Schedule = FInstrumentSchedule(EQuartzCommandQuantization::Beat, {PerBar});
 	return Schedule;
 }

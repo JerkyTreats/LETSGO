@@ -47,11 +47,11 @@ class LETSGO_API DrumData
 {
 public:
 
-	UMetaSoundSource* KickSound;
-	UMetaSoundSource* SnareSound;
-	UMetaSoundSource* HiHatClosedSound;
-	UMetaSoundSource* HiHatOpenSound;
-	UMetaSoundSource* ClapSound;
+	USoundWave* KickSound;
+	USoundWave* SnareSound;
+	USoundWave* HiHatClosedSound;
+	USoundWave* HiHatOpenSound;
+	USoundWave* ClapSound;
 	
 	FDrumPattern BasicRock;
 	FDrumPattern FourOnTheFloor;
@@ -68,7 +68,8 @@ public:
 	FDrumPattern Country;
 	FDrumPattern SixteenthGroove;
 	
-	DrumData(UMetaSoundSource* Kick, UMetaSoundSource* Snare, UMetaSoundSource* HiHatClosed, UMetaSoundSource* HiHatOpen, UMetaSoundSource* Clap);
+	DrumData(USoundWave* Kick, USoundWave* Snare, USoundWave* HiHatClosed,
+		USoundWave* HiHatOpen, USoundWave* Clap);
 	DrumData();
 	~DrumData();
 };

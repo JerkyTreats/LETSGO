@@ -48,6 +48,8 @@ public:
 	UPROPERTY()
 	AInstrument* Instrument;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AInstrument> InstrumentClass;
 	
 protected:
 	// Called when the game starts
