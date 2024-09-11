@@ -48,8 +48,6 @@ public:
 
 	UFUNCTION()
 	void Initialize(const FMetaSoundPlayerData& MetaSoundData, UQuartzClockHandle* ParentClock, const FQuartzQuantizationBoundary& ParentQuartzQuantizationBoundary);
-
-
 	
 	UFUNCTION()
 	void InitializeMetaSoundPlayer();

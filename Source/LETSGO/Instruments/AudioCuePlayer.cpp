@@ -44,24 +44,8 @@ void AAudioCuePlayer::Initialize(const FMetaSoundPlayerData& MetaSoundData, UQua
 
 }
 
-void AAudioCuePlayer::InitializeMetaSoundPlayer() 
+void AAudioCuePlayer::InitializeMetaSoundPlayer()
 {
-
-	
-	/*
-	TArray<FAudioParameter> SoundParams = {
-		FAudioParameter(SoundPlayerData.WaveAssetName, SoundPlayerData.WaveAsset),
-		FAudioParameter(SoundPlayerData.OutputVolumeName, SoundPlayerData.OutputVolume),
-	};
-	MetaSoundPlayer->InitParameters(SoundParams, FName());
-
-
-	TArray<FAudioParameter> ParamsCopy = AudioComponent->DefaultParameters;
-	FAudioParameter::Merge(MoveTemp(ParamsCopy), SoundParams);
-
-	AudioComponent->DefaultParameters = SoundParams;
-	*/
-	
 	AudioComponent->SetWaveParameter(SoundPlayerData.WaveAssetName, SoundPlayerData.WaveAsset);
 	AudioComponent->SetFloatParameter(SoundPlayerData.OutputVolumeName, SoundPlayerData.OutputVolume);
 }
@@ -71,7 +55,6 @@ void AAudioCuePlayer::PlayAndDestroy()
 {
 	const FOnQuartzCommandEventBP EmptyDelegate;
 
-	// AudioComponent->Play();
 	AudioComponent->PlayQuantized(GetWorld(), Clock, QuartzQuantizationBoundary, EmptyDelegate);
 
 	AudioComponent->OnAudioFinished.AddDynamic(this, &AAudioCuePlayer::DestroyActor);
