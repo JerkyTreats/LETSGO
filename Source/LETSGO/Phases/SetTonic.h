@@ -9,24 +9,20 @@
 #include "UObject/Object.h"
 #include "SetTonic.generated.h"
 
-/**
- * 
+
+/*
+ *	AudioPlatform Broadcasts OnAudioPlatformTriggered
+ *	SetTonic Phase has references to three AudioPlatforms
+ *	On Activate method, SetTonic spawns the three AudioPlatforms in front of the Player
+ *		-> Binds to all OnAudioPlatformTriggered events
+ *	When OnAudioPlatformTriggered event received:
+ *		-> Destroy all Platform
+ *		-> Set Tonic in GameState
  */
 UCLASS()
 class LETSGO_API ASetTonic : public AActor, public IPhaseController
 {
 	GENERATED_BODY()
-
-	/*
-	 *	AudioPlatform Broadcasts OnAudioPlatformTriggered
-	 *	SetTonic Phase has references to three AudioPlatforms
-	 *	On Activate method, SetTonic spawns the three AudioPlatforms in front of the Player
-	 *		-> Binds to all OnAudioPlatformTriggered events
-	 *	When OnAudioPlatformTriggered event received:
-	 *		-> Destroy all Platform
-	 *		-> Set Tonic in GameState
-	 */
-
 
 public:
 	ASetTonic();
