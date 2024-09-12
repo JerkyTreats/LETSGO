@@ -18,7 +18,7 @@ enum class ELetsGoMusicScales : uint8 {
 	Locrian,
 	// Pentatonic,
 	Chromatic,
-	WholeStep
+	WholeStep,
 };
 
 // For now we are only concerned with 12TET traditional western music
@@ -147,4 +147,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category= LetsGoBlueprintCategory)
 	static TArray<FLetsGoGeneratedScale> GenerateAllScales(const FLetsGoMusicNotes& Tonic);
 
+	/// Given a Tonic ("C") and Interval ("3rd"), retrieve the possible notes for that Interval 
+	/// @param Tonic Key of the Scale
+	/// @param DesiredInterval int of the degree of the scale 
+	/// @return Array of possible notes for desired Interval
+	UFUNCTION(BlueprintCallable, Category= LetsGoBlueprintCategory)
+	static TArray<FLetsGoMusicNotes> GetInterval(const FLetsGoMusicNotes Tonic, const int DesiredInterval);
 };
