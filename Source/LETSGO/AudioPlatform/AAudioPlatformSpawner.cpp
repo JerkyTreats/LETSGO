@@ -53,6 +53,22 @@ FTransform AAudioPlatformSpawner::GetCameraVectorForward() const
 	return VectorTransform;
 }
 
+TArray<AAudioPlatform*> AAudioPlatformSpawner::SpawnPlatforms(TArray<FLetsGoMusicNotes> NotesToSpawn)
+{
+	const FTransform CameraForward = GetCameraVectorForward();
+
+	for (int i = 0; i < NotesToSpawn.Num(); i++)
+	{
+		AAudioPlatform* SpawnedPlatform = SpawnPlatform(CameraForward, NotesToSpawn[i]);
+		const int SidePosition = i - (NotesToSpawn.Num() / 2);
+		SetSpawnerPosition(SpawnedPlatform, SidePosition);
+
+		SpawnedPlatforms.Emplace(SpawnedPlatform);
+	}
+
+	return SpawnedPlatforms;
+}
+
 AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLocation, const FLetsGoMusicNotes Note)
 {
 	
@@ -63,6 +79,12 @@ AAudioPlatform* AAudioPlatformSpawner::SpawnPlatform(const FTransform& SpawnLoca
 	SpawnedPlatforms.Add(SpawnedPlatform);
 
 	return SpawnedPlatform;
+}
+
+void AAudioPlatformSpawner::SetSpawnerPosition(AAudioPlatform* SpawnedPlatform, const int SidePosition)
+{
+	const double YPos = SidePosition * OffsetAmountPerSpawnedPlatform;
+	SpawnedPlatform->AddActorLocalOffset(FVector(0, YPos, 0));
 }
 
 void AAudioPlatformSpawner::InitiateDestroy()

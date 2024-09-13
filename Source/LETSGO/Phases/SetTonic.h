@@ -31,15 +31,9 @@ public:
 	int NumPlatformsToSpawn = 3;
 	
 	UPROPERTY()
-	TArray<AAudioPlatform*> AudioPlatforms;
-	
-	UPROPERTY()
 	AAudioPlatformSpawner* Spawner;
-	
-	UPROPERTY(BlueprintReadWrite, Category="LETSGO | Audio Platform Spawner")
-	float OffsetAmountPerSpawnedPlatform = 150.0f;
 
-	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AAudioPlatformSpawner> AudioPlatformSpawnerClass;
 
 protected:

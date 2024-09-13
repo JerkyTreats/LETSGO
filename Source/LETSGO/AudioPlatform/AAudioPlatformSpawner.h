@@ -38,6 +38,8 @@ public:
 	UPROPERTY(BlueprintCallable, BlueprintAssignable, Category = "LETSGO")
 	FSpawnerNoteTriggeredDelegate OnAudioPlatformTriggered;
 
+	UPROPERTY(BlueprintReadWrite, Category="LETSGO")
+	float OffsetAmountPerSpawnedPlatform = 150.0f;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,6 +55,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FTransform GetCameraVectorForward() const;
 
+	UFUNCTION()
+	void SetSpawnerPosition(AAudioPlatform* SpawnedPlatform, int SidePosition);
+
+	UFUNCTION()
+	TArray<AAudioPlatform*> SpawnPlatforms(TArray<FLetsGoMusicNotes> NotesToSpawn); 
+	
 	UFUNCTION()
 	AAudioPlatform* SpawnPlatform(const FTransform& SpawnLocation, const FLetsGoMusicNotes Note);
 

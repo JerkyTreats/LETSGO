@@ -5,8 +5,6 @@
 
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
-#include "Logging/StructuredLog.h"
-#include "Math/UnitConversion.h"
 
 ASetTonic::ASetTonic(): Spawner()
 {
@@ -37,28 +35,17 @@ void ASetTonic::Initialize()
 
 void ASetTonic::Activate()
 {
-	const FTransform CameraForward = Spawner->GetCameraVectorForward();
-	FVector RootLocation = CameraForward.GetTranslation();
-	
+	Active = true;
 
-	const int HalfLength = DivRoundClosest(NumPlatformsToSpawn, 2);
 	const TArray<FLetsGoMusicNotes> PlatformNotes = GetRandomNotes(NumPlatformsToSpawn);
+	TArray<AAudioPlatform*> AudioPlatforms = Spawner->SpawnPlatforms(PlatformNotes);
 
 	// Spawn three Audio Platforms 
-	for (int i = 0; i < NumPlatformsToSpawn; i++)
+	for (int i = 0; i < AudioPlatforms.Num(); i++)
 	{
-		AAudioPlatform* SpawnedPlatform = Spawner->SpawnPlatform(CameraForward, PlatformNotes[i]);
-
-		const int SidePosition = i - (NumPlatformsToSpawn / 2);
-		const double YPos = SidePosition * OffsetAmountPerSpawnedPlatform;
-		RootLocation.Y += YPos;
-		RootLocation.Z = 1;
-		SpawnedPlatform->AddActorLocalOffset(FVector(0, YPos, 0));
-		
-		SpawnedPlatform->OnAudioPlatformTriggered.AddDynamic(this, &ASetTonic::SetTonic);
+		AudioPlatforms[i]->OnAudioPlatformTriggered.AddDynamic(this, &ASetTonic::SetTonic);
 	}
 	
-	Active = true;
 }
 
 bool ASetTonic::IsActivated()
