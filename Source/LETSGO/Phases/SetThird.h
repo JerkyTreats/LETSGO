@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "PhaseController.h"
 #include "GameFramework/Actor.h"
+#include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "SetThird.generated.h"
 
@@ -20,20 +21,42 @@ public:
 	UPROPERTY()
 	FLetsGoMusicNotes Tonic;
 
-	
+	UPROPERTY()
+	AAudioPlatformSpawner* Spawner;
 
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AAudioPlatformSpawner> AudioPlatformSpawnerClass;
 	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	bool Completed = false;
+	bool Active = false;
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void Initialize();
+
+	UFUNCTION()
 	virtual void Activate() override;
+
+	UFUNCTION()
 	virtual bool IsActivated() override;
+
+	UFUNCTION()
 	virtual void Deactivate() override;
+
+	UFUNCTION()
 	virtual void Complete() override;
+
+	UFUNCTION()
 	virtual bool IsCompleted() override;
+
+	UFUNCTION()
 	virtual void InitiateDestroy() override;
+
+	UFUNCTION()
+	void SetThird(FLetsGoMusicNotes Note);
 };

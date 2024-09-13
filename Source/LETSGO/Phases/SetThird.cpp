@@ -3,14 +3,18 @@
 
 #include "SetThird.h"
 
-#include "DSP/MidiNoteQuantizer.h"
+#include "LETSGO/LETSGO.h"
+#include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
+#include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 
+class ALetsGoGameMode;
 // Sets default values
-ASetThird::ASetThird()
+ASetThird::ASetThird(): Spawner()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	Spawner = CreateDefaultSubobject<AAudioPlatformSpawner>(TEXT("Audio Platform Spawner"));
 }
 
 // Called when the game starts or when spawned
@@ -26,29 +30,66 @@ void ASetThird::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+void ASetThird::Initialize()
+{
+	Spawner = GetWorld()->SpawnActor<AAudioPlatformSpawner>(AudioPlatformSpawnerClass);
+	
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode()); 
+	Tonic = GameMode->GetTonic();
+
+	if ( ! Tonic.Note )
+	{
+		UE_LOG(LogLetsgo, Error, TEXT("Phase SetThird Initialized with no Tonic retrieved from GameMode"));
+	}
+}
+
 void ASetThird::Activate()
 {
+	Active = true;
+	
+	const TArray<FLetsGoMusicNotes> PlatformNotes = ULetsGoMusicEngine::GetInterval(Tonic, 3);
+	TArray<AAudioPlatform*> AudioPlatforms = Spawner->SpawnPlatforms(PlatformNotes);
+	
+	for (int i = 0; i < AudioPlatforms.Num(); i++)
+	{
+		AudioPlatforms[i]->OnAudioPlatformTriggered.AddDynamic(this, &ASetThird::SetThird);
+	}
+	
 }
 
 bool ASetThird::IsActivated()
 {
-	return false; //temp
+	return Active;
 }
 
 void ASetThird::Deactivate()
 {
+	Spawner->InitiateDestroy();
+
+	Active = false;
 }
 
 void ASetThird::Complete()
 {
+	Deactivate();
+	
+	Completed = true;
 }
 
 bool ASetThird::IsCompleted()
 {
-	return false; // temp
+	return Completed;
 }
 
 void ASetThird::InitiateDestroy()
 {
+}
+
+void ASetThird::SetThird(FLetsGoMusicNotes Note)
+{
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->SetTonic(Note);
+	
+	Complete();
 }
 
