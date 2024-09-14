@@ -40,11 +40,11 @@ void ASetTonic::Activate()
 
 	const TArray<FLetsGoMusicNotes> PlatformNotes = GetRandomNotes(NumPlatformsToSpawn);
 	TArray<AAudioPlatform*> AudioPlatforms = Spawner->SpawnPlatforms(PlatformNotes);
-
-	// Spawn three Audio Platforms 
+	
+	// Bind to AudioPlatform event and handle the musical note they send 
 	for (int i = 0; i < AudioPlatforms.Num(); i++)
 	{
-		AudioPlatforms[i]->OnAudioPlatformTriggered.AddDynamic(this, &ASetTonic::SetTonic);
+		AudioPlatforms[i]->OnAudioPlatformTriggered.AddUniqueDynamic(this, &ASetTonic::SetTonic);
 	}
 	
 }

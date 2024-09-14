@@ -237,9 +237,10 @@ TArray<FLetsGoGeneratedScale> ULetsGoMusicEngine::GenerateAllScales(const FLetsG
 //        2nd      3rd      4th      5th     6th    7th 
 TArray<FLetsGoMusicNotes> ULetsGoMusicEngine::GetInterval(const FLetsGoMusicNotes Tonic, const int DesiredInterval)
 {
-	//                       5th                3    Scale[6] = F, return {F + 1, F + 2}
+	//                       5th                3    Scale[6] = F
 	const int IntervalBase = (DesiredInterval - 2) * 2;
 
+	// return {F + 1, F + 2}
 	FLetsGoGeneratedScale ChromaticScale = GenerateScale(Chromatic, Tonic);
 	TArray Interval = {
 		ChromaticScale.Notes[IntervalBase + 1], // 7 = "G" or "E" depending on Tonics C, A respectively

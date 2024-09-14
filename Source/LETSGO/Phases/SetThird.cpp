@@ -34,25 +34,20 @@ void ASetThird::Initialize()
 {
 	Spawner = GetWorld()->SpawnActor<AAudioPlatformSpawner>(AudioPlatformSpawnerClass);
 	
-	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode()); 
-	Tonic = GameMode->GetTonic();
-
-	if ( ! Tonic.Note )
-	{
-		UE_LOG(LogLetsgo, Error, TEXT("Phase SetThird Initialized with no Tonic retrieved from GameMode"));
-	}
 }
 
 void ASetThird::Activate()
 {
 	Active = true;
-	
+
+	SetTonic();
+
 	const TArray<FLetsGoMusicNotes> PlatformNotes = ULetsGoMusicEngine::GetInterval(Tonic, 3);
 	TArray<AAudioPlatform*> AudioPlatforms = Spawner->SpawnPlatforms(PlatformNotes);
 	
 	for (int i = 0; i < AudioPlatforms.Num(); i++)
 	{
-		AudioPlatforms[i]->OnAudioPlatformTriggered.AddDynamic(this, &ASetThird::SetThird);
+		AudioPlatforms[i]->OnAudioPlatformTriggered.AddUniqueDynamic(this, &ASetThird::SetThird);
 	}
 	
 }
@@ -64,8 +59,6 @@ bool ASetThird::IsActivated()
 
 void ASetThird::Deactivate()
 {
-	Spawner->InitiateDestroy();
-
 	Active = false;
 }
 
@@ -83,7 +76,21 @@ bool ASetThird::IsCompleted()
 
 void ASetThird::InitiateDestroy()
 {
+	Spawner->InitiateDestroy();
+	Destroy();
 }
+
+void ASetThird::SetTonic()
+{
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode()); 
+	Tonic = GameMode->GetTonic();
+
+	if ( ! Tonic.Note )
+	{
+		UE_LOG(LogLetsgo, Error, TEXT("Phase SetThird Initialized with no Tonic retrieved from GameMode"));
+	}
+}
+
 
 void ASetThird::SetThird(FLetsGoMusicNotes Note)
 {

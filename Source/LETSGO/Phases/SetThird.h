@@ -37,8 +37,8 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	void Initialize();
 
+	// IPhase Controller 
 	UFUNCTION()
 	virtual void Activate() override;
 
@@ -56,7 +56,14 @@ public:
 
 	UFUNCTION()
 	virtual void InitiateDestroy() override;
+	// End IPhaseController
 
+	UFUNCTION()
+	void Initialize();
+	
+	UFUNCTION()
+	void SetTonic();
+	
 	UFUNCTION()
 	void SetThird(FLetsGoMusicNotes Note);
 };
