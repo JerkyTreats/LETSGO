@@ -4,6 +4,7 @@
 #include "PhaseManager.h"
 
 #include "SetTonic.h"
+#include "Sleep.h"
 #include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/StartDrums.h"
@@ -35,6 +36,9 @@ void APhaseManager::BeginPlay()
 	ASetTonic* SetTonic = GetWorld()->SpawnActor<ASetTonic>(SetTonicClass);
 	SetTonic->Initialize();
 	Phases.Emplace(SetTonic);
+
+	ASleep* Sleep = GetWorld() -> SpawnActor<ASleep>();
+	Phases.Emplace(Sleep);
 
 	ASetThird* SetThird = GetWorld()->SpawnActor<ASetThird>(SetThirdClass);
 	SetThird->Initialize();
