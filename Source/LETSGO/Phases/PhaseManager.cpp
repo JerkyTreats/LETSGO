@@ -36,6 +36,10 @@ void APhaseManager::BeginPlay()
 	SetTonic->Initialize();
 	Phases.Emplace(SetTonic);
 
+	ASetThird* SetThird = GetWorld()->SpawnActor<ASetThird>(SetThirdClass);
+	SetThird->Initialize();
+	Phases.Emplace(SetThird);
+
 	UE_LOG(LogLetsgo, Display, TEXT("PhaseManager BeginPlay complete"));
 
 }
