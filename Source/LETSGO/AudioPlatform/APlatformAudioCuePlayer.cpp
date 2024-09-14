@@ -5,6 +5,7 @@
 
 #include "AAudioPlatform.h"
 #include "Components/AudioComponent.h"
+#include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "Logging/StructuredLog.h"
 
@@ -37,7 +38,7 @@ void APlatformAudioCuePlayer::BeginPlay()
 
 void APlatformAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 {
-	UE_LOG(LogTemp, Display, TEXT("AudioCuePlayer Recieved OnAudioPLatformTrigger"));
+	UE_LOG(LogLetsgo, Display, TEXT("AudioCuePlayer Recieved OnAudioPLatformTrigger"));
 
 	Instrument->StartPlaying();
 	
@@ -54,7 +55,7 @@ FInstrumentSchedule APlatformAudioCuePlayer::BuildInstrumentSchedule(TEnumAsByte
 	
 	if (FilteredNotes.Num() != 1)
 	{
-		UE_LOG(LogTemp, Error, TEXT("FilteredNote predicate did not return 1 Note"))
+		UE_LOG(LogLetsgo, Error, TEXT("FilteredNote predicate did not return 1 Note"))
 		return FInstrumentSchedule();
 	}
 

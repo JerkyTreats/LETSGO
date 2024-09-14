@@ -4,6 +4,7 @@
 #include "StartDrums.h"
 #include "Drum/DrumData.h"
 #include "Drum/DrumSoundCueMapping.h"
+#include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 
@@ -139,7 +140,7 @@ void AStartDrums::Initialize()
 
 void AStartDrums::Activate()
 {
-	UE_LOG(LogTemp, Display, TEXT("Phase StartDrums Activated"))
+	UE_LOG(LogLetsgo, Display, TEXT("Phase StartDrums Activated"))
 	Kick->StartPlaying();
 	Snare->StartPlaying();
 	HiHatOpen->StartPlaying();
@@ -160,7 +161,7 @@ void AStartDrums::Deactivate()
 
 void AStartDrums::Complete()
 {
-	UE_LOG(LogTemp, Display, TEXT("Phase StartDrums Completed"))
+	UE_LOG(LogLetsgo, Display, TEXT("Phase StartDrums Completed"))
 	InitiateDestroy();
 }
 

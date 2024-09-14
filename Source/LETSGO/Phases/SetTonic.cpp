@@ -3,6 +3,7 @@
 
 #include "SetTonic.h"
 
+#include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
 
@@ -17,7 +18,7 @@ void ASetTonic::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Display, TEXT("SetTonic BeginPlay complete"));
+	UE_LOG(LogLetsgo, Display, TEXT("SetTonic BeginPlay complete"));
 
 }
 
@@ -100,7 +101,7 @@ TArray<FLetsGoMusicNotes> ASetTonic::GetRandomNotes(int NumberOfNotes)
 
 	if (NumberOfNotes > Notes.Num())
 	{
-		UE_LOG(LogTemp, Error, TEXT("GetRandomNotes called with NumberOfNotes > Number of posssible notes. Resizing to max"));
+		UE_LOG(LogLetsgo, Error, TEXT("GetRandomNotes called with NumberOfNotes > Number of posssible notes. Resizing to max"));
 		NumberOfNotes = Notes.Num();
 	}
 

@@ -4,6 +4,7 @@
 #include "PhaseManager.h"
 
 #include "SetTonic.h"
+#include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/StartDrums.h"
 #include "LETSGO/Phases/StartClock.h"
@@ -35,7 +36,7 @@ void APhaseManager::BeginPlay()
 	SetTonic->Initialize();
 	Phases.Emplace(SetTonic);
 
-	UE_LOG(LogTemp, Display, TEXT("PhaseManager BeginPlay complete"));
+	UE_LOG(LogLetsgo, Display, TEXT("PhaseManager BeginPlay complete"));
 
 }
 
@@ -53,12 +54,12 @@ void APhaseManager::ProcessPhases()
 		if (EmptyListWarnAmount < 5)
 		{
 			// TODO create custom Log Category 
-			UE_LOG(LogTemp, Warning, TEXT("Empty Phase List"));
+			UE_LOG(LogLetsgo, Warning, TEXT("Empty Phase List"));
 			EmptyListWarnAmount++;
 			
 			if (EmptyListWarnAmount == 5 )
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Disabling Empty Phase List Warning."));
+				UE_LOG(LogLetsgo, Warning, TEXT("Disabling Empty Phase List Warning."));
 			}
 		}
 		return;
@@ -75,7 +76,7 @@ void APhaseManager::ProcessPhases()
 
 	if (Phases.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Last Phase In Phase List Completed"));
+		UE_LOG(LogLetsgo, Warning, TEXT("Last Phase In Phase List Completed"));
 		return;
 	}
 

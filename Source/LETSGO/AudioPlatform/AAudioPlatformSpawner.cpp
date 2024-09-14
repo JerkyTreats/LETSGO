@@ -2,8 +2,7 @@
 
 
 #include "AAudioPlatformSpawner.h"
-
-#include "Kismet/GameplayStatics.h"
+#include "LETSGO/LETSGO.h"
 
 
 // Sets default values
@@ -19,7 +18,7 @@ void AAudioPlatformSpawner::BeginPlay()
 {
 	Super::BeginPlay();
 	World = GetWorld();
-	UE_LOG(LogTemp, Display, TEXT("AudioPlatformSpawner BeginPlay complete"));
+	UE_LOG(LogLetsgo, Display, TEXT("AudioPlatformSpawner BeginPlay complete"));
 }
 
 // Called every frame

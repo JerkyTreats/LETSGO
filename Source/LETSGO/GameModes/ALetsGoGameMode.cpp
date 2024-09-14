@@ -2,6 +2,7 @@
 
 #include "ALetsGoGameMode.h"
 #include "ALetsGoGameState.h"
+#include "LETSGO/LETSGO.h"
 
 ALetsGoGameMode::ALetsGoGameMode()
 {
@@ -17,12 +18,12 @@ void ALetsGoGameMode::BeginPlay()
 	
 	FTimerHandle TimerHandle;
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &ALetsGoGameMode::InitializeGameplay,5.0f,false);
-	UE_LOG(LogTemp, Display, TEXT("Wait 5"));
+	UE_LOG(LogLetsgo, Display, TEXT("Wait 5"));
 }
 
 void ALetsGoGameMode::InitializeGameplay()
 {
-	UE_LOG(LogTemp, Display, TEXT("Initialize Gameplay"));
+	UE_LOG(LogLetsgo, Display, TEXT("Initialize Gameplay"));
 	PhaseManager->Initialize();
 }
 

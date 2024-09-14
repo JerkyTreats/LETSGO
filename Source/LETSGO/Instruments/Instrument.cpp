@@ -4,6 +4,7 @@
 #include "Instrument.h"
 #include "LETSGO/MusicEngine/ClockSettings.h"
 #include "AudioCuePlayer.h"
+#include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
@@ -22,7 +23,7 @@ void AInstrument::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogTemp, Display, TEXT("Drums BeginPlay Complete"))
+	UE_LOG(LogLetsgo, Display, TEXT("Drums BeginPlay Complete"))
 }
 
 void AInstrument::SetClock()

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "PhaseController.h"
+#include "SetThird.h"
 #include "SetTonic.h"
 #include "StartClock.h"
 #include "LETSGO/Instruments/StartDrums.h"
@@ -38,6 +39,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AStartClock> StartClockClass;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<ASetThird> SetThirdClass; 
 
 private:
 	// The last frame number we were ticked.
