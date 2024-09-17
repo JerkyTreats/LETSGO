@@ -56,3 +56,18 @@ UInstrumentRack* ALetsGoGameMode::GetInstrumentRack()
 {
 	return GetGameState<ALetsGoGameState>()->InstrumentRack;
 }
+
+void ALetsGoGameMode::SetInstrumentData_CheeseKey(ACheeseKeySoundCueMapping* DataToSet)
+{
+	GetGameState<ALetsGoGameState>()->InstrumentData_CheeseKey = DataToSet;
+}
+
+ACheeseKeySoundCueMapping* ALetsGoGameMode::GetInstrumentData_CheeseKey()
+{
+	ACheeseKeySoundCueMapping* CheeseKey = GetGameState<ALetsGoGameState>()->InstrumentData_CheeseKey;
+	if (! CheeseKey)
+	{
+		UE_LOG(LogLetsgo, Error, TEXT("InstrumentData_CheeseKey not set in State, returning nullptr"))
+	}
+	return CheeseKey;
+}

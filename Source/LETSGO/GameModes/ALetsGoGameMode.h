@@ -58,6 +58,13 @@ public:
 	UFUNCTION()
 	UInstrumentRack* GetInstrumentRack();
 
+	// Instrument Data
+	UFUNCTION()
+	void SetInstrumentData_CheeseKey(ACheeseKeySoundCueMapping* DataToSet);
+
+	UFUNCTION()
+	ACheeseKeySoundCueMapping* GetInstrumentData_CheeseKey();
+	
 	UFUNCTION()
 	void InitializeGameplay();
 };

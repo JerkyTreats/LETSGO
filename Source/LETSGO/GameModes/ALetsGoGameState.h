@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/GameState.h"
 #include "LETSGO/Instruments/InstrumentRack.h"
+#include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
 #include "LETSGO/MusicEngine/ClockSettings.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "Quartz/AudioMixerClock.h"
@@ -33,4 +34,7 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
 	UInstrumentRack* InstrumentRack;
+
+	UPROPERTY(VisibleAnywhere, Category="LETSGO")
+	ACheeseKeySoundCueMapping* InstrumentData_CheeseKey;
 };
