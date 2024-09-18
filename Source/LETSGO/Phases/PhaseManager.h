@@ -43,6 +43,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<ASetThird> SetThirdClass; 
 
+	UPROPERTY()
+	AMusicComposer* MusicComposer;
+	
 private:
 	// The last frame number we were ticked.
 	// We don't want to tick multiple times per frame 

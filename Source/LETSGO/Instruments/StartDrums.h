@@ -43,9 +43,6 @@ public:
 
 	UPROPERTY()
 	UInstrumentRack* InstrumentRack;
-	
-	// UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	// TSubclassOf<AInstrument> AInstrumentClass;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<ADrumSoundCueMapping> ADrumSoundCueMappingClass;

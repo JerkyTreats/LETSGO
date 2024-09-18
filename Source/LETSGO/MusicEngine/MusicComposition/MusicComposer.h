@@ -3,10 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MusicCompositionStrategy.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
-#include "Composer.generated.h"
+#include "MusicComposer.generated.h"
 
 USTRUCT()
 struct FComposerData
@@ -21,13 +22,19 @@ struct FComposerData
 };
 
 UCLASS()
-class LETSGO_API AComposer : public AActor
+class LETSGO_API AMusicComposer : public AActor
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AComposer();
+	AMusicComposer();
+
+	UPROPERTY()
+	FComposerData ComposerData;
+
+	UPROPERTY()
+	TArray<TSharedPtr<IMusicCompositionStrategy>>& CompositionStrategies;
 
 protected:
 	// Called when the game starts or when spawned
@@ -37,5 +44,15 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	FInstrumentSchedule ComposeInstrumentSchedule(FComposerData Data);
+	UFUNCTION()
+	void Initialize();
+
+	UFUNCTION()
+	void SetComposerData(FComposerData NewDataObject);
+
+	UFUNCTION()
+	void ChooseMusicalStrategy();
+
+	UFUNCTION()
+	FInstrumentSchedule ComposeInstrumentSchedule();
 };

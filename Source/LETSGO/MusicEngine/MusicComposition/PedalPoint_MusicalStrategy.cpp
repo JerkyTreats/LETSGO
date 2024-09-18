@@ -3,7 +3,7 @@
 
 #include "PedalPoint_MusicalStrategy.h"
 
-#include "Composer.h"
+#include "MusicComposer.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
@@ -14,6 +14,7 @@ FInstrumentSchedule UPedalPoint_MusicalStrategy::Apply(const FComposerData& Data
 	ACheeseKeySoundCueMapping* CheeseKeyMapping = GameMode->GetInstrumentData_CheeseKey();
 
 	// TODO Fix Octave shenan
+	// TODO AudioCuePlayer has exact same logic. Bad? 
 	// Filter the array
 	TArray<FCheeseKeyData> FilteredNotes = CheeseKeyMapping->NoteData.FilterByPredicate([&] (const FCheeseKeyData& CheeseData){
 		return CheeseData.Octave == Data.OctaveMin && CheeseData.Note == Data.Scale.Tonic.Note;
@@ -32,3 +33,4 @@ FInstrumentSchedule UPedalPoint_MusicalStrategy::Apply(const FComposerData& Data
 	
 	return Schedule;
 }
+
