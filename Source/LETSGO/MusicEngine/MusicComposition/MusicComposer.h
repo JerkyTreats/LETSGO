@@ -18,7 +18,18 @@ struct FComposerData
 	FLetsGoGeneratedScale Scale;
 	int OctaveMin = 1;
 	int OctaveMax = 5;
-	
+	FInstrumentSchedule InstrumentScheduleInput;
+};
+
+
+USTRUCT()
+struct FMusicStrategyData
+{
+	GENERATED_BODY()
+
+	IMusicCompositionStrategy* Strategy;
+	// type = PedalPoint; CreateMotif
+	// requirements = [ SetTonic, SetThird, Motif ] 
 };
 
 UCLASS()
@@ -34,7 +45,13 @@ public:
 	FComposerData ComposerData;
 
 	UPROPERTY()
-	TArray<TSharedPtr<IMusicCompositionStrategy>>& CompositionStrategies;
+	FLetsGoGeneratedScale Scale; 
+
+	UPROPERTY()
+	TArray<IMusicCompositionStrategy*> CompositionStrategies;
+
+	UPROPERTY()
+	TArray<FInstrumentSchedule> CreatedSchedules;
 
 protected:
 	// Called when the game starts or when spawned
@@ -46,6 +63,9 @@ public:
 
 	UFUNCTION()
 	void Initialize();
+
+	UFUNCTION()
+	void GenerateScale();
 
 	UFUNCTION()
 	void SetComposerData(FComposerData NewDataObject);

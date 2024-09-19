@@ -4,6 +4,7 @@
 #include "Phase_StartMusicComposer.h"
 
 #include "MusicComposer.h"
+#include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 
 // Sets default values
@@ -29,6 +30,8 @@ void APhase_StartMusicComposer::Tick(float DeltaTime)
 void APhase_StartMusicComposer::Initialize()
 {
 	AMusicComposer* MusicComposer = GetWorld()->SpawnActor<AMusicComposer>();
+	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->SetMusicComposer(MusicComposer);
 }
 
 void APhase_StartMusicComposer::Activate()

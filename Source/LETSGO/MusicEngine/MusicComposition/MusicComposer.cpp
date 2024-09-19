@@ -4,10 +4,11 @@
 #include "MusicComposer.h"
 
 #include "PedalPoint_MusicalStrategy.h"
+#include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 
 // Sets default values
-AMusicComposer::AMusicComposer(): CompositionStrategies()
+AMusicComposer::AMusicComposer(): ComposerData(), CompositionStrategies()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -31,10 +32,26 @@ void AMusicComposer::Tick(float DeltaTime)
 
 void AMusicComposer::Initialize()
 {
-	
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	GameMode->OnMusicalStateUpdated.AddDynamic(this, &AMusicComposer::GenerateScale);
+
+}
+
+void AMusicComposer::GenerateScale()
+{
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	FLetsGoMusicNotes Tonic = GameMode->GetTonic();
+	FLetsGoMusicNotes Second = GameMode->GetSecond();
+	FLetsGoMusicNotes Third = GameMode->GetThird();
+	FLetsGoMusicNotes Fourth = GameMode->GetFourth();
+	FLetsGoMusicNotes Fifth = GameMode->GetFifth();
+	FLetsGoMusicNotes Sixth = GameMode->GetSixth();
+	FLetsGoMusicNotes Seventh = GameMode->GetSeventh();
+
+	Scale = FLetsGoGeneratedScale();
 }
 
 FInstrumentSchedule AMusicComposer::ComposeInstrumentSchedule()
 {
-	
+	return FInstrumentSchedule();
 }

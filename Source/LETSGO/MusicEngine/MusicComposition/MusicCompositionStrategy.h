@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MusicComposer.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "UObject/Interface.h"
 #include "MusicCompositionStrategy.generated.h"
 
+struct FComposerData;
 // This class does not need to be modified.
 UINTERFACE()
 class UMusicCompositionStrategy : public UInterface
