@@ -105,11 +105,14 @@ struct FLetsGoGeneratedScale
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FLetsGoMusicNotes> Notes;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool IsValid = false;
+
 	FLetsGoGeneratedScale() : Tonic(), Scale(), Notes() {}
 
-	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale, const TArray<FLetsGoMusicNotes>& Notes) : Tonic(Tonic), Scale(Scale), Notes(Notes) {}
+	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale, const TArray<FLetsGoMusicNotes>& Notes) : Tonic(Tonic), Scale(Scale), Notes(Notes), IsValid(true) {}
 
-	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale) : Tonic(Tonic), Scale(Scale) {}
+	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale) : Tonic(Tonic), Scale(Scale), IsValid(true) {}
 };
 
 /**

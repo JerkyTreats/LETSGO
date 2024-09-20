@@ -9,6 +9,7 @@
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "MusicComposer.generated.h"
 
+// There's an expectation all values are nullable 
 USTRUCT()
 struct FComposerData
 {
@@ -19,18 +20,16 @@ struct FComposerData
 	int OctaveMin = 1;
 	int OctaveMax = 5;
 	FInstrumentSchedule InstrumentScheduleInput;
+	IMusicCompositionStrategy* CompositionStrategy;
+	int ComposerDataObjectIndex;
 };
 
 
-USTRUCT()
-struct FMusicStrategyData
-{
-	GENERATED_BODY()
-
-	IMusicCompositionStrategy* Strategy;
-	// type = PedalPoint; CreateMotif
-	// requirements = [ SetTonic, SetThird, Motif ] 
-};
+// Game mode creates Music Composer somehow, likely a phase
+// Composer holds collection of FComposerData
+// ComposerData contains instrument schedules
+//	* Also contains data required to make instrument schedules
+// 
 
 UCLASS()
 class LETSGO_API AMusicComposer : public AActor
@@ -42,16 +41,10 @@ public:
 	AMusicComposer();
 
 	UPROPERTY()
-	FComposerData ComposerData;
-
-	UPROPERTY()
 	FLetsGoGeneratedScale Scale; 
 
 	UPROPERTY()
-	TArray<IMusicCompositionStrategy*> CompositionStrategies;
-
-	UPROPERTY()
-	TArray<FInstrumentSchedule> CreatedSchedules;
+	TArray<FComposerData> ComposerDataObjects;
 
 protected:
 	// Called when the game starts or when spawned
@@ -68,7 +61,10 @@ public:
 	void GenerateScale();
 
 	UFUNCTION()
-	void SetComposerData(FComposerData NewDataObject);
+	void AddComposerData(FComposerData NewDataObject);
+	
+	UFUNCTION()
+	void MergeComposerData(FComposerData NewDataObject);
 
 	UFUNCTION()
 	void ChooseMusicalStrategy();

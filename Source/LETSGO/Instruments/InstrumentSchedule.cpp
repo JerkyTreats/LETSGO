@@ -17,5 +17,6 @@ FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quanti
 {
 	QuantizationDivision = Quantization;
 	BeatSchedule = Pattern;
+	IsValid = true;
 }
 
