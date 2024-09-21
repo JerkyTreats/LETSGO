@@ -7,7 +7,7 @@
 #include "Sleep.h"
 #include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
-#include "LETSGO/Instruments/StartDrums.h"
+#include "StartDrums.h"
 #include "LETSGO/MusicEngine/MusicComposition/MusicComposer.h"
 #include "LETSGO/Phases/StartClock.h"
 

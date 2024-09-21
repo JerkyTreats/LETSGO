@@ -7,7 +7,8 @@
 #include "SetThird.h"
 #include "SetTonic.h"
 #include "StartClock.h"
-#include "LETSGO/Instruments/StartDrums.h"
+#include "StartDrums.h"
+#include "LETSGO/MusicEngine/MusicComposition/MusicComposer.h"
 #include "UObject/Object.h"
 #include "PhaseManager.generated.h"
 

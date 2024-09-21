@@ -3,9 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Instrument.h"
-#include "Drum/DrumData.h"
-#include "Drum/DrumSoundCueMapping.h"
+#include "LETSGO/Instruments/Instrument.h"
+#include "LETSGO/Instruments/Drum/DrumData.h"
+#include "LETSGO/Instruments/Drum/DrumSoundCueMapping.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentRack.h"
 #include "LETSGO/Phases/PhaseController.h"
@@ -19,6 +19,9 @@ class LETSGO_API AStartDrums : public AActor, public IPhaseController
 public:
 	// Sets default values for this actor's properties
 	AStartDrums();
+	
+	UPROPERTY()
+	FOnQuartzMetronomeEventBP PlayQuantizationDelegate;
 
 	UPROPERTY()
 	bool IsActive;
@@ -73,4 +76,8 @@ public:
 	virtual bool IsCompleted() override;
 
 	virtual void InitiateDestroy() override;
+
+	UFUNCTION()
+	void OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType,
+												  int32 NumBars, int32 Beat, float BeatFraction);
 };

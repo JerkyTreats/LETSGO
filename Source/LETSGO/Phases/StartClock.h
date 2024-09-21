@@ -27,6 +27,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AClockSettings> ClockSettingsClass;
 
+	UPROPERTY()
+	AClockSettings* ClockSettings;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
