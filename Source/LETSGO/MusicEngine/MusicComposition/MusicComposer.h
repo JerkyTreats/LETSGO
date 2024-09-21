@@ -3,36 +3,30 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MusicCompositionStrategy.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentNote.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "MusicComposer.generated.h"
 
-// There's an expectation all values are nullable 
 USTRUCT()
 struct FComposerData
 {
 	GENERATED_BODY()
 
-	FInstrumentNote Instrument;
-	
-	int NumBarsToCompose;
-	FLetsGoGeneratedScale Scale;
+	FInstrumentData InstrumentData;
 	int OctaveMin = 1;
 	int OctaveMax = 5;
-	FInstrumentSchedule InstrumentScheduleInput;
-	IMusicCompositionStrategy* CompositionStrategy;
-	int ComposerDataObjectIndex;
+
+	TArray<FInstrumentSchedule> Schedules;
+	
+	// IMusicCompositionStrategy* CompositionStrategy;
+	// int ComposerDataObjectIndex;
+
+	FComposerData();
+	explicit FComposerData(const FInstrumentData& InData);
 };
 
-
-// Game mode creates Music Composer somehow, likely a phase
-// Composer holds collection of FComposerData
-// ComposerData contains instrument schedules
-//	* Also contains data required to make instrument schedules
-// 
 
 UCLASS()
 class LETSGO_API AMusicComposer : public AActor

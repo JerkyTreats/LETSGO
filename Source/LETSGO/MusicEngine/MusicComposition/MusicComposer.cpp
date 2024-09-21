@@ -2,11 +2,19 @@
 
 
 #include "MusicComposer.h"
-
-#include "Strategy_PedalPointComposition.h"
-#include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
+
+FComposerData::FComposerData()
+{
+	Schedules = TArray<FInstrumentSchedule>();
+}
+
+FComposerData::FComposerData(const FInstrumentData& InData)
+{
+	FComposerData();
+	InstrumentData = InData;
+}
 
 // Sets default values
 AMusicComposer::AMusicComposer()
@@ -71,6 +79,7 @@ void AMusicComposer::GenerateScale()
 	Scale.IsValid = true;
 }
 
+/*
 void AMusicComposer::AddComposerData(FComposerData NewDataObject)
 {
 	if (NewDataObject.ComposerDataObjectIndex)
@@ -103,6 +112,7 @@ void AMusicComposer::MergeComposerData(FComposerData NewDataObject)
 	Base.CompositionStrategy = (NewDataObject.CompositionStrategy) ? NewDataObject.CompositionStrategy : Base.CompositionStrategy;
 	
 }
+*/
 
 void AMusicComposer::ChooseMusicalStrategy()
 {
@@ -116,8 +126,5 @@ FInstrumentSchedule AMusicComposer::ComposeInstrumentSchedule()
 void AMusicComposer::OnBeat(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
 	float BeatFraction)
 {
-	// Check ComposerDataObjects
-	//   NumBars 
-	//	 * Scale needs Updating?
-	//	 * 
+	
 }
