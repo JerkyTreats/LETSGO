@@ -3,7 +3,7 @@
 
 #include "Phase_StartMusicComposer.h"
 
-#include "MusicComposer.h"
+#include "LETSGO/MusicEngine/MusicComposition/MusicComposer.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 

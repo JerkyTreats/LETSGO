@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MusicComposer.h"
+#include "LETSGO/MusicEngine/MusicComposition/MusicComposer.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Phases/PhaseController.h"
 #include "Phase_StartMusicComposer.generated.h"
