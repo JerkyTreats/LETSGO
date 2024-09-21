@@ -1,33 +1,33 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Phase_StartMusicComposer.h"
+#include "StartMusicComposer.h"
 
 #include "LETSGO/MusicEngine/MusicComposition/MusicComposer.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 
 // Sets default values
-APhase_StartMusicComposer::APhase_StartMusicComposer()
+AStartMusicComposer::AStartMusicComposer()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
 // Called when the game starts or when spawned
-void APhase_StartMusicComposer::BeginPlay()
+void AStartMusicComposer::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void APhase_StartMusicComposer::Tick(float DeltaTime)
+void AStartMusicComposer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void APhase_StartMusicComposer::Initialize()
+void AStartMusicComposer::Initialize()
 {
 	AMusicComposer* MusicComposer = GetWorld()->SpawnActor<AMusicComposer>();
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
@@ -35,30 +35,30 @@ void APhase_StartMusicComposer::Initialize()
 	GameMode->SetMusicComposer(MusicComposer);
 }
 
-void APhase_StartMusicComposer::Activate()
+void AStartMusicComposer::Activate()
 {
 	Composer->Initialize();
 }
 
-bool APhase_StartMusicComposer::IsActivated()
+bool AStartMusicComposer::IsActivated()
 {
 	return Active;
 }
 
-void APhase_StartMusicComposer::Deactivate()
+void AStartMusicComposer::Deactivate()
 {
 }
 
-void APhase_StartMusicComposer::Complete()
+void AStartMusicComposer::Complete()
 {
 }
 
-bool APhase_StartMusicComposer::IsCompleted()
+bool AStartMusicComposer::IsCompleted()
 {
 	return Completed;
 }
 
-void APhase_StartMusicComposer::InitiateDestroy()
+void AStartMusicComposer::InitiateDestroy()
 {
 }
 

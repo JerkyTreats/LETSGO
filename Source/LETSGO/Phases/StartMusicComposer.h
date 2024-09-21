@@ -6,16 +6,16 @@
 #include "LETSGO/MusicEngine/MusicComposition/MusicComposer.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Phases/PhaseController.h"
-#include "Phase_StartMusicComposer.generated.h"
+#include "StartMusicComposer.generated.h"
 
 UCLASS()
-class LETSGO_API APhase_StartMusicComposer : public AActor, public IPhaseController
+class LETSGO_API AStartMusicComposer : public AActor, public IPhaseController
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	APhase_StartMusicComposer();
+	AStartMusicComposer();
 
 	UPROPERTY()
 	AMusicComposer* Composer; 
