@@ -9,7 +9,7 @@
  * I'm going to continue on with this until it's end-to-end working though
  * I've decided to go with the most naive possible approach then iterate a better solution
  */ 
-TArray<FInstrumentNote> FInstrumentNote::GenerateKeys(TArray<USoundWave*> Sounds)
+FInstrumentData FInstrumentData::GenerateKeys(TArray<USoundWave*> Sounds)
 {
 	TArray<ELetsGoMusicNotes> AssumedNoteOrder = {
 		C,
@@ -43,5 +43,5 @@ TArray<FInstrumentNote> FInstrumentNote::GenerateKeys(TArray<USoundWave*> Sounds
 		KeyData.Emplace(Key);
 	}
 
-	return KeyData;
+	return FInstrumentData(KeyData);
 }

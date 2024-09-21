@@ -37,7 +37,25 @@ struct FInstrumentNote
 		Note = InNote;
 		SoundData = InSoundCue;
 	}
+};
 
-	static TArray<FInstrumentNote> GenerateKeys(TArray<USoundWave*> Sounds);
+USTRUCT()
+struct FInstrumentData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	TArray<FInstrumentNote> Notes;
 
+	FInstrumentData()
+	{
+		Notes = TArray<FInstrumentNote>();
+	}
+	
+	explicit FInstrumentData(const TArray<FInstrumentNote>& InNotes)
+	{
+		Notes = InNotes;
+	}
+
+	static FInstrumentData GenerateKeys(TArray<USoundWave*> Sounds);
 };

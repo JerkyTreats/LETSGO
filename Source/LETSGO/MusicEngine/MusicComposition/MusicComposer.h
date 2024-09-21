@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MusicCompositionStrategy.h"
 #include "GameFramework/Actor.h"
+#include "LETSGO/Instruments/InstrumentNote.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "MusicComposer.generated.h"
@@ -15,6 +16,8 @@ struct FComposerData
 {
 	GENERATED_BODY()
 
+	FInstrumentNote Instrument;
+	
 	int NumBarsToCompose;
 	FLetsGoGeneratedScale Scale;
 	int OctaveMin = 1;

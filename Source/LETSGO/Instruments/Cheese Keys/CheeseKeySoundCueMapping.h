@@ -167,7 +167,7 @@ public:
 	TArray<USoundWave*> Notes;
 
 	UPROPERTY()
-	TArray<FInstrumentNote> NoteData;
+	FInstrumentData NoteData;
 	
 protected:
 	// Called when the game starts or when spawned
