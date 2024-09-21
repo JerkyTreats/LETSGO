@@ -46,6 +46,9 @@ public:
 	UPROPERTY()
 	TArray<FComposerData> ComposerDataObjects;
 
+	UPROPERTY()
+	FOnQuartzMetronomeEventBP OnBeatQuantizationDelegate;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -71,4 +74,7 @@ public:
 
 	UFUNCTION()
 	FInstrumentSchedule ComposeInstrumentSchedule();
+
+	UFUNCTION()
+	void OnBeat(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
 };

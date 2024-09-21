@@ -67,7 +67,7 @@ void ACheeseKeySoundCueMapping::BeginPlay()
 		B4_Music_Note,
 	};
 	
-	NoteData = FCheeseKeyData::GenerateKeys(Notes);
+	NoteData = FInstrumentNote::GenerateKeys(Notes);
 }
 
 // Called every frame

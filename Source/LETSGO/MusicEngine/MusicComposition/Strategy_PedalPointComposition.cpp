@@ -16,7 +16,7 @@ FInstrumentSchedule UStrategy_PedalPointComposition::Apply(const FComposerData& 
 	// TODO Fix Octave shenan
 	// TODO AudioCuePlayer has exact same logic. Bad? 
 	// Filter the array
-	TArray<FCheeseKeyData> FilteredNotes = CheeseKeyMapping->NoteData.FilterByPredicate([&] (const FCheeseKeyData& CheeseData){
+	TArray<FInstrumentNote> FilteredNotes = CheeseKeyMapping->NoteData.FilterByPredicate([&] (const FInstrumentNote& CheeseData){
 		return CheeseData.Octave == Data.OctaveMin && CheeseData.Note == Data.Scale.Tonic.Note;
 	});
 	

@@ -13,6 +13,8 @@ AMusicComposer::AMusicComposer()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	OnBeatQuantizationDelegate.BindUFunction(this, "OnBeat");
 }
 
 // Called when the game starts or when spawned
@@ -28,10 +30,18 @@ void AMusicComposer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+// Setup a custom tick for composition, based on MainClock beat
 void AMusicComposer::Initialize()
 {
-	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	const UWorld* World = GetWorld();
+	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(World->GetAuthGameMode());
 	GameMode->OnMusicalStateUpdated.AddDynamic(this, &AMusicComposer::GenerateScale);
+
+	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
+	UQuartzClockHandle* MainClock = ClockSettings->MainClock;
+	MainClock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Beat, OnBeatQuantizationDelegate, MainClock);
+
+	
 }
 
 void AMusicComposer::GenerateScale()
@@ -69,11 +79,9 @@ void AMusicComposer::AddComposerData(FComposerData NewDataObject)
 		return;
 	}
 	
-	NewDataObject.ComposerDataObjectIndex = ComposerDataObjects.Num();
-
 	NewDataObject.Scale = (NewDataObject.Scale.IsValid) ? NewDataObject.Scale : Scale;
 	
-	ComposerDataObjects.Emplace(NewDataObject);
+	NewDataObject.ComposerDataObjectIndex = ComposerDataObjects.Emplace(NewDataObject);
 }
 
 void AMusicComposer::MergeComposerData(FComposerData NewDataObject)
@@ -103,4 +111,13 @@ void AMusicComposer::ChooseMusicalStrategy()
 FInstrumentSchedule AMusicComposer::ComposeInstrumentSchedule()
 {
 	return FInstrumentSchedule();
+}
+
+void AMusicComposer::OnBeat(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
+	float BeatFraction)
+{
+	// Check ComposerDataObjects
+	//   NumBars 
+	//	 * Scale needs Updating?
+	//	 * 
 }
