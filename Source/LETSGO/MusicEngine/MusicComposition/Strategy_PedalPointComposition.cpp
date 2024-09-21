@@ -1,14 +1,14 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PedalPoint_MusicalStrategy.h"
+#include "Strategy_PedalPointComposition.h"
 
 #include "MusicComposer.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
 
-FInstrumentSchedule UPedalPoint_MusicalStrategy::Apply(const FComposerData& Data)
+FInstrumentSchedule UStrategy_PedalPointComposition::Apply(const FComposerData& Data)
 {
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode()); 
 	ACheeseKeySoundCueMapping* CheeseKeyMapping = GameMode->GetInstrumentData_CheeseKey();

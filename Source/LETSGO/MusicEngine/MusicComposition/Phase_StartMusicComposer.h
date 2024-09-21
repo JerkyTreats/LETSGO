@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MusicComposer.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Phases/PhaseController.h"
 #include "Phase_StartMusicComposer.generated.h"
@@ -15,6 +16,9 @@ class LETSGO_API APhase_StartMusicComposer : public AActor, public IPhaseControl
 public:
 	// Sets default values for this actor's properties
 	APhase_StartMusicComposer();
+
+	UPROPERTY()
+	AMusicComposer* Composer; 
 
 protected:
 	// Called when the game starts or when spawned

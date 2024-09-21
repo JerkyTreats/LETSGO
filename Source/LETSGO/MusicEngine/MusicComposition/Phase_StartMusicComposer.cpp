@@ -31,11 +31,13 @@ void APhase_StartMusicComposer::Initialize()
 {
 	AMusicComposer* MusicComposer = GetWorld()->SpawnActor<AMusicComposer>();
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	Composer = MusicComposer;
 	GameMode->SetMusicComposer(MusicComposer);
 }
 
 void APhase_StartMusicComposer::Activate()
 {
+	Composer->Initialize();
 }
 
 bool APhase_StartMusicComposer::IsActivated()

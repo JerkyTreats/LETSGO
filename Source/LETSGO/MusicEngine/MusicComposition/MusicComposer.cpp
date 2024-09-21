@@ -3,7 +3,7 @@
 
 #include "MusicComposer.h"
 
-#include "PedalPoint_MusicalStrategy.h"
+#include "Strategy_PedalPointComposition.h"
 #include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 

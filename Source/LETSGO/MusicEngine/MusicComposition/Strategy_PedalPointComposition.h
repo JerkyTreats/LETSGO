@@ -5,13 +5,13 @@
 #include "CoreMinimal.h"
 #include "MusicCompositionStrategy.h"
 #include "UObject/Object.h"
-#include "PedalPoint_MusicalStrategy.generated.h"
+#include "Strategy_PedalPointComposition.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class LETSGO_API UPedalPoint_MusicalStrategy : public UObject, public IMusicCompositionStrategy
+class LETSGO_API UStrategy_PedalPointComposition : public UObject, public IMusicCompositionStrategy
 {
 	GENERATED_BODY()
 
