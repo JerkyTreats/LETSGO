@@ -3,29 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MusicCompositionStrategy.h"
 #include "GameFramework/Actor.h"
-#include "LETSGO/Instruments/InstrumentNote.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "MusicComposer.generated.h"
 
-USTRUCT()
-struct FComposerData
-{
-	GENERATED_BODY()
-
-	FInstrumentData InstrumentData;
-	int OctaveMin = 1;
-	int OctaveMax = 5;
-
-	TArray<FInstrumentSchedule> Schedules;
-	
-	// IMusicCompositionStrategy* CompositionStrategy;
-	// int ComposerDataObjectIndex;
-
-	FComposerData();
-	explicit FComposerData(const FInstrumentData& InData);
-};
 
 
 UCLASS()

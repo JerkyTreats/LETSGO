@@ -5,17 +5,6 @@
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 
-FComposerData::FComposerData()
-{
-	Schedules = TArray<FInstrumentSchedule>();
-}
-
-FComposerData::FComposerData(const FInstrumentData& InData)
-{
-	FComposerData();
-	InstrumentData = InData;
-}
-
 // Sets default values
 AMusicComposer::AMusicComposer()
 {
@@ -73,10 +62,12 @@ void AMusicComposer::GenerateScale()
 		Seventh
 	};
 	
-	Scale = FLetsGoGeneratedScale();
-	Scale.Notes = Notes;
-	Scale.Tonic = Tonic;
-	Scale.IsValid = true;
+	FLetsGoGeneratedScale NewScale = FLetsGoGeneratedScale();
+	NewScale.Notes = Notes;
+	NewScale.Tonic = Tonic;
+	NewScale.IsValid = true;
+
+	Scale = NewScale;
 }
 
 /*
@@ -123,6 +114,11 @@ FInstrumentSchedule AMusicComposer::ComposeInstrumentSchedule()
 	return FInstrumentSchedule();
 }
 
+//Every bar, the Composer:
+// - Checks the set of ComposerData’s
+// - If there are no objects, trigger some CreationStrategy
+// - If there are objects, check if there are more than 2 bars worth of data for those instruments to play
+// - If not, trigger an UpdateStrategy
 void AMusicComposer::OnBeat(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
 	float BeatFraction)
 {

@@ -24,5 +24,5 @@ class LETSGO_API IMusicCompositionStrategy
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual FInstrumentSchedule Apply(const FComposerData& Data) = 0;
+	virtual FInstrumentSchedule Apply(FComposerData& Data) = 0;
 };
