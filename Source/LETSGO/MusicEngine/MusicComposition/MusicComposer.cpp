@@ -2,6 +2,8 @@
 
 
 #include "MusicComposer.h"
+
+#include "Strategy_PedalPointComposition.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
 
@@ -27,7 +29,7 @@ void AMusicComposer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-// Setup a custom tick for composition, based on MainClock beat
+// Setup a custom tick for composition, based on MainClock bar
 void AMusicComposer::Initialize()
 {
 	const UWorld* World = GetWorld();
@@ -36,9 +38,31 @@ void AMusicComposer::Initialize()
 
 	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
 	UQuartzClockHandle* MainClock = ClockSettings->MainClock;
-	MainClock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Beat, OnBeatQuantizationDelegate, MainClock);
+	MainClock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, OnBeatQuantizationDelegate, MainClock);
 
+	InitializeStrategies();
 	
+}
+
+void AMusicComposer::InitializeStrategies()
+{
+	MusicalStrategies = TArray<FMusicalStrategy>();
+
+	IMusicCompositionStrategy* PedalPoint = NewObject<UStrategy_PedalPointComposition>();
+
+
+	TArray<IMusicCompositionStrategy*> StrategyInterfaces = {
+		PedalPoint,
+	};
+	
+
+	for (IMusicCompositionStrategy* StrategyInterface : StrategyInterfaces)
+	{
+		FMusicalStrategy Strategy = FMusicalStrategy();
+		Strategy.Strategy = StrategyInterface;
+
+		MusicalStrategies.Emplace(Strategy);
+	}
 }
 
 void AMusicComposer::GenerateScale()
@@ -70,41 +94,6 @@ void AMusicComposer::GenerateScale()
 	Scale = NewScale;
 }
 
-/*
-void AMusicComposer::AddComposerData(FComposerData NewDataObject)
-{
-	if (NewDataObject.ComposerDataObjectIndex)
-	{
-		UE_LOG(LogLetsgo, Error, TEXT("AddComposerData called with ComposerData index. Consider MergeComposerData instead."))
-		return;
-	}
-	
-	NewDataObject.Scale = (NewDataObject.Scale.IsValid) ? NewDataObject.Scale : Scale;
-	
-	NewDataObject.ComposerDataObjectIndex = ComposerDataObjects.Emplace(NewDataObject);
-}
-
-void AMusicComposer::MergeComposerData(FComposerData NewDataObject)
-{
-	if (! NewDataObject.ComposerDataObjectIndex)
-	{
-		UE_LOG(LogLetsgo, Error, TEXT("MergeComposerData called with null index. Consider AddComposerData instead."))
-		return;
-	}
-	
-	FComposerData Base = ComposerDataObjects[NewDataObject.ComposerDataObjectIndex];
-
-	// This is either some jank-ass shit or utter brilliance. I know which I would bet on.
-	Base.NumBarsToCompose	= (NewDataObject.NumBarsToCompose)	? NewDataObject.NumBarsToCompose	: Base.NumBarsToCompose;
-	Base.Scale				= (NewDataObject.Scale.IsValid)		? NewDataObject.Scale				: Base.Scale;
-	Base.OctaveMin			= (NewDataObject.OctaveMin)			? NewDataObject.OctaveMin			: Base.OctaveMin;
-	Base.OctaveMax			= (NewDataObject.OctaveMax)			? NewDataObject.OctaveMax			: Base.OctaveMax;
-	Base.InstrumentScheduleInput = (NewDataObject.InstrumentScheduleInput.IsValid) ?  NewDataObject.InstrumentScheduleInput : Base.InstrumentScheduleInput;
-	Base.CompositionStrategy = (NewDataObject.CompositionStrategy) ? NewDataObject.CompositionStrategy : Base.CompositionStrategy;
-	
-}
-*/
-
 void AMusicComposer::ChooseMusicalStrategy()
 {
 }
@@ -122,5 +111,8 @@ FInstrumentSchedule AMusicComposer::ComposeInstrumentSchedule()
 void AMusicComposer::OnBeat(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
 	float BeatFraction)
 {
-	
+	for (int i = 0; i < ComposerDataObjects.Num(); i++)
+	{
+		// Check 
+	}
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ComposerData.h"
 #include "MusicCompositionStrategy.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
@@ -27,6 +28,9 @@ public:
 	TArray<FComposerData> ComposerDataObjects;
 
 	UPROPERTY()
+	TArray<FMusicalStrategy> MusicalStrategies;
+	
+	UPROPERTY()
 	FOnQuartzMetronomeEventBP OnBeatQuantizationDelegate;
 
 protected:
@@ -39,6 +43,9 @@ public:
 
 	UFUNCTION()
 	void Initialize();
+
+	UFUNCTION()
+	void InitializeStrategies();
 
 	UFUNCTION()
 	void GenerateScale();

@@ -53,7 +53,7 @@ struct FInstrumentInputData
 };
 
 USTRUCT()
-struct FPossibleStrategy
+struct FMusicalStrategy
 {
 	GENERATED_BODY()
 
