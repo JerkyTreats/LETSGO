@@ -108,6 +108,7 @@ public:
 	UFUNCTION()
 	UInstrumentRack* GetInstrumentRack();
 
+	
 	// Instrument Data
 	UFUNCTION()
 	void SetInstrumentData_CheeseKey(ACheeseKeySoundCueMapping* DataToSet);
@@ -115,6 +116,13 @@ public:
 	UFUNCTION()
 	ACheeseKeySoundCueMapping* GetInstrumentData_CheeseKey();
 
+	UFUNCTION()
+	void SetInstrumentData_Drums(ADrumSoundCueMapping* DataToSet);
+
+	UFUNCTION()
+	ADrumSoundCueMapping* GetInstrumentData_Drums();
+
+	
 	// Music Composer
 	AMusicComposer* GetMusicComposer();
 

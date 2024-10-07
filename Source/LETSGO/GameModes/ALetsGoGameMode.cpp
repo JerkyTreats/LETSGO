@@ -145,12 +145,27 @@ void ALetsGoGameMode::SetInstrumentData_CheeseKey(ACheeseKeySoundCueMapping* Dat
 
 ACheeseKeySoundCueMapping* ALetsGoGameMode::GetInstrumentData_CheeseKey()
 {
-	ACheeseKeySoundCueMapping* CheeseKey = GetGameState<ALetsGoGameState>()->InstrumentData_CheeseKey;
-	if (! CheeseKey)
+	ACheeseKeySoundCueMapping* DataMap = GetGameState<ALetsGoGameState>()->InstrumentData_CheeseKey;
+	if (! DataMap)
 	{
 		UE_LOG(LogLetsgo, Error, TEXT("InstrumentData_CheeseKey not set in State, returning nullptr"))
 	}
-	return CheeseKey;
+	return DataMap;
+}
+
+void ALetsGoGameMode::SetInstrumentData_Drums(ADrumSoundCueMapping* DataToSet)
+{
+	GetGameState<ALetsGoGameState>()->InstrumentData_Drums = DataToSet;
+}
+
+ADrumSoundCueMapping* ALetsGoGameMode::GetInstrumentData_Drums()
+{
+	ADrumSoundCueMapping* DataMap = GetGameState<ALetsGoGameState>()->InstrumentData_Drums;
+	if (! DataMap)
+	{
+		UE_LOG(LogLetsgo, Error, TEXT("InstrumentData_Drums not set in State, returning nullptr"))
+	}
+	return DataMap;
 }
 
 AMusicComposer* ALetsGoGameMode::GetMusicComposer()

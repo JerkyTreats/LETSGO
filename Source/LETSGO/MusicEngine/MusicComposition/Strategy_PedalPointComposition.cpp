@@ -7,22 +7,27 @@
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
 
-FInstrumentSchedule UStrategy_PedalPointComposition::Apply(FComposerData& Data)
+FInstrumentSchedule UStrategy_PedalPointComposition::Apply(FComposerData& ComposerData, FInstrumentScheduleData InstrumentScheduleData)
 {
 	// Filter the array
-	TArray<FInstrumentNote> FilteredNotes = Data.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& CheeseData){
-		return CheeseData.Octave == Data.OctaveMin && CheeseData.Note == Data.Scale.Tonic.Note;
+	TArray<FInstrumentNote> FilteredNotes = ComposerData.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
+		return InstrumentNote.Octave == ComposerData.OctaveMin && InstrumentNote.Note == ComposerData.Scale.Tonic.Note;
 	});
 	
 	FInstrumentSchedule Schedule = FInstrumentSchedule();
 
 	Schedule.QuantizationDivision = EQuartzCommandQuantization::QuarterNote;
-	TArray<FNotesPerBar> Beats {
+	FPerBarSchedule Bar =  FPerBarSchedule({
 		FNotesPerBar(1.0f, FilteredNotes[0].SoundData),
 		FNotesPerBar(2.0f, FilteredNotes[0].SoundData),
 		FNotesPerBar(3.0f, FilteredNotes[0].SoundData),
 		FNotesPerBar(4.0f, FilteredNotes[0].SoundData),
-	};
+	});
+	
+	for (int i = 0; i < InstrumentScheduleData.TimesToRepeat; i++ )
+	{
+		Schedule.BeatSchedule.Emplace(Bar);
+	}
 	
 	return Schedule;
 }

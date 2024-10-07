@@ -2,8 +2,6 @@
 
 
 #include "MusicComposer.h"
-
-#include "MusicStrategyData.h"
 #include "Strategy_PedalPointComposition.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
@@ -14,13 +12,14 @@ AMusicComposer::AMusicComposer()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	OnBeatQuantizationDelegate.BindUFunction(this, "OnBeat");
+	OnBeatQuantizationDelegate.BindUFunction(this, "OnQuantizationBoundaryTriggered");
 }
 
 // Called when the game starts or when spawned
 void AMusicComposer::BeginPlay()
 {
 	Super::BeginPlay();
+
 	
 }
 
@@ -48,40 +47,43 @@ void AMusicComposer::Initialize()
 
 void AMusicComposer::InitializeComposerData()
 {
-	ADrumSoundCueMapping* SoundCueMapping = GetWorld()->SpawnActor<ADrumSoundCueMapping>(ADrumSoundCueMappingClass);
+	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	// ADrumSoundCueMapping* SoundCueMapping =  GameMode->GetInstrumentData_Drums();
 	
+	/*
 	FComposerData Snare = FComposerData(EInstrumentRoles::Snare,SoundCueMapping->GetInstrumentData(EInstrumentRoles::Snare));
 	FComposerData Kick = FComposerData(EInstrumentRoles::Snare,SoundCueMapping->GetInstrumentData(EInstrumentRoles::Kick));
 	FComposerData HiHatOpen = FComposerData(EInstrumentRoles::Snare,SoundCueMapping->GetInstrumentData(EInstrumentRoles::HiHatOpen));
 	FComposerData HiHatClosed = FComposerData(EInstrumentRoles::Snare,SoundCueMapping->GetInstrumentData(EInstrumentRoles::HiHatClosed));
 	FComposerData Clap = FComposerData(EInstrumentRoles::Snare,SoundCueMapping->GetInstrumentData(EInstrumentRoles::Clap));
+	*/
 
-	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	ACheeseKeySoundCueMapping* CheeseKeySoundCueMapping = GameMode->GetInstrumentData_CheeseKey();
 	FInstrumentData CheeseInstrumentData = CheeseKeySoundCueMapping->NoteData;
 
 	FComposerData Bass = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
-	Bass.OctaveMax = 1;
-	
+	Bass.OctaveMin = 2;
+	Bass.OctaveMax = 2;
+
 	FComposerData Tenor = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
-	Tenor.OctaveMin = 2;
+	Tenor.OctaveMin = 3;
 	Tenor.OctaveMax = 3;
-	
+
 	FComposerData Alto = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
-	Alto.OctaveMin = 3;
+	Alto.OctaveMin = 4;
 	Alto.OctaveMax = 4;
-	
+
 	FComposerData Soprano = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
-	Soprano.OctaveMin = 4;
+	Soprano.OctaveMin = 5;
 	Soprano.OctaveMax = 5;
 
 	ComposerDataObjects = TArray<FComposerData>
 	{
-		Snare,
+		/*Snare,
 		Kick,
 		HiHatClosed,
 		HiHatOpen,
-		Clap,
+		Clap,*/
 
 		Bass,
 		Tenor,
@@ -107,29 +109,38 @@ void AMusicComposer::InitializeStrategies()
 	}
 }
 
+// BUG: Never set StrategyType? 
 FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData, const int StartAtBar, const int TimesToRepeat)
 {
 	FMusicStrategyData ChosenStrategy = MusicalStrategies[0]; 
 	for(int i = 0; i < MusicalStrategies.Num(); i++)
 	{
-		const FMusicStrategyData CandidateStrategy = MusicalStrategies[i];
+		FMusicStrategyData CandidateStrategy = MusicalStrategies[i];
 
 		if (const float Appropriateness = CandidateStrategy.Strategy->GetStrategyAppropriateness(
 			ComposerData, ComposerDataObjects, Scale); Appropriateness > ChosenStrategy.StrategyAppropriateness)
 		{
+			CandidateStrategy.StrategyAppropriateness = Appropriateness;
 			ChosenStrategy = CandidateStrategy;
 		}
 	}
 
-	ChosenStrategy.GenerateInstrumentInputs(ComposerDataObjects);
+	/*
+	if (ChosenStrategy.StrategyAppropriateness == 0.0f)
+	{
+		return FInstrumentScheduleData();
+	}
+	*/
 
-	FInstrumentSchedule InstrumentSchedule = ChosenStrategy.Strategy->Apply(ComposerData);
+	FInstrumentScheduleData ScheduleData = FInstrumentScheduleData( FInstrumentSchedule(), StartAtBar, TimesToRepeat);
 
-	FInstrumentScheduleData ScheduleData = FInstrumentScheduleData(InstrumentSchedule, StartAtBar, TimesToRepeat);
+	FInstrumentSchedule InstrumentSchedule = ChosenStrategy.Strategy->Apply(ComposerData, ScheduleData);
 
+	ScheduleData.StrategyData = ChosenStrategy;
 	return ScheduleData;
 }
 
+// BUG : Default returns C, not nullptr
 void AMusicComposer::GenerateScale()
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
@@ -163,16 +174,11 @@ void AMusicComposer::GenerateScale()
 
 // Updates Strategy Appropriateness
 
-// - Checks the set of ComposerData’s
-// - If there are no objects, trigger some CreationStrategy
-// - If there are objects, check if there are more than 2 bars worth of data for those instruments to play
-// - If not, trigger an UpdateStrategy
-void AMusicComposer::OnBeat(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
-	float BeatFraction)
+void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
 {
+	int32 BarsDefined = 0;
 
 	// Does this ComposerData need more bars defined? 
-	int32 BarsDefined = 0;
 	for (int i = 0; i < ComposerDataObjects.Num(); i++ )
 	{
 		FComposerData ComposerData = ComposerDataObjects[i];
@@ -188,11 +194,40 @@ void AMusicComposer::OnBeat(FName ClockName, EQuartzCommandQuantization Quantiza
 		}
 
 		// Define bars for this instrument
-		if (NumBars - BarsDefined < BarCreationThreshold)
+		if (BarsDefined - NumBars < BarCreationThreshold)
 		{
-			FInstrumentScheduleData NewSchedule = GenerateBars(ComposerData, BarsDefined, 2);
-			ComposerData.ScheduleData.Emplace(NewSchedule);
+			//TODO Times to Repeat magic number
+			FInstrumentScheduleData NewSchedule = GenerateBars(ComposerData, BarsDefined + 1, 2);
+
+			if (NewSchedule.IsValid)
+			{
+				ComposerData.ScheduleData.Emplace(NewSchedule);
+			}
 		}
 	}
-	
+}
+
+// - Checks the set of ComposerData’s
+// - If there are no objects, trigger some CreationStrategy
+// - If there are objects, check if there are more than 2 bars worth of data for those instruments to play
+// - If not, trigger an UpdateStrategy
+void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
+	float BeatFraction)
+{
+	if ( Scale.IsValid && Scale.Tonic.Note != C )
+	{
+		CheckAndGenerateBars(NumBars);
+
+		for (int i = 0; i < ComposerDataObjects.Num(); i++)
+		{
+			for (int x = 0; x < ComposerDataObjects[i].ScheduleData.Num(); x++)
+			{
+				if (FInstrumentScheduleData ScheduleData = ComposerDataObjects[i].ScheduleData[x]; ScheduleData.StartAtBar == NumBars)
+				{
+					AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>();
+					Instrument->Initialize(ScheduleData.InstrumentSchedule);
+				}
+			}
+		}
+	}
 }

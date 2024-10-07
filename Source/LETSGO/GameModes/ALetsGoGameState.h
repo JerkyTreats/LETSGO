@@ -60,5 +60,8 @@ public:
 	ACheeseKeySoundCueMapping* InstrumentData_CheeseKey;
 
 	UPROPERTY(VisibleAnywhere, Category="LETSGO")
+	ADrumSoundCueMapping* InstrumentData_Drums;
+
+	UPROPERTY(VisibleAnywhere, Category="LETSGO")
 	AMusicComposer* MusicComposer;
 };

@@ -38,6 +38,8 @@ void AStartMusicComposer::Initialize()
 void AStartMusicComposer::Activate()
 {
 	Composer->Initialize();
+
+	Completed = true;
 }
 
 bool AStartMusicComposer::IsActivated()

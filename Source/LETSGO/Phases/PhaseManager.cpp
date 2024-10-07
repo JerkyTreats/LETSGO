@@ -8,6 +8,7 @@
 #include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "StartDrums.h"
+#include "StartMusicComposer.h"
 #include "LETSGO/MusicEngine/MusicComposition/MusicComposer.h"
 #include "LETSGO/Phases/StartClock.h"
 
@@ -22,28 +23,37 @@ void APhaseManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	UWorld* World = GetWorld();
+
+	/*
 	UInstrumentRack* InstrumentRack = NewObject<UInstrumentRack>();
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	GameMode->SetInstrumentRack(InstrumentRack);
+	*/
 	
-	AStartClock* StartClock = GetWorld()->SpawnActor<AStartClock>(StartClockClass);
+	AStartClock* StartClock = World->SpawnActor<AStartClock>(StartClockClass);
 	StartClock->Initialize();
 	Phases.Emplace(StartClock);
 
-	AStartDrums* StartDrums = GetWorld()->SpawnActor<AStartDrums>(StartDrumsClass);
+	AInitializeInstrumentDataMapObjects* InitInstrumentDataMaps = World->SpawnActor<AInitializeInstrumentDataMapObjects>(InitializeDataMapClass);
+	InitInstrumentDataMaps->Initialize();
+	
+	AStartMusicComposer* MusicComposer = World->SpawnActor<AStartMusicComposer>(StartMusicComposerClass);
+	MusicComposer->Initialize();
+	Phases.Emplace(MusicComposer);
+	
+	AStartDrums* StartDrums = World->SpawnActor<AStartDrums>(StartDrumsClass);
 	StartDrums->Initialize();
-	Phases.Emplace(StartDrums);
+	Phases.Emplace(StartDrums); 
 
-	
-	
-	ASetTonic* SetTonic = GetWorld()->SpawnActor<ASetTonic>(SetTonicClass);
+	ASetTonic* SetTonic = World->SpawnActor<ASetTonic>(SetTonicClass);
 	SetTonic->Initialize();
 	Phases.Emplace(SetTonic);
 
-	ASleep* Sleep = GetWorld() -> SpawnActor<ASleep>();
+	ASleep* Sleep = World -> SpawnActor<ASleep>();
 	Phases.Emplace(Sleep);
 
-	ASetThird* SetThird = GetWorld()->SpawnActor<ASetThird>(SetThirdClass);
+	ASetThird* SetThird = World->SpawnActor<ASetThird>(SetThirdClass);
 	SetThird->Initialize();
 	Phases.Emplace(SetThird);
 

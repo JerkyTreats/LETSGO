@@ -6,6 +6,7 @@ FComposerData::FComposerData(const EInstrumentRoles InRole, const FInstrumentDat
 	FComposerData();
 	InstrumentRole = InRole;
 	InstrumentData = InData;
+
 }
 
 bool FComposerData::IsMultiNoteInstrument() const
@@ -32,11 +33,49 @@ FInstrumentScheduleData::FInstrumentScheduleData(const FInstrumentSchedule& Sche
 	InstrumentSchedule = Schedule;
 	StartAtBar = InStartAtBars;
 	TimesToRepeat = InTimesToRepeat;
+
+	IsValid = true;
 }
 
+/*
 FInstrumentInputData::FInstrumentInputData(const FComposerData& InputData)
 {
 	ComposerData = InputData;
 }
 
+FMusicStrategyData::FMusicStrategyData(): Strategy(nullptr)
+{
+	InstrumentInputs = TArray<FInstrumentInputData>();
+}
+*/
+
+FMusicStrategyData::FMusicStrategyData()
+{
+}
+
+FMusicStrategyData::FMusicStrategyData(IMusicStrategy* InputStrategy, const float Appropriateness)
+{
+	FMusicStrategyData();
+	Strategy = InputStrategy;
+	StrategyAppropriateness = Appropriateness;
+}
+
+/*
+void FMusicStrategyData::GenerateInstrumentInputs(const TArray<FComposerData> ComposerDataSet)
+{
+	// Clear the Array
+	InstrumentInputs.Empty();
+
+	// Rebuild the Array
+	for(int i = 0; i < ComposerDataSet.Num(); i++)
+	{
+		FInstrumentInputData Data = FInstrumentInputData(ComposerDataSet[i]);
+		
+		// Get instrument appropriateness
+		Data.Appropriateness = Strategy->GetInstrumentAppropriateness(ComposerDataSet[i], ComposerDataSet);
+		
+		InstrumentInputs.Emplace(Data);
+	}
+}
+*/
 

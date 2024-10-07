@@ -4,10 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ComposerData.h"
-#include "MusicStrategy.h"
-#include "MusicStrategyData.h"
 #include "GameFramework/Actor.h"
-#include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/Instruments/Drum/DrumSoundCueMapping.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "MusicComposer.generated.h"
@@ -63,7 +60,8 @@ public:
 
 	UFUNCTION()
 	void GenerateScale();
+	void CheckAndGenerateBars(int32 NumBars);
 
 	UFUNCTION()
-	void OnBeat(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
+	void OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
 };
