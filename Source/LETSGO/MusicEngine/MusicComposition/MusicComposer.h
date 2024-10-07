@@ -4,9 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "ComposerData.h"
-#include "MusicCompositionStrategy.h"
+#include "MusicStrategy.h"
+#include "MusicStrategyData.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
+#include "LETSGO/Instruments/Drum/DrumSoundCueMapping.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "MusicComposer.generated.h"
 
@@ -22,16 +24,22 @@ public:
 	AMusicComposer();
 
 	UPROPERTY()
+	int32 BarCreationThreshold = 4;
+	
+	UPROPERTY()
 	FLetsGoGeneratedScale Scale; 
 
 	UPROPERTY()
 	TArray<FComposerData> ComposerDataObjects;
 
 	UPROPERTY()
-	TArray<FMusicalStrategy> MusicalStrategies;
+	TArray<FMusicStrategyData> MusicalStrategies;
 	
 	UPROPERTY()
 	FOnQuartzMetronomeEventBP OnBeatQuantizationDelegate;
+	
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<ADrumSoundCueMapping> ADrumSoundCueMappingClass;
 
 protected:
 	// Called when the game starts or when spawned
@@ -45,22 +53,16 @@ public:
 	void Initialize();
 
 	UFUNCTION()
+	void InitializeComposerData();
+	
+	UFUNCTION()
 	void InitializeStrategies();
 
 	UFUNCTION()
+	FInstrumentScheduleData GenerateBars(FComposerData ComposerData, int StartAtBar, int TimesToRepeat);
+
+	UFUNCTION()
 	void GenerateScale();
-
-	UFUNCTION()
-	void AddComposerData(FComposerData NewDataObject);
-	
-	UFUNCTION()
-	void MergeComposerData(FComposerData NewDataObject);
-
-	UFUNCTION()
-	void ChooseMusicalStrategy();
-
-	UFUNCTION()
-	FInstrumentSchedule ComposeInstrumentSchedule();
 
 	UFUNCTION()
 	void OnBeat(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);

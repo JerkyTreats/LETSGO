@@ -4,23 +4,15 @@
 #include "Strategy_PedalPointComposition.h"
 
 #include "ComposerData.h"
-#include "MusicComposer.h"
-#include "LETSGO/GameModes/ALetsGoGameMode.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
 
 FInstrumentSchedule UStrategy_PedalPointComposition::Apply(FComposerData& Data)
 {
-	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode()); 
-	ACheeseKeySoundCueMapping* CheeseKeyMapping = GameMode->GetInstrumentData_CheeseKey();
-
-	// TODO Fix Octave shenan
-	// TODO AudioCuePlayer has exact same logic. Bad? 
 	// Filter the array
-	TArray<FInstrumentNote> FilteredNotes = CheeseKeyMapping->NoteData.Notes.FilterByPredicate([&] (const FInstrumentNote& CheeseData){
+	TArray<FInstrumentNote> FilteredNotes = Data.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& CheeseData){
 		return CheeseData.Octave == Data.OctaveMin && CheeseData.Note == Data.Scale.Tonic.Note;
 	});
-	
 	
 	FInstrumentSchedule Schedule = FInstrumentSchedule();
 
@@ -33,5 +25,38 @@ FInstrumentSchedule UStrategy_PedalPointComposition::Apply(FComposerData& Data)
 	};
 	
 	return Schedule;
+}
+
+float UStrategy_PedalPointComposition::GetStrategyAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet, FLetsGoGeneratedScale Scale)
+{
+	if (Scale.IsValid ||
+		! Scale.Tonic.Note ||
+		! CurrentComposerData.IsMultiNoteInstrument())
+	{
+		return 0.0f;
+	}
+
+	float Weight = 1.0f;
+
+	for (int i = 0; i < ComposerDataSet.Num(); i++)
+	{
+		FComposerData ComposerData = ComposerDataSet[i];
+		for (int ScheduleDataIndex = 0; ScheduleDataIndex < ComposerData.ScheduleData.Num(); ScheduleDataIndex++)
+		{
+			if (FInstrumentScheduleData ScheduleData = ComposerData.ScheduleData[i]; ScheduleData.StrategyData.StrategyType == CreateMotif)
+			{
+				Weight = 0.5f;
+			}
+		}
+	}
+	
+	return Weight;
+}
+
+// This strategy doesn't need input from other instruments
+float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(FComposerData CurrentComposerData,
+	TArray<FComposerData> ComposerDataSet)
+{
+	return 0.0f;
 }
 

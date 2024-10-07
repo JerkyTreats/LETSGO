@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ComposerData.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "UObject/Interface.h"
-#include "MusicCompositionStrategy.generated.h"
+#include "MusicStrategy.generated.h"
 
-struct FComposerData;
 // This class does not need to be modified.
 UINTERFACE()
-class UMusicCompositionStrategy : public UInterface
+class UMusicStrategy : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -18,7 +18,7 @@ class UMusicCompositionStrategy : public UInterface
 /**
  * 
  */
-class LETSGO_API IMusicCompositionStrategy
+class LETSGO_API IMusicStrategy
 {
 	GENERATED_BODY()
 
@@ -26,5 +26,7 @@ class LETSGO_API IMusicCompositionStrategy
 public:
 	virtual FInstrumentSchedule Apply(FComposerData& Data) = 0;
 
-	virtual float GetStrategyAppropriateness(FComposerData& Data) = 0;
+	virtual float GetStrategyAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet, FLetsGoGeneratedScale Scale) = 0;
+
+	virtual float GetInstrumentAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet) = 0;
 };

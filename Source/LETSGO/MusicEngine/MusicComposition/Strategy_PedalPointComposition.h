@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MusicCompositionStrategy.h"
+#include "MusicStrategy.h"
 #include "UObject/Object.h"
 #include "Strategy_PedalPointComposition.generated.h"
 
@@ -11,10 +11,13 @@
  * 
  */
 UCLASS()
-class LETSGO_API UStrategy_PedalPointComposition : public UObject, public IMusicCompositionStrategy
+class LETSGO_API UStrategy_PedalPointComposition : public UObject, public IMusicStrategy
 {
 	GENERATED_BODY()
 
 public:
 	virtual FInstrumentSchedule Apply(FComposerData& Data) override;
+	virtual float GetStrategyAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet, FLetsGoGeneratedScale Scale) override;
+	virtual float
+	GetInstrumentAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet) override;
 };

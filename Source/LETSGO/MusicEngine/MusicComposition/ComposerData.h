@@ -1,29 +1,29 @@
 ﻿#pragma once
-#include "ComposerData.h"
-#include "MusicCompositionStrategy.h"
+
+#include "MusicStrategyData.h"
+#include "LETSGO/LETSGO.h"
 #include "LETSGO/Instruments/InstrumentNote.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "ComposerData.generated.h"
 
-USTRUCT()
-struct FComposerData
+UENUM()
+enum EInstrumentRoles
 {
-	GENERATED_BODY()
+	None,
 
-	FLetsGoGeneratedScale Scale; 
+	// 4 Part Harmony
+	Bass,
+	Tenor,
+	Alto,
+	Soprano,
 
-	FInstrumentData InstrumentData;
-	int OctaveMin = 1;
-	int OctaveMax = 5;
-
-	TArray<FInstrumentScheduleData> ScheduleData;
-
-	// IMusicCompositionStrategy* CompositionStrategy;
-	// int ComposerDataObjectIndex;
-
-	FComposerData();
-	explicit FComposerData(const FInstrumentData& InData);
+	// Drums
+	Kick,
+	Snare,
+	HiHatClosed,
+	HiHatOpen,
+	Clap,
 };
 
 // Wraps InstrumentSchedule with data specific for Composer. 
@@ -33,60 +33,61 @@ struct FInstrumentScheduleData
 	GENERATED_BODY()
 
 	FInstrumentSchedule InstrumentSchedule;
-	int StartAtBar;
-	int TimesToRepeat;
-	IMusicCompositionStrategy* Strategy;
+	int StartAtBar = 0;
+	int TimesToRepeat = 0;
+	FMusicStrategyData StrategyData;
+	
 
-	FInstrumentScheduleData();
-	FInstrumentScheduleData(const FInstrumentSchedule& Schedule, int InStartAtBars, int InTimesToRepeat, IMusicCompositionStrategy* Strat);
+	FInstrumentScheduleData()
+	{
+		UE_LOG(LogLetsgo, Warning, TEXT("Default FInstrumentScheduleData Constructor used."));
+	}
+
+	FInstrumentScheduleData(const FInstrumentSchedule& Schedule, int InStartAtBars, int InTimesToRepeat);
+
+	
 };
 
 
-// Wraps a FComposerData with data specific to choosing a new Strategy
+USTRUCT()
+struct FComposerData
+{
+	GENERATED_BODY()
+
+	FLetsGoGeneratedScale Scale; 
+
+	TEnumAsByte<EInstrumentRoles> InstrumentRole = None;
+	FInstrumentData InstrumentData;
+	int OctaveMin = 1;
+	int OctaveMax = 5;
+
+	TArray<FInstrumentScheduleData> ScheduleData;
+
+	// IMusicCompositionStrategy* CompositionStrategy;
+	// int ComposerDataObjectIndex;
+
+	FComposerData()
+	{
+		ScheduleData = TArray<FInstrumentScheduleData>();
+	}
+
+	explicit FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData);
+
+	bool IsMultiNoteInstrument() const;
+};
+
+// Represents another Instrument that may be influential to a Musical Strategy
+// eg. A `Call and Response` strat needs instruments to listen to each other.
+// This object facilitates the data needed for such a strategy.
 USTRUCT()
 struct FInstrumentInputData
 {
 	GENERATED_BODY()
 
 	FComposerData ComposerData;
-	float Appropriateness = 0.0f; 
+	float Appropriateness = 0.0f;
+
+	FInstrumentInputData() {}
+	explicit FInstrumentInputData(const FComposerData& InputData);
 };
 
-USTRUCT()
-struct FMusicalStrategy
-{
-	GENERATED_BODY()
-
-	IMusicCompositionStrategy* Strategy;
-	float StrategyAppropriateness = 0.0f;
-
-	TArray<FInstrumentInputData> InstrumentInputs; 
-};
-
-
-
-/*
-UENUM()
-enum ESongSection
-{
-	None,
-	Intro,
-	Chorus,
-	Bridge,
-	VerseSection, // Verse has a conflict with some CoreEngine namespace
-};
-
-USTRUCT()
-struct FSongSections
-{
-	GENERATED_BODY()
-
-	TEnumAsByte<ESongSection> SongSection;
-	int SectionLengthInBars;
-
-	
-
-	FSongSections(): SongSection(None), SectionLengthInBars(0) {}
-	FSongSections(const ESongSection InSection, const int InLength): SongSection(InSection), SectionLengthInBars(InLength) {}
-};
-*/

@@ -1,26 +1,42 @@
 ﻿#include "ComposerData.h"
 
 
-FComposerData::FComposerData()
-{
-	ScheduleData = TArray<FInstrumentScheduleData>();
-}
-
-FComposerData::FComposerData(const FInstrumentData& InData)
+FComposerData::FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData)
 {
 	FComposerData();
+	InstrumentRole = InRole;
 	InstrumentData = InData;
 }
 
-FInstrumentScheduleData::FInstrumentScheduleData(): StartAtBar(0), TimesToRepeat(0), Strategy(nullptr)
+bool FComposerData::IsMultiNoteInstrument() const
 {
+	switch (InstrumentRole)
+	{
+	case Kick:
+		return false;
+	case HiHatClosed:
+		return false;
+	case HiHatOpen:
+		return false;
+	case Snare:
+		return false;
+	case Clap:
+		return false;
+	default:
+		return true;
+	}
 }
 
-FInstrumentScheduleData::FInstrumentScheduleData(const FInstrumentSchedule& Schedule, const int InStartAtBars, const int InTimesToRepeat,
-												 IMusicCompositionStrategy* Strat)
+FInstrumentScheduleData::FInstrumentScheduleData(const FInstrumentSchedule& Schedule, const int InStartAtBars, const int InTimesToRepeat)
 {
 	InstrumentSchedule = Schedule;
 	StartAtBar = InStartAtBars;
 	TimesToRepeat = InTimesToRepeat;
-	Strategy = Strat;
 }
+
+FInstrumentInputData::FInstrumentInputData(const FComposerData& InputData)
+{
+	ComposerData = InputData;
+}
+
+
