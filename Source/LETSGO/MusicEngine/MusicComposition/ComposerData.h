@@ -51,7 +51,7 @@ struct FMusicStrategyData
 
 
 	FMusicStrategyData();
-	FMusicStrategyData(IMusicStrategy* InputStrategy, float Appropriateness);
+	FMusicStrategyData(IMusicStrategy* InputStrategy, float Appropriateness, const EMusicStrategies InStrategyType);
 
 	// void GenerateInstrumentInputs(const TArray<FComposerData> ComposerDataSet);
 };

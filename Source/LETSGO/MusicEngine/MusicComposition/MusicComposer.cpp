@@ -65,15 +65,15 @@ void AMusicComposer::InitializeComposerData()
 	Bass.OctaveMin = 2;
 	Bass.OctaveMax = 2;
 
-	FComposerData Tenor = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
+	FComposerData Tenor = FComposerData(EInstrumentRoles::Tenor, CheeseInstrumentData);
 	Tenor.OctaveMin = 3;
 	Tenor.OctaveMax = 3;
 
-	FComposerData Alto = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
+	FComposerData Alto = FComposerData(EInstrumentRoles::Alto, CheeseInstrumentData);
 	Alto.OctaveMin = 4;
 	Alto.OctaveMax = 4;
 
-	FComposerData Soprano = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
+	FComposerData Soprano = FComposerData(EInstrumentRoles::Soprano, CheeseInstrumentData);
 	Soprano.OctaveMin = 5;
 	Soprano.OctaveMax = 5;
 
@@ -96,29 +96,23 @@ void AMusicComposer::InitializeStrategies()
 {
 	MusicalStrategies = TArray<FMusicStrategyData>();
 
-	TArray<IMusicStrategy*> StrategyInterfaces = {
+	MusicalStrategies.Emplace(FMusicStrategyData(
 		NewObject<UStrategy_PedalPointComposition>(),
-	};
-	
-	for (IMusicStrategy* StrategyInterface : StrategyInterfaces)
-	{
-		FMusicStrategyData Strategy = FMusicStrategyData();
-		Strategy.Strategy = StrategyInterface;
+		0.0f,
+		PedalPoint		
+	));
 
-		MusicalStrategies.Emplace(Strategy);
-	}
 }
 
-// BUG: Never set StrategyType? 
 FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData, const int StartAtBar, const int TimesToRepeat)
 {
 	FMusicStrategyData ChosenStrategy = MusicalStrategies[0]; 
 	for(int i = 0; i < MusicalStrategies.Num(); i++)
 	{
 		FMusicStrategyData CandidateStrategy = MusicalStrategies[i];
-
-		if (const float Appropriateness = CandidateStrategy.Strategy->GetStrategyAppropriateness(
-			ComposerData, ComposerDataObjects, Scale); Appropriateness > ChosenStrategy.StrategyAppropriateness)
+		const float Appropriateness = CandidateStrategy.Strategy->GetStrategyAppropriateness(
+					ComposerData, ComposerDataObjects, Scale);
+		if ( Appropriateness > ChosenStrategy.StrategyAppropriateness)
 		{
 			CandidateStrategy.StrategyAppropriateness = Appropriateness;
 			ChosenStrategy = CandidateStrategy;
@@ -136,7 +130,9 @@ FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData,
 
 	FInstrumentSchedule InstrumentSchedule = ChosenStrategy.Strategy->Apply(ComposerData, ScheduleData);
 
+	ScheduleData.InstrumentSchedule = InstrumentSchedule;
 	ScheduleData.StrategyData = ChosenStrategy;
+
 	return ScheduleData;
 }
 
@@ -197,11 +193,11 @@ void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
 		if (BarsDefined - NumBars < BarCreationThreshold)
 		{
 			//TODO Times to Repeat magic number
-			FInstrumentScheduleData NewSchedule = GenerateBars(ComposerData, BarsDefined + 1, 2);
+			FInstrumentScheduleData NewSchedule = GenerateBars(ComposerData, NumBars + 1, 2);
 
 			if (NewSchedule.IsValid)
 			{
-				ComposerData.ScheduleData.Emplace(NewSchedule);
+				ComposerDataObjects[i].ScheduleData.Emplace(NewSchedule);
 			}
 		}
 	}
@@ -214,15 +210,30 @@ void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
 void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
 	float BeatFraction)
 {
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Bar %i"), NumBars));
+
+	int StartAtBar = NumBars;
+	
 	if ( Scale.IsValid && Scale.Tonic.Note != C )
 	{
-		CheckAndGenerateBars(NumBars);
+		if (! Started)
+		{
+			StartAtBar += 2;
+			Started = true;
+			if(GEngine)
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Started")));
+		}
+		
+		CheckAndGenerateBars(StartAtBar);
 
 		for (int i = 0; i < ComposerDataObjects.Num(); i++)
 		{
 			for (int x = 0; x < ComposerDataObjects[i].ScheduleData.Num(); x++)
 			{
-				if (FInstrumentScheduleData ScheduleData = ComposerDataObjects[i].ScheduleData[x]; ScheduleData.StartAtBar == NumBars)
+				FInstrumentScheduleData ScheduleData = ComposerDataObjects[i].ScheduleData[x];
+
+				if (ScheduleData.StartAtBar == NumBars)
 				{
 					AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>();
 					Instrument->Initialize(ScheduleData.InstrumentSchedule);

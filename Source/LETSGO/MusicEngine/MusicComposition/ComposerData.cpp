@@ -53,11 +53,12 @@ FMusicStrategyData::FMusicStrategyData()
 {
 }
 
-FMusicStrategyData::FMusicStrategyData(IMusicStrategy* InputStrategy, const float Appropriateness)
+FMusicStrategyData::FMusicStrategyData(IMusicStrategy* InputStrategy, const float Appropriateness, const EMusicStrategies InStrategyType)
 {
 	FMusicStrategyData();
 	Strategy = InputStrategy;
 	StrategyAppropriateness = Appropriateness;
+	StrategyType = InStrategyType;
 }
 
 /*
