@@ -18,7 +18,10 @@ public:
 	AStartMusicComposer();
 
 	UPROPERTY()
-	AMusicComposer* Composer; 
+	AMusicComposer* Composer;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AMusicComposer> MusicComposerClass;
 
 protected:
 	// Called when the game starts or when spawned

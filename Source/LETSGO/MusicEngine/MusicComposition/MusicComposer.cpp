@@ -235,8 +235,9 @@ void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCom
 
 				if (ScheduleData.StartAtBar == NumBars)
 				{
-					AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>();
+					AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>(InstrumentClass);
 					Instrument->Initialize(ScheduleData.InstrumentSchedule);
+					Instrument->StartPlaying();
 				}
 			}
 		}

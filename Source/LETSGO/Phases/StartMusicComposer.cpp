@@ -29,7 +29,7 @@ void AStartMusicComposer::Tick(float DeltaTime)
 
 void AStartMusicComposer::Initialize()
 {
-	AMusicComposer* MusicComposer = GetWorld()->SpawnActor<AMusicComposer>();
+	AMusicComposer* MusicComposer = GetWorld()->SpawnActor<AMusicComposer>(MusicComposerClass);
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	Composer = MusicComposer;
 	GameMode->SetMusicComposer(MusicComposer);

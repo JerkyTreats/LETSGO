@@ -36,7 +36,7 @@ public:
 	FOnQuartzMetronomeEventBP OnBeatQuantizationDelegate;
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	TSubclassOf<ADrumSoundCueMapping> ADrumSoundCueMappingClass;
+	TSubclassOf<AInstrument> InstrumentClass;
 
 protected:
 	// Called when the game starts or when spawned
