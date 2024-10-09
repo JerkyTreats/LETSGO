@@ -3,11 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "CheeseKeyData.h"
-#include "MetasoundSource.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/InstrumentNote.h"
-#include "Sound/SoundCue.h"
 #include "CheeseKeySoundCueMapping.generated.h"
 
 UCLASS()
@@ -170,7 +167,7 @@ public:
 	TArray<USoundWave*> Notes;
 
 	UPROPERTY()
-	TArray<FCheeseKeyData> NoteData;
+	FInstrumentData NoteData;
 	
 protected:
 	// Called when the game starts or when spawned

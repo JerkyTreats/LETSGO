@@ -2,8 +2,8 @@
 
 
 #include "StartDrums.h"
-#include "Drum/DrumData.h"
-#include "Drum/DrumSoundCueMapping.h"
+#include "LETSGO/Instruments/Drum/DrumData.h"
+#include "LETSGO/Instruments/Drum/DrumSoundCueMapping.h"
 #include "LETSGO/LETSGO.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
@@ -15,6 +15,8 @@ AStartDrums::AStartDrums()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CreateDefaultSubobject<AInstrument>(TEXT("Drums"));
+
+	PlayQuantizationDelegate.BindUFunction(this, "OnQuantizationBoundaryTriggered");
 }
 
 // Called when the game starts or when spawned
@@ -141,13 +143,14 @@ void AStartDrums::Initialize()
 void AStartDrums::Activate()
 {
 	UE_LOG(LogLetsgo, Display, TEXT("Phase StartDrums Activated"))
-	Kick->StartPlaying();
-	Snare->StartPlaying();
-	HiHatOpen->StartPlaying();
-	HiHatClosed->StartPlaying();
-	Clap->StartPlaying();
-	IsComplete = true;
 
+	// Start the drums on the next Bar. This should ensure that all clocks are in sync
+	const UWorld* World = GetWorld();
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(World->GetAuthGameMode());
+	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
+	UQuartzClockHandle* MainClock = ClockSettings->MainClock;
+
+	MainClock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, PlayQuantizationDelegate, MainClock);
 }
 
 bool AStartDrums::IsActivated()
@@ -173,5 +176,16 @@ bool AStartDrums::IsCompleted()
 void AStartDrums::InitiateDestroy()
 {
 	Destroy();
+}
+
+void AStartDrums::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType,
+	int32 NumBars, int32 Beat, float BeatFraction)
+{
+	Kick->StartPlaying();
+	Snare->StartPlaying();
+	HiHatOpen->StartPlaying();
+	HiHatClosed->StartPlaying();
+	Clap->StartPlaying();
+	IsComplete = true;
 }
 

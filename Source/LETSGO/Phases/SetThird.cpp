@@ -95,7 +95,7 @@ void ASetThird::SetTonic()
 void ASetThird::SetThird(FLetsGoMusicNotes Note)
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->SetTonic(Note);
+	GameMode->SetThird(Note);
 	
 	Complete();
 }

@@ -23,15 +23,20 @@ void AStartClock::BeginPlay()
 
 void AStartClock::Initialize()
 {
-	AClockSettings* MainClock = GetWorld()->SpawnActor<AClockSettings>(ClockSettingsClass);
+	ClockSettings = GetWorld()->SpawnActor<AClockSettings>(ClockSettingsClass);
 	
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->SetClockSettings(MainClock);
+	GameMode->SetClockSettings(ClockSettings);
+
+	ClockSettings->MainClock = ClockSettings->GetNewClock(FName(TEXT("MainClock")));
 }
 
 void AStartClock::Activate()
 {
 	IsActive = true;
+
+	ClockSettings->MainClock->StartClock(GetWorld(), ClockSettings->MainClock);
+	
 	Complete();
 }
 
@@ -43,16 +48,15 @@ bool AStartClock::IsActivated()
 void AStartClock::Deactivate()
 {
 	IsActive = false;
+	InitiateDestroy();
 }
 
-// Not expecting this phase to end?
 void AStartClock::Complete()
 {
 	IsComplete = true;
 	Deactivate();
 }
 
-// Not expecting this phase to end?
 bool AStartClock::IsCompleted()
 {
 	return IsComplete;

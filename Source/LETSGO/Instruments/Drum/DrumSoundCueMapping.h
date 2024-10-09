@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "MetasoundSource.h"
 #include "GameFramework/Actor.h"
+#include "LETSGO/Instruments/InstrumentNote.h"
+#include "LETSGO/MusicEngine/MusicComposition/ComposerData.h"
 #include "DrumSoundCueMapping.generated.h"
 
 UCLASS()
@@ -39,4 +41,10 @@ protected:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	static FInstrumentData GenerateInstrumentData(USoundWave* Sound);
+
+	UFUNCTION()
+	FInstrumentData GetInstrumentData(EInstrumentRoles InstrumentRole) const;
 };

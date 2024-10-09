@@ -23,7 +23,7 @@ void AInstrument::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UE_LOG(LogLetsgo, Display, TEXT("Drums BeginPlay Complete"))
+	UE_LOG(LogLetsgo, Display, TEXT("Instrument BeginPlay Complete"))
 }
 
 void AInstrument::SetClock()
@@ -64,7 +64,7 @@ void AInstrument::StopPlaying()
 	Clock->StopClock(GetWorld(), true, Clock);
 }
 
-void AInstrument::OnQuantizationBoundaryTriggered(FName DrumClockName, EQuartzCommandQuantization QuantizationType,
+void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType,
                                                   int32 NumBars, int32 Beat, float BeatFraction)
 {
 	const FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[CurrentBar];

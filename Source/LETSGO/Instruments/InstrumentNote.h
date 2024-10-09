@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MetaSoundPlayerData.h"
 #include "MetasoundSource.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "UObject/Object.h"
@@ -20,17 +21,41 @@ struct FInstrumentNote
 	int Octave;
 
 	UPROPERTY()
-	FLetsGoMusicNotes Note;
+	TEnumAsByte<ELetsGoMusicNotes> Note;
 
 	UPROPERTY()
-	UMetaSoundSource* SoundCue;
+	FMetaSoundPlayerData SoundData;
 
-	FInstrumentNote(): Octave(0), SoundCue(nullptr){}
 
-	FInstrumentNote(int octave, ELetsGoMusicNotes note, UMetaSoundSource* soundCue)
+	FInstrumentNote(): Octave(0), Note(C), SoundData(nullptr)
 	{
-		Octave = octave;
-		Note = FLetsGoMusicNotes(note);
-		SoundCue = soundCue;
 	}
+
+	FInstrumentNote(const int InOctave, const ELetsGoMusicNotes InNote, const FMetaSoundPlayerData& InSoundCue)
+	{
+		Octave = InOctave;
+		Note = InNote;
+		SoundData = InSoundCue;
+	}
+};
+
+USTRUCT()
+struct FInstrumentData
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	TArray<FInstrumentNote> Notes;
+
+	FInstrumentData()
+	{
+		Notes = TArray<FInstrumentNote>();
+	}
+	
+	explicit FInstrumentData(const TArray<FInstrumentNote>& InNotes)
+	{
+		Notes = InNotes;
+	}
+
+	static FInstrumentData GenerateKeys(TArray<USoundWave*> Sounds);
 };

@@ -49,7 +49,7 @@ FInstrumentSchedule APlatformAudioCuePlayer::BuildInstrumentSchedule(TEnumAsByte
 	int Octave = 3;
 
 	// Filter the array
-	TArray<FCheeseKeyData> FilteredNotes = CheeseKeyData->NoteData.FilterByPredicate([&] (const FCheeseKeyData& Data){
+	TArray<FInstrumentNote> FilteredNotes = CheeseKeyData->NoteData.Notes.FilterByPredicate([&] (const FInstrumentNote& Data){
 		return Data.Octave == Octave && Data.Note == ENote;
 	});
 	

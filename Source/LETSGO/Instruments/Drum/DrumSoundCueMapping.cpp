@@ -25,3 +25,44 @@ void ADrumSoundCueMapping::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+FInstrumentData ADrumSoundCueMapping::GenerateInstrumentData(USoundWave* Sound)
+{
+	const FMetaSoundPlayerData MetaSound = FMetaSoundPlayerData(Sound);
+	const TArray<FInstrumentNote> Notes {
+		FInstrumentNote(0, C, MetaSound)
+	};
+	return FInstrumentData(Notes);
+}
+
+FInstrumentData ADrumSoundCueMapping::GetInstrumentData(const EInstrumentRoles InstrumentRole) const
+{
+	switch (InstrumentRole)
+	{
+	case EInstrumentRoles::Snare:
+		{
+			return GenerateInstrumentData(Snare);
+		}
+	case EInstrumentRoles::Kick:
+		{
+			return GenerateInstrumentData(Kick);
+		}
+	case EInstrumentRoles::HiHatClosed:
+		{
+			return GenerateInstrumentData(HiHatClosed);
+		}
+	case EInstrumentRoles::HiHatOpen:
+		{
+			return GenerateInstrumentData(HiHatOpen);
+		}
+	case EInstrumentRoles::Clap:
+		{
+			return GenerateInstrumentData(Clap);
+		}	
+	default:
+		{
+			UE_LOG(LogLetsgo, Warning, TEXT("Default case returned for GetInstrumentData"))
+			return FInstrumentData();
+		}
+	}
+}
+
