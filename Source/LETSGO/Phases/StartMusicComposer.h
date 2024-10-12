@@ -3,51 +3,55 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LETSGO/MusicEngine/MusicComposition/MusicComposer.h"
 #include "GameFramework/Actor.h"
-#include "LETSGO/MusicEngine/ClockSettings.h"
 #include "LETSGO/Phases/PhaseController.h"
-#include "StartClock.generated.h"
+#include "StartMusicComposer.generated.h"
 
-// See https://abovenoisestudios.com/blogeng/metasquartzverticalengp2
 UCLASS()
-class LETSGO_API AStartClock : public AActor, public IPhaseController
+class LETSGO_API AStartMusicComposer : public AActor, public IPhaseController
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	AStartClock();
+	AStartMusicComposer();
 
 	UPROPERTY()
-	bool IsActive = false;
-
-	UPROPERTY()
-	bool IsComplete = false;
+	AMusicComposer* Composer;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	TSubclassOf<AClockSettings> ClockSettingsClass;
-
-	UPROPERTY()
-	AClockSettings* ClockSettings;
+	TSubclassOf<AMusicComposer> MusicComposerClass;
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	bool Completed;
+	bool Active;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-	
+
 	UFUNCTION()
 	void Initialize();
-
-	virtual void Activate() override ;
+	
+	UFUNCTION()
+	virtual void Activate() override;
+	
+	UFUNCTION()
 	virtual bool IsActivated() override;
-	
+
+	UFUNCTION()
 	virtual void Deactivate() override;
-	
+
+	UFUNCTION()
 	virtual void Complete() override;
+
+	UFUNCTION()
 	virtual bool IsCompleted() override;
 
+	UFUNCTION()
 	virtual void InitiateDestroy() override;
 };
