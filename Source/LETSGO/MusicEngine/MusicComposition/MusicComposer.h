@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "ComposerData.h"
+#include "MusicComposerState.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/Drum/DrumSoundCueMapping.h"
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
@@ -21,10 +22,10 @@ public:
 	AMusicComposer();
 
 	UPROPERTY()
-	int32 BarCreationThreshold = 4;
-	
-	UPROPERTY()
-	FLetsGoGeneratedScale Scale; 
+	AMusicComposerState* ComposerState;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AMusicComposerState> ComposerStateClass; 
 
 	UPROPERTY()
 	TArray<FComposerData> ComposerDataObjects;

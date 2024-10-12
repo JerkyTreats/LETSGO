@@ -20,7 +20,7 @@ void AMusicComposer::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	ComposerState = GetWorld()->SpawnActor<AMusicComposerState>(ComposerStateClass);
 }
 
 // Called every frame
@@ -40,6 +40,9 @@ void AMusicComposer::Initialize()
 	UQuartzClockHandle* MainClock = ClockSettings->MainClock;
 	MainClock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, OnBeatQuantizationDelegate, MainClock);
 
+	// Default Scale to C Major
+	ComposerState->Initialize(FLetsGoGeneratedScale(FLetsGoMusicNotes(C), ULetsGoMusicEngine::Ionian));
+	
 	InitializeStrategies();
 	InitializeComposerData();
 	
@@ -58,8 +61,7 @@ void AMusicComposer::InitializeComposerData()
 	FComposerData Clap = FComposerData(EInstrumentRoles::Snare,SoundCueMapping->GetInstrumentData(EInstrumentRoles::Clap));
 	*/
 
-	ACheeseKeySoundCueMapping* CheeseKeySoundCueMapping = GameMode->GetInstrumentData_CheeseKey();
-	FInstrumentData CheeseInstrumentData = CheeseKeySoundCueMapping->NoteData;
+	FInstrumentData CheeseInstrumentData = ComposerState->CheeseKeySoundCueMapping->NoteData;
 
 	FComposerData Bass = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
 	Bass.OctaveMin = 2;
@@ -111,7 +113,7 @@ FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData,
 	{
 		FMusicStrategyData CandidateStrategy = MusicalStrategies[i];
 		const float Appropriateness = CandidateStrategy.Strategy->GetStrategyAppropriateness(
-					ComposerData, ComposerDataObjects, Scale);
+					ComposerData, ComposerDataObjects, ComposerState->Scale);
 		if ( Appropriateness > ChosenStrategy.StrategyAppropriateness)
 		{
 			CandidateStrategy.StrategyAppropriateness = Appropriateness;
@@ -163,7 +165,7 @@ void AMusicComposer::GenerateScale()
 	NewScale.Tonic = Tonic;
 	NewScale.IsValid = true;
 
-	Scale = NewScale;
+	ComposerState->Scale = NewScale;
 }
 
 //Every bar, the Composer:
@@ -190,7 +192,7 @@ void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
 		}
 
 		// Define bars for this instrument
-		if (BarsDefined - NumBars < BarCreationThreshold)
+		if (BarsDefined - NumBars < ComposerState->BarCreationThreshold)
 		{
 			//TODO Times to Repeat magic number
 			FInstrumentScheduleData NewSchedule = GenerateBars(ComposerData, NumBars + 1, 2);
@@ -215,7 +217,7 @@ void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCom
 
 	int StartAtBar = NumBars;
 	
-	if ( Scale.IsValid && Scale.Tonic.Note != C )
+	if ( ComposerState->Scale.IsValid && ComposerState->Scale.Tonic.Note != C )
 	{
 		if (! Started)
 		{
