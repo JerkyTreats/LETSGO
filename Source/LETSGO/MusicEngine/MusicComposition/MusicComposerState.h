@@ -20,6 +20,9 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	int32 BarCreationThreshold = 4;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
+	float MusicalStrategyAppropriatenessThreshold = 0.5f;
 	
 	UPROPERTY()
 	FLetsGoGeneratedScale Scale;

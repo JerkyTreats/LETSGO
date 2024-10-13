@@ -169,7 +169,7 @@ void AMusicComposer::CheckAndGenerateBars(const int32 CurrentBar)
 			float StrategyAppropriateness = 0.0f;
 			IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy(ComposerData, StrategyAppropriateness);
 
-			if (StrategyAppropriateness == 0)
+			if (StrategyAppropriateness < ComposerState->MusicalStrategyAppropriatenessThreshold)
 				return;
 			
 			//TODO Times to Repeat magic number
