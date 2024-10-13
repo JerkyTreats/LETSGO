@@ -7,11 +7,11 @@
 #include "MusicComposerState.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
-FInstrumentSchedule UStrategy_PedalPointComposition::Apply(FComposerData& ComposerData, FInstrumentScheduleData InstrumentScheduleData)
+FInstrumentSchedule UStrategy_PedalPointComposition::Apply(TSharedPtr<FComposerData> CurrentComposerData, FInstrumentScheduleData InstrumentScheduleData)
 {
 	// Filter the array
-	TArray<FInstrumentNote> FilteredNotes = ComposerData.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
-		return InstrumentNote.Octave == ComposerData.OctaveMin && InstrumentNote.Note == ComposerData.Scale.Tonic.Note;
+	TArray<FInstrumentNote> FilteredNotes = CurrentComposerData->InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
+		return InstrumentNote.Octave == CurrentComposerData->OctaveMin && InstrumentNote.Note == CurrentComposerData->Scale.Tonic.Note;
 	});
 	
 	FInstrumentSchedule Schedule = FInstrumentSchedule();
@@ -32,9 +32,9 @@ FInstrumentSchedule UStrategy_PedalPointComposition::Apply(FComposerData& Compos
 	return Schedule;
 }
 
-float UStrategy_PedalPointComposition::GetStrategyAppropriateness(FComposerData CurrentComposerData, const AMusicComposerState* State)
+float UStrategy_PedalPointComposition::GetStrategyAppropriateness(TSharedPtr<FComposerData> CurrentComposerData, const AMusicComposerState* State)
 {
-	if (! CurrentComposerData.IsMultiNoteInstrument() || State->AllowableNoteIndices.Num() == 0)
+	if (! CurrentComposerData->IsMultiNoteInstrument() || State->AllowableNoteIndices.Num() == 0)
 	{
 		return 0.0f;
 	}
@@ -57,7 +57,7 @@ float UStrategy_PedalPointComposition::GetStrategyAppropriateness(FComposerData 
 }
 
 // This strategy doesn't need input from other instruments
-float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(FComposerData CurrentComposerData,
+float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(TSharedPtr<FComposerData> CurrentComposerData,
 	const AMusicComposerState* State)
 {
 	return 0.0f;

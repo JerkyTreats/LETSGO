@@ -17,8 +17,8 @@ class LETSGO_API UStrategy_PedalPointComposition : public UObject, public IMusic
 	GENERATED_BODY()
 
 public:
-	virtual FInstrumentSchedule Apply(FComposerData& ComposerData, FInstrumentScheduleData InstrumentScheduleData) override;
-	virtual float GetStrategyAppropriateness(FComposerData CurrentComposerData, const AMusicComposerState* State) override;
+	virtual FInstrumentSchedule Apply(TSharedPtr<FComposerData> CurrentComposerData, FInstrumentScheduleData InstrumentScheduleData) override;
+	virtual float GetStrategyAppropriateness(TSharedPtr<FComposerData> CurrentComposerData, const AMusicComposerState* State) override;
 	virtual float
-	GetInstrumentAppropriateness(FComposerData CurrentComposerData, const AMusicComposerState* State) override;
+	GetInstrumentAppropriateness(TSharedPtr<FComposerData> CurrentComposerData, const AMusicComposerState* State) override;
 };

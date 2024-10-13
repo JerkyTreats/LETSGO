@@ -107,12 +107,14 @@ void AMusicComposer::InitializeStrategies()
 
 FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData, const int StartAtBar, const int TimesToRepeat)
 {
-	FMusicStrategyData ChosenStrategy = MusicalStrategies[0]; 
+	FMusicStrategyData ChosenStrategy = MusicalStrategies[0];
+	TSharedPtr<FComposerData> ComposerDataPtr = MakeShared<FComposerData>();
+	// FComposerData* ComposerDataPtr = ComposerData;
 	for(int i = 0; i < MusicalStrategies.Num(); i++)
 	{
 		FMusicStrategyData CandidateStrategy = MusicalStrategies[i];
 		const float Appropriateness = CandidateStrategy.Strategy->GetStrategyAppropriateness(
-					ComposerData, ComposerState);
+					ComposerDataPtr, ComposerState);
 		if ( Appropriateness > ChosenStrategy.StrategyAppropriateness)
 		{
 			CandidateStrategy.StrategyAppropriateness = Appropriateness;
@@ -129,7 +131,7 @@ FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData,
 
 	FInstrumentScheduleData ScheduleData = FInstrumentScheduleData( FInstrumentSchedule(), StartAtBar, TimesToRepeat);
 
-	FInstrumentSchedule InstrumentSchedule = ChosenStrategy.Strategy->Apply(ComposerData, ScheduleData);
+	FInstrumentSchedule InstrumentSchedule = ChosenStrategy.Strategy->Apply(ComposerDataPtr, ScheduleData);
 
 	ScheduleData.InstrumentSchedule = InstrumentSchedule;
 	ScheduleData.StrategyData = ChosenStrategy;
