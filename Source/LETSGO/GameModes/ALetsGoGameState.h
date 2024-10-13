@@ -30,28 +30,14 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "LETSGO")  
 	AClockSettings* ClockSettings;
 
-	// Generated Notes 
+	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
+	bool IsTonicSet = false;
+	
 	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
 	FLetsGoMusicNotes Tonic;
 
 	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
-	FLetsGoMusicNotes Second;
-	
-	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
-	FLetsGoMusicNotes Third;
-
-	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
-	FLetsGoMusicNotes Fourth;
-
-	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
-	FLetsGoMusicNotes Fifth;
-
-	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
-	FLetsGoMusicNotes Sixth;
-
-	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
-	FLetsGoMusicNotes Seventh;
-
+	FLetsGoGeneratedScale ChromaticScale;
 	
 	UPROPERTY(VisibleAnywhere, Category= "LETSGO")
 	UInstrumentRack* InstrumentRack;

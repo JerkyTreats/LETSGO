@@ -6,11 +6,7 @@
 #include "ComposerData.h"
 #include "MusicComposerState.h"
 #include "GameFramework/Actor.h"
-#include "LETSGO/Instruments/Drum/DrumSoundCueMapping.h"
-#include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "MusicComposer.generated.h"
-
-
 
 UCLASS()
 class LETSGO_API AMusicComposer : public AActor
@@ -25,10 +21,7 @@ public:
 	AMusicComposerState* ComposerState;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	TSubclassOf<AMusicComposerState> ComposerStateClass; 
-
-	UPROPERTY()
-	TArray<FComposerData> ComposerDataObjects;
+	TSubclassOf<AMusicComposerState> ComposerStateClass;
 
 	UPROPERTY()
 	TArray<FMusicStrategyData> MusicalStrategies;
@@ -63,6 +56,11 @@ public:
 
 	UFUNCTION()
 	void GenerateScale();
+
+	UFUNCTION()
+	void UpdateAllowableNoteIndices(int Interval);
+
+	UFUNCTION()
 	void CheckAndGenerateBars(int32 NumBars);
 
 	UFUNCTION()

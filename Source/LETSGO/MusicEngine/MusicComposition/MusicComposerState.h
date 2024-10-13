@@ -25,6 +25,12 @@ public:
 	FLetsGoGeneratedScale Scale;
 
 	UPROPERTY()
+	TArray<int> AllowableNoteIndices;
+
+	UPROPERTY()
+	TArray<FComposerData> ComposerDataObjects;
+
+	UPROPERTY()
 	ACheeseKeySoundCueMapping* CheeseKeySoundCueMapping;
 
 	UPROPERTY()
@@ -38,5 +44,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void Initialize(const FLetsGoGeneratedScale& Scale);
+	void Initialize();
 };

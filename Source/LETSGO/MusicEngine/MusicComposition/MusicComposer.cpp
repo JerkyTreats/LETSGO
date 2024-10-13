@@ -34,7 +34,8 @@ void AMusicComposer::Initialize()
 {
 	const UWorld* World = GetWorld();
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(World->GetAuthGameMode());
-	GameMode->OnMusicalStateUpdated.AddDynamic(this, &AMusicComposer::GenerateScale);
+	GameMode->OnTonicSet.AddDynamic(this, &AMusicComposer::GenerateScale);
+	GameMode->OnIntervalSet.AddUniqueDynamic(this, &AMusicComposer::UpdateAllowableNoteIndices);
 
 	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
 	UQuartzClockHandle* MainClock = ClockSettings->MainClock;
@@ -50,8 +51,6 @@ void AMusicComposer::Initialize()
 
 void AMusicComposer::InitializeComposerData()
 {
-	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	// ADrumSoundCueMapping* SoundCueMapping =  GameMode->GetInstrumentData_Drums();
 	
 	/*
 	FComposerData Snare = FComposerData(EInstrumentRoles::Snare,SoundCueMapping->GetInstrumentData(EInstrumentRoles::Snare));

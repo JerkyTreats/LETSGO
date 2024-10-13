@@ -30,9 +30,11 @@ void AMusicComposerState::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AMusicComposerState::Initialize(const FLetsGoGeneratedScale& InScale)
+void AMusicComposerState::Initialize()
 {
-	Scale = InScale;
+	Scale = ULetsGoMusicEngine::GenerateScale(ULetsGoMusicEngine::Chromatic, FLetsGoMusicNotes(C));
+	AllowableNoteIndices = TArray<int>();
+	
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	CheeseKeySoundCueMapping = GameMode->GetInstrumentData_CheeseKey();
 	DrumsSoundCueMapping = GameMode->GetInstrumentData_Drums();

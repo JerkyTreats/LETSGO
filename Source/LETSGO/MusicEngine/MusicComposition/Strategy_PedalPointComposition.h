@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "MusicComposerState.h"
 #include "MusicStrategy.h"
 #include "UObject/Object.h"
 #include "Strategy_PedalPointComposition.generated.h"
@@ -17,7 +18,7 @@ class LETSGO_API UStrategy_PedalPointComposition : public UObject, public IMusic
 
 public:
 	virtual FInstrumentSchedule Apply(FComposerData& ComposerData, FInstrumentScheduleData InstrumentScheduleData) override;
-	virtual float GetStrategyAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet, FLetsGoGeneratedScale Scale) override;
+	virtual float GetStrategyAppropriateness(FComposerData CurrentComposerData, const AMusicComposerState* State) override;
 	virtual float
-	GetInstrumentAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet) override;
+	GetInstrumentAppropriateness(FComposerData CurrentComposerData, const AMusicComposerState* State) override;
 };
