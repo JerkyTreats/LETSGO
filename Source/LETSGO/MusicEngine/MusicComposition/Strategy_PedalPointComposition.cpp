@@ -7,16 +7,13 @@
 #include "MusicComposerState.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
-FInstrumentSchedule UStrategy_PedalPointComposition::Apply(TSharedPtr<FComposerData> CurrentComposerData, FInstrumentScheduleData InstrumentScheduleData)
+FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(TSharedPtr<FComposerData> CurrentComposerData, const AMusicComposerState* State)
 {
 	// Filter the array
 	TArray<FInstrumentNote> FilteredNotes = CurrentComposerData->InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
-		return InstrumentNote.Octave == CurrentComposerData->OctaveMin && InstrumentNote.Note == CurrentComposerData->Scale.Tonic.Note;
+		return InstrumentNote.Octave == CurrentComposerData->OctaveMin && InstrumentNote.Note == State->Scale.Tonic.Note;
 	});
 	
-	FInstrumentSchedule Schedule = FInstrumentSchedule();
-
-	Schedule.QuantizationDivision = EQuartzCommandQuantization::QuarterNote;
 	FPerBarSchedule Bar =  FPerBarSchedule({
 		FNotesPerBar(1.0f, FilteredNotes[0].SoundData),
 		FNotesPerBar(2.0f, FilteredNotes[0].SoundData),
@@ -24,12 +21,7 @@ FInstrumentSchedule UStrategy_PedalPointComposition::Apply(TSharedPtr<FComposerD
 		FNotesPerBar(4.0f, FilteredNotes[0].SoundData),
 	});
 	
-	for (int i = 0; i < InstrumentScheduleData.TimesToRepeat; i++ )
-	{
-		Schedule.BeatSchedule.Emplace(Bar);
-	}
-	
-	return Schedule;
+	return Bar;
 }
 
 float UStrategy_PedalPointComposition::GetStrategyAppropriateness(TSharedPtr<FComposerData> CurrentComposerData, const AMusicComposerState* State)
@@ -39,19 +31,26 @@ float UStrategy_PedalPointComposition::GetStrategyAppropriateness(TSharedPtr<FCo
 		return 0.0f;
 	}
 
-	float Weight = 1.0f;
+	float Weight = 0.2f;
 
-	for (int i = 0; i < State->ComposerDataObjects.Num(); i++)
+	if (CurrentComposerData->InstrumentRole == Bass)
+	{
+		Weight += 0.3f;
+	}
+
+	if (CurrentComposerData->ScheduleData.Num() == 0)
+	{
+		Weight += 0.3;
+	}
+
+	/*for (int i = 0; i < State->ComposerDataObjects.Num(); i++)
 	{
 		FComposerData ComposerData = State->ComposerDataObjects[i];
 		for (int ScheduleDataIndex = 0; ScheduleDataIndex < ComposerData.ScheduleData.Num(); ScheduleDataIndex++)
 		{
-			if (FInstrumentScheduleData ScheduleData = ComposerData.ScheduleData[i]; ScheduleData.StrategyData.StrategyType == CreateMotif)
-			{
-				Weight = 0.5f;
-			}
+
 		}
-	}
+	}*/
 	
 	return Weight;
 }

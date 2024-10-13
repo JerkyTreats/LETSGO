@@ -40,7 +40,7 @@ FMusicStrategyData::FMusicStrategyData(): Strategy(nullptr)
 }
 */
 
-FMusicStrategyData::FMusicStrategyData()
+/*FMusicStrategyData::FMusicStrategyData()
 {
 }
 
@@ -50,7 +50,7 @@ FMusicStrategyData::FMusicStrategyData(IMusicStrategy* InputStrategy, const floa
 	Strategy = InputStrategy;
 	StrategyAppropriateness = Appropriateness;
 	StrategyType = InStrategyType;
-}
+}*/
 
 /*
 void FMusicStrategyData::GenerateInstrumentInputs(const TArray<FComposerData> ComposerDataSet)

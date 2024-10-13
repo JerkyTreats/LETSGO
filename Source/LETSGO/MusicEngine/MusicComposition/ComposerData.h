@@ -27,7 +27,7 @@ enum EInstrumentRoles
 	Clap,
 };
 
-UENUM()
+/*UENUM()
 enum EMusicStrategies
 {
 	PedalPoint,
@@ -47,16 +47,12 @@ struct FMusicStrategyData
 	UPROPERTY()
 	float StrategyAppropriateness = 0.0f;
 
-	// TArray<FInstrumentInputData> InstrumentInputs;
-
 
 	FMusicStrategyData();
 	FMusicStrategyData(IMusicStrategy* InputStrategy, float Appropriateness, const EMusicStrategies InStrategyType);
+};*/
 
-	// void GenerateInstrumentInputs(const TArray<FComposerData> ComposerDataSet);
-};
-
-// Wraps InstrumentSchedule with data specific for Composer. 
+/*// Wraps InstrumentSchedule with data specific for Composer. 
 USTRUCT()
 struct FInstrumentScheduleData
 {
@@ -64,18 +60,9 @@ struct FInstrumentScheduleData
 
 	UPROPERTY()
 	FInstrumentSchedule InstrumentSchedule;
-
-	UPROPERTY()
-	int StartAtBar = 0;
-
-	UPROPERTY()
-	int TimesToRepeat = 0;
-
+	
 	UPROPERTY()
 	FMusicStrategyData StrategyData;
-
-	UPROPERTY()
-	bool IsValid = false;
 
 	FInstrumentScheduleData()
 	{
@@ -85,37 +72,14 @@ struct FInstrumentScheduleData
 	FInstrumentScheduleData(const FInstrumentSchedule& Schedule, int InStartAtBars, int InTimesToRepeat)
 	{
 		InstrumentSchedule = Schedule;
-		StartAtBar = InStartAtBars;
-		TimesToRepeat = InTimesToRepeat;
-
-		IsValid = true;
 	}
-};
-
-// Represents another Instrument that may be influential to a Musical Strategy
-// eg. A `Call and Response` strat needs instruments to listen to each other.
-// This object facilitates the data needed for such a strategy.
-/*USTRUCT()
-struct FInstrumentInputData
-{
-	GENERATED_BODY()
-
-	FComposerData ComposerData;
-	float Appropriateness = 0.0f;
-
-	FInstrumentInputData() {}
-	explicit FInstrumentInputData(const FComposerData& InputData);
 };*/
-
 
 
 USTRUCT()
 struct FComposerData
 {
 	GENERATED_BODY()
-
-	UPROPERTY()
-	FLetsGoGeneratedScale Scale; 
 
 	UPROPERTY()
 	TEnumAsByte<EInstrumentRoles> InstrumentRole = None;
@@ -130,14 +94,11 @@ struct FComposerData
 	int OctaveMax = 5;
 
 	UPROPERTY()
-	TArray<FInstrumentScheduleData> ScheduleData;
-
-	// IMusicCompositionStrategy* CompositionStrategy;
-	// int ComposerDataObjectIndex;
+	TArray<FInstrumentSchedule> ScheduleData;
 
 	FComposerData()
 	{
-		ScheduleData = TArray<FInstrumentScheduleData>();
+		ScheduleData = TArray<FInstrumentSchedule>();
 	}
 
 	explicit FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData);

@@ -25,6 +25,9 @@ public:
 	FLetsGoGeneratedScale Scale;
 
 	UPROPERTY()
+	bool IsTonicSet = false;
+
+	UPROPERTY()
 	TArray<int> AllowableNoteIndices;
 
 	UPROPERTY()

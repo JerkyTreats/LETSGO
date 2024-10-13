@@ -24,7 +24,7 @@ public:
 	TSubclassOf<AMusicComposerState> ComposerStateClass;
 
 	UPROPERTY()
-	TArray<FMusicStrategyData> MusicalStrategies;
+	TArray<IMusicStrategy*> MusicalStrategies;
 	
 	UPROPERTY()
 	FOnQuartzMetronomeEventBP OnBeatQuantizationDelegate;
@@ -50,9 +50,10 @@ public:
 	
 	UFUNCTION()
 	void InitializeStrategies();
-
-	UFUNCTION()
-	FInstrumentScheduleData GenerateBars(FComposerData ComposerData, int StartAtBar, int TimesToRepeat);
+	
+	IMusicStrategy* ChooseMusicalStrategy(const TSharedPtr<FComposerData>& ComposerDataPtr, float& AppropriatenessOut);
+	
+	FInstrumentSchedule GenerateBars(TSharedPtr<FComposerData>& ComposerData, IMusicStrategy* ChosenStrategy, int StartAtBar, int TimesToRepeat);
 
 	UFUNCTION()
 	void GenerateScale();
@@ -61,7 +62,7 @@ public:
 	void UpdateAllowableNoteIndices(int Interval);
 
 	UFUNCTION()
-	void CheckAndGenerateBars(int32 NumBars);
+	void CheckAndGenerateBars(int32 CurrentBar);
 
 	UFUNCTION()
 	void OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);

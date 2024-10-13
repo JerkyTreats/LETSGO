@@ -19,3 +19,14 @@ FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quanti
 	BeatSchedule = Pattern;
 }
 
+FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quantization,
+	const FPerBarSchedule& Pattern, const int TimesToRepeat, const int BarStart)
+{
+	QuantizationDivision = Quantization;
+	StartAtBar = BarStart;
+	for (int i = 0; i < TimesToRepeat; i++)
+	{
+		BeatSchedule.Emplace(Pattern);
+	}
+}
+

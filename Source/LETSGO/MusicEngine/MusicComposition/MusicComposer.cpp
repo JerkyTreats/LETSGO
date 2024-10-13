@@ -29,6 +29,23 @@ void AMusicComposer::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+
+void AMusicComposer::GenerateScale()
+{
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	ComposerState->Scale = GameMode->GetChromaticScale();
+
+	// Allow pentatonic on Tonic set
+	ComposerState->AllowableNoteIndices = { 0, 2, 7, 9 };
+
+	ComposerState->IsTonicSet = true;
+}
+
+void AMusicComposer::UpdateAllowableNoteIndices(int Interval)
+{
+	ComposerState->AllowableNoteIndices.AddUnique(Interval);
+}
+
 // Setup a custom tick for composition, based on MainClock bar
 void AMusicComposer::Initialize()
 {
@@ -60,7 +77,7 @@ void AMusicComposer::InitializeComposerData()
 	FComposerData Clap = FComposerData(EInstrumentRoles::Snare,SoundCueMapping->GetInstrumentData(EInstrumentRoles::Clap));
 	*/
 
-	FInstrumentData CheeseInstrumentData = ComposerState->CheeseKeySoundCueMapping->NoteData;
+	const FInstrumentData CheeseInstrumentData = ComposerState->CheeseKeySoundCueMapping->NoteData;
 
 	FComposerData Bass = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
 	Bass.OctaveMin = 2;
@@ -95,97 +112,69 @@ void AMusicComposer::InitializeComposerData()
 
 void AMusicComposer::InitializeStrategies()
 {
-	MusicalStrategies = TArray<FMusicStrategyData>();
-
-	MusicalStrategies.Emplace(FMusicStrategyData(
-		NewObject<UStrategy_PedalPointComposition>(),
-		0.0f,
-		PedalPoint		
-	));
-
+	MusicalStrategies = {
+		NewObject<UStrategy_PedalPointComposition>()
+	};
 }
 
-FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData, const int StartAtBar, const int TimesToRepeat)
+IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(const TSharedPtr<FComposerData>& ComposerData, float& AppropriatenessOut)
 {
-	FMusicStrategyData ChosenStrategy = MusicalStrategies[0];
-	TSharedPtr<FComposerData> ComposerDataPtr = MakeShared<FComposerData>();
-	// FComposerData* ComposerDataPtr = ComposerData;
+	IMusicStrategy* ChosenStrategy = MusicalStrategies[0];
+
 	for(int i = 0; i < MusicalStrategies.Num(); i++)
 	{
-		FMusicStrategyData CandidateStrategy = MusicalStrategies[i];
-		const float Appropriateness = CandidateStrategy.Strategy->GetStrategyAppropriateness(
-					ComposerDataPtr, ComposerState);
-		if ( Appropriateness > ChosenStrategy.StrategyAppropriateness)
+		IMusicStrategy* CandidateStrategy = MusicalStrategies[i];
+		const float CandidateAppropriateness = CandidateStrategy->GetStrategyAppropriateness(
+			ComposerData, ComposerState);
+		if ( CandidateAppropriateness > AppropriatenessOut)
 		{
-			CandidateStrategy.StrategyAppropriateness = Appropriateness;
+			AppropriatenessOut = CandidateAppropriateness;
 			ChosenStrategy = CandidateStrategy;
 		}
 	}
 
-	/*
-	if (ChosenStrategy.StrategyAppropriateness == 0.0f)
-	{
-		return FInstrumentScheduleData();
-	}
-	*/
-
-	FInstrumentScheduleData ScheduleData = FInstrumentScheduleData( FInstrumentSchedule(), StartAtBar, TimesToRepeat);
-
-	FInstrumentSchedule InstrumentSchedule = ChosenStrategy.Strategy->Apply(ComposerDataPtr, ScheduleData);
-
-	ScheduleData.InstrumentSchedule = InstrumentSchedule;
-	ScheduleData.StrategyData = ChosenStrategy;
-
-	return ScheduleData;
+	return ChosenStrategy;
 }
 
-void AMusicComposer::GenerateScale()
+FInstrumentSchedule AMusicComposer::GenerateBars(TSharedPtr<FComposerData>& ComposerData, IMusicStrategy* ChosenStrategy, const int StartAtBar, const int TimesToRepeat)
 {
-	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	ComposerState->Scale = GameMode->GetChromaticScale();
+	FPerBarSchedule Bar = ChosenStrategy->GenerateBar(ComposerData, ComposerState);
+	FInstrumentSchedule InstrumentSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bar, TimesToRepeat, StartAtBar);
 
-	// Allow pentatonic on Tonic set
-	ComposerState->AllowableNoteIndices = { 0, 2, 7, 9 };
+	return InstrumentSchedule;
 }
 
-void AMusicComposer::UpdateAllowableNoteIndices(int Interval)
-{
-	ComposerState->AllowableNoteIndices.AddUnique(Interval);
-}
-
-//Every bar, the Composer:
-
-// Updates Strategy Appropriateness
-
-void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
+void AMusicComposer::CheckAndGenerateBars(const int32 CurrentBar)
 {
 	int32 BarsDefined = 0;
 
 	// Does this ComposerData need more bars defined? 
 	for (int i = 0; i < ComposerState->ComposerDataObjects.Num(); i++ )
 	{
-		FComposerData ComposerData = ComposerState->ComposerDataObjects[i];
+		TSharedPtr<FComposerData> ComposerData = MakeShared<FComposerData>(ComposerState->ComposerDataObjects[i]);
 
 		// Peer into each ComposerDatas InstrumentSchedules to determine how many bars we have
-		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData.ScheduleData.Num(); ScheduleIndex++)
+		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData->ScheduleData.Num(); ScheduleIndex++)
 		{
-			const FInstrumentScheduleData ScheduleData = ComposerData.ScheduleData[ScheduleIndex];
-			if(const int32 BarSchedule = ScheduleData.StartAtBar * ScheduleData.TimesToRepeat; BarSchedule > BarsDefined)
+			const TSharedPtr<FInstrumentSchedule> ScheduleData = MakeShared<FInstrumentSchedule>(ComposerData->ScheduleData[ScheduleIndex]);
+			if(const int32 BarSchedule = ScheduleData->StartAtBar * ScheduleData->BeatSchedule.Num(); BarSchedule > BarsDefined)
 			{
 				BarsDefined = BarSchedule;
 			}
 		}
 
 		// Define bars for this instrument
-		if (BarsDefined - NumBars < ComposerState->BarCreationThreshold)
+		if (BarsDefined - CurrentBar < ComposerState->BarCreationThreshold)
 		{
-			//TODO Times to Repeat magic number
-			FInstrumentScheduleData NewSchedule = GenerateBars(ComposerData, BarsDefined + 1, 2);
+			float StrategyAppropriateness = 0.0f;
+			IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy(ComposerData, StrategyAppropriateness);
 
-			if (NewSchedule.IsValid)
-			{
-				ComposerState->ComposerDataObjects[i].ScheduleData.Emplace(NewSchedule);
-			}
+			if (StrategyAppropriateness == 0)
+				return;
+			
+			//TODO Times to Repeat magic number
+			FInstrumentSchedule NewSchedule = GenerateBars(ComposerData, ChosenStrategy, BarsDefined + 1, 2);
+			ComposerState->ComposerDataObjects[i].ScheduleData.Emplace(NewSchedule);
 		}
 	}
 }
@@ -197,6 +186,9 @@ void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
 void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
 	float BeatFraction)
 {
+	if (! ComposerState->IsTonicSet)
+		return;
+	
 	if(GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Bar %i"), NumBars));
 
@@ -216,12 +208,12 @@ void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCom
 	{
 		for (int x = 0; x < ComposerState->ComposerDataObjects[i].ScheduleData.Num(); x++)
 		{
-			FInstrumentScheduleData ScheduleData = ComposerState->ComposerDataObjects[i].ScheduleData[x];
+			FInstrumentSchedule InstrumentSchedule = ComposerState->ComposerDataObjects[i].ScheduleData[x];
 
-			if (ScheduleData.StartAtBar == NumBars)
+			if (InstrumentSchedule.StartAtBar == NumBars)
 			{
 				AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>(InstrumentClass);
-				Instrument->Initialize(ScheduleData.InstrumentSchedule);
+				Instrument->Initialize(InstrumentSchedule);
 				Instrument->StartPlaying();
 			}
 		}
