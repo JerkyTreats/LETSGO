@@ -41,7 +41,7 @@ void AMusicComposer::Initialize()
 	MainClock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, OnBeatQuantizationDelegate, MainClock);
 
 	// Default Scale to C Major
-	ComposerState->Initialize(FLetsGoGeneratedScale(FLetsGoMusicNotes(C), ULetsGoMusicEngine::Ionian));
+	ComposerState->Initialize();
 	
 	InitializeStrategies();
 	InitializeComposerData();
@@ -79,7 +79,7 @@ void AMusicComposer::InitializeComposerData()
 	Soprano.OctaveMin = 5;
 	Soprano.OctaveMax = 5;
 
-	ComposerDataObjects = TArray<FComposerData>
+	ComposerState->ComposerDataObjects = TArray<FComposerData>
 	{
 		/*Snare,
 		Kick,
@@ -113,7 +113,7 @@ FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData,
 	{
 		FMusicStrategyData CandidateStrategy = MusicalStrategies[i];
 		const float Appropriateness = CandidateStrategy.Strategy->GetStrategyAppropriateness(
-					ComposerData, ComposerDataObjects, ComposerState->Scale);
+					ComposerData, ComposerState);
 		if ( Appropriateness > ChosenStrategy.StrategyAppropriateness)
 		{
 			CandidateStrategy.StrategyAppropriateness = Appropriateness;
@@ -138,34 +138,18 @@ FInstrumentScheduleData AMusicComposer::GenerateBars(FComposerData ComposerData,
 	return ScheduleData;
 }
 
-// BUG : Default returns C, not nullptr
 void AMusicComposer::GenerateScale()
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	const FLetsGoMusicNotes Tonic = GameMode->GetTonic();
-	const FLetsGoMusicNotes Second = GameMode->GetSecond();
-	const FLetsGoMusicNotes Third = GameMode->GetThird();
-	const FLetsGoMusicNotes Fourth = GameMode->GetFourth();
-	const FLetsGoMusicNotes Fifth = GameMode->GetFifth();
-	const FLetsGoMusicNotes Sixth = GameMode->GetSixth();
-	const FLetsGoMusicNotes Seventh = GameMode->GetSeventh();
+	ComposerState->Scale = GameMode->GetChromaticScale();
 
-	const TArray<FLetsGoMusicNotes> Notes {
-		Tonic,
-		Second,
-		Third,
-		Fourth,
-		Fifth,
-		Sixth,
-		Seventh
-	};
-	
-	FLetsGoGeneratedScale NewScale = FLetsGoGeneratedScale();
-	NewScale.Notes = Notes;
-	NewScale.Tonic = Tonic;
-	NewScale.IsValid = true;
+	// Allow pentatonic on Tonic set
+	ComposerState->AllowableNoteIndices = { 0, 2, 7, 9 };
+}
 
-	ComposerState->Scale = NewScale;
+void AMusicComposer::UpdateAllowableNoteIndices(int Interval)
+{
+	ComposerState->AllowableNoteIndices.AddUnique(Interval);
 }
 
 //Every bar, the Composer:
@@ -177,9 +161,9 @@ void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
 	int32 BarsDefined = 0;
 
 	// Does this ComposerData need more bars defined? 
-	for (int i = 0; i < ComposerDataObjects.Num(); i++ )
+	for (int i = 0; i < ComposerState->ComposerDataObjects.Num(); i++ )
 	{
-		FComposerData ComposerData = ComposerDataObjects[i];
+		FComposerData ComposerData = ComposerState->ComposerDataObjects[i];
 
 		// Peer into each ComposerDatas InstrumentSchedules to determine how many bars we have
 		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData.ScheduleData.Num(); ScheduleIndex++)
@@ -199,7 +183,7 @@ void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
 
 			if (NewSchedule.IsValid)
 			{
-				ComposerDataObjects[i].ScheduleData.Emplace(NewSchedule);
+				ComposerState->ComposerDataObjects[i].ScheduleData.Emplace(NewSchedule);
 			}
 		}
 	}
@@ -216,31 +200,28 @@ void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCom
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Bar %i"), NumBars));
 
 	int StartAtBar = NumBars;
-	
-	if ( ComposerState->Scale.IsValid && ComposerState->Scale.Tonic.Note != C )
+
+	if (! Started)
 	{
-		if (! Started)
-		{
-			StartAtBar += 2;
-			Started = true;
-			if(GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Started")));
-		}
-		
-		CheckAndGenerateBars(StartAtBar);
+		StartAtBar += 2;
+		Started = true;
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Started")));
+	}
+	
+	CheckAndGenerateBars(StartAtBar);
 
-		for (int i = 0; i < ComposerDataObjects.Num(); i++)
+	for (int i = 0; i < ComposerState->ComposerDataObjects.Num(); i++)
+	{
+		for (int x = 0; x < ComposerState->ComposerDataObjects[i].ScheduleData.Num(); x++)
 		{
-			for (int x = 0; x < ComposerDataObjects[i].ScheduleData.Num(); x++)
+			FInstrumentScheduleData ScheduleData = ComposerState->ComposerDataObjects[i].ScheduleData[x];
+
+			if (ScheduleData.StartAtBar == NumBars)
 			{
-				FInstrumentScheduleData ScheduleData = ComposerDataObjects[i].ScheduleData[x];
-
-				if (ScheduleData.StartAtBar == NumBars)
-				{
-					AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>(InstrumentClass);
-					Instrument->Initialize(ScheduleData.InstrumentSchedule);
-					Instrument->StartPlaying();
-				}
+				AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>(InstrumentClass);
+				Instrument->Initialize(ScheduleData.InstrumentSchedule);
+				Instrument->StartPlaying();
 			}
 		}
 	}

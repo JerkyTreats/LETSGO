@@ -17,10 +17,7 @@ class LETSGO_API ASetThird : public AActor, public IPhaseController
 public:
 	// Sets default values for this actor's properties
 	ASetThird();
-
-	UPROPERTY()
-	FLetsGoMusicNotes Tonic;
-
+	
 	UPROPERTY()
 	AAudioPlatformSpawner* Spawner;
 
@@ -60,9 +57,6 @@ public:
 
 	UFUNCTION()
 	void Initialize();
-	
-	UFUNCTION()
-	void SetTonic();
 	
 	UFUNCTION()
 	void SetThird(FLetsGoMusicNotes Note);
