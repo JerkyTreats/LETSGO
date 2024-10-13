@@ -178,7 +178,7 @@ void AMusicComposer::CheckAndGenerateBars(const int32 NumBars)
 		if (BarsDefined - NumBars < ComposerState->BarCreationThreshold)
 		{
 			//TODO Times to Repeat magic number
-			FInstrumentScheduleData NewSchedule = GenerateBars(ComposerData, NumBars + 1, 2);
+			FInstrumentScheduleData NewSchedule = GenerateBars(ComposerData, BarsDefined + 1, 2);
 
 			if (NewSchedule.IsValid)
 			{
