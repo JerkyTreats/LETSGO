@@ -28,15 +28,6 @@ bool FComposerData::IsMultiNoteInstrument() const
 	}
 }
 
-FInstrumentScheduleData::FInstrumentScheduleData(const FInstrumentSchedule& Schedule, const int InStartAtBars, const int InTimesToRepeat)
-{
-	InstrumentSchedule = Schedule;
-	StartAtBar = InStartAtBars;
-	TimesToRepeat = InTimesToRepeat;
-
-	IsValid = true;
-}
-
 /*
 FInstrumentInputData::FInstrumentInputData(const FComposerData& InputData)
 {

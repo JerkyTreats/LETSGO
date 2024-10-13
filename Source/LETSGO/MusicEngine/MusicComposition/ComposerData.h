@@ -82,9 +82,15 @@ struct FInstrumentScheduleData
 		UE_LOG(LogLetsgo, Warning, TEXT("Default FInstrumentScheduleData Constructor used."));
 	}
 
-	FInstrumentScheduleData(const FInstrumentSchedule& Schedule, int InStartAtBars, int InTimesToRepeat);
-};
+	FInstrumentScheduleData(const FInstrumentSchedule& Schedule, int InStartAtBars, int InTimesToRepeat)
+	{
+		InstrumentSchedule = Schedule;
+		StartAtBar = InStartAtBars;
+		TimesToRepeat = InTimesToRepeat;
 
+		IsValid = true;
+	}
+};
 
 // Represents another Instrument that may be influential to a Musical Strategy
 // eg. A `Call and Response` strat needs instruments to listen to each other.
