@@ -45,11 +45,12 @@ void AInstrument::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AInstrument::Initialize(const FInstrumentSchedule& Schedule)
+void AInstrument::Initialize(const FInstrumentSchedule& Schedule, const bool IsRepeating)
 {
 	SetClock();
 	InstrumentSchedule = Schedule;
 	RelativeQuantizationResolution = Schedule.QuantizationDivision;
+	Repeat = IsRepeating;
 }
 
 void AInstrument::StartPlaying()
@@ -90,7 +91,10 @@ void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzComman
 
 	if (CurrentBar == InstrumentSchedule.BeatSchedule.Num() - 1)
 	{
-		CurrentBar = 0;
+		if (Repeat)
+			CurrentBar = 0;
+
+		//TODO Add logic to destroy after play
 	}
 	else
 	{

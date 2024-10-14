@@ -49,6 +49,9 @@ public:
 	int CurrentBar = 0;
 
 	UPROPERTY()
+	bool Repeat = false;
+
+	UPROPERTY()
 	EQuartzCommandQuantization RelativeQuantizationResolution;
 
 	UPROPERTY()
@@ -68,7 +71,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void Initialize(const FInstrumentSchedule& Schedule);
+	void Initialize(const FInstrumentSchedule& Schedule, const bool IsRepeating = false);
 	
 	UFUNCTION()
 	void StartPlaying();
