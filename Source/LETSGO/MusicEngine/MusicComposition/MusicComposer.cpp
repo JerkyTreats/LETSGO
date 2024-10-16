@@ -23,6 +23,16 @@ void AMusicComposer::BeginPlay()
 	ComposerState = GetWorld()->SpawnActor<AMusicComposerState>(ComposerStateClass);
 }
 
+void AMusicComposer::BeginDestroy()
+{
+	if (Clock)
+		Clock->StopClock(GetWorld(), true, Clock);
+
+	ComposerState->ComposerDataObjects.Empty();
+	
+	Super::BeginDestroy();
+}
+
 // Called every frame
 void AMusicComposer::Tick(float DeltaTime)
 {
@@ -55,8 +65,9 @@ void AMusicComposer::Initialize()
 	GameMode->OnIntervalSet.AddUniqueDynamic(this, &AMusicComposer::UpdateAllowableNoteIndices);
 
 	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
-	UQuartzClockHandle* MainClock = ClockSettings->MainClock;
-	MainClock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, OnBeatQuantizationDelegate, MainClock);
+	Clock = ClockSettings->GetNewClock(FName(TEXT("ComposerClock")));
+	Clock->StartClock(World, Clock);
+	Clock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, OnBeatQuantizationDelegate, Clock);
 
 	// Default Scale to C Major
 	ComposerState->Initialize();
@@ -82,15 +93,15 @@ void AMusicComposer::InitializeComposerData()
 	FComposerData Bass = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
 	Bass.OctaveMin = 2;
 	Bass.OctaveMax = 2;
-
+	
 	FComposerData Tenor = FComposerData(EInstrumentRoles::Tenor, CheeseInstrumentData);
 	Tenor.OctaveMin = 3;
 	Tenor.OctaveMax = 3;
-
+	
 	FComposerData Alto = FComposerData(EInstrumentRoles::Alto, CheeseInstrumentData);
 	Alto.OctaveMin = 4;
 	Alto.OctaveMax = 4;
-
+	
 	FComposerData Soprano = FComposerData(EInstrumentRoles::Soprano, CheeseInstrumentData);
 	Soprano.OctaveMin = 5;
 	Soprano.OctaveMax = 5;
@@ -156,7 +167,7 @@ void AMusicComposer::CheckAndGenerateBars(const int32 CurrentBar)
 		// Peer into each ComposerDatas InstrumentSchedules to determine how many bars we have
 		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData->ScheduleData.Num(); ScheduleIndex++)
 		{
-			const TSharedPtr<FInstrumentSchedule> ScheduleData = MakeShared<FInstrumentSchedule>(ComposerData->ScheduleData[ScheduleIndex]);
+			const TSharedPtr<FInstrumentSchedule> ScheduleData = ComposerData->ScheduleData[ScheduleIndex];
 			if(const int32 BarSchedule = ScheduleData->StartAtBar * ScheduleData->BeatSchedule.Num(); BarSchedule > BarsDefined)
 			{
 				BarsDefined = BarSchedule;
@@ -174,7 +185,7 @@ void AMusicComposer::CheckAndGenerateBars(const int32 CurrentBar)
 			
 			//TODO Times to Repeat magic number
 			FInstrumentSchedule NewSchedule = GenerateBars(ComposerData, ChosenStrategy, BarsDefined + 1, 2);
-			ComposerState->ComposerDataObjects[i].ScheduleData.Emplace(NewSchedule);
+			ComposerState->ComposerDataObjects[i].ScheduleData.Emplace(&NewSchedule);
 		}
 	}
 }
@@ -189,10 +200,7 @@ void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCom
 	if (! ComposerState->IsTonicSet)
 		return;
 	
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Bar %i"), NumBars));
-
-	int StartAtBar = NumBars;
+	int StartAtBar = ComposerState->CurrentBar;
 
 	if (! Started)
 	{
@@ -203,19 +211,4 @@ void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCom
 	}
 	
 	CheckAndGenerateBars(StartAtBar);
-
-	for (int i = 0; i < ComposerState->ComposerDataObjects.Num(); i++)
-	{
-		for (int x = 0; x < ComposerState->ComposerDataObjects[i].ScheduleData.Num(); x++)
-		{
-			FInstrumentSchedule InstrumentSchedule = ComposerState->ComposerDataObjects[i].ScheduleData[x];
-
-			if (InstrumentSchedule.StartAtBar == NumBars)
-			{
-				AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>(InstrumentClass);
-				Instrument->Initialize(InstrumentSchedule);
-				Instrument->StartPlaying();
-			}
-		}
-	}
 }

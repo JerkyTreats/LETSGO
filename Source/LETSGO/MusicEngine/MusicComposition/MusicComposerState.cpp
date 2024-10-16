@@ -24,6 +24,13 @@ void AMusicComposerState::BeginPlay()
 	
 }
 
+void AMusicComposerState::BeginDestroy()
+{
+	
+	Super::BeginDestroy();
+
+}
+
 // Called every frame
 void AMusicComposerState::Tick(float DeltaTime)
 {

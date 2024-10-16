@@ -10,6 +10,7 @@
 #include "StartClock.h"
 #include "StartDrums.h"
 #include "StartMusicComposer.h"
+#include "StartMusicConductor.h"
 #include "UObject/Object.h"
 #include "PhaseManager.generated.h"
 
@@ -50,6 +51,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AStartMusicComposer> StartMusicComposerClass; 
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AStartMusicConductor> StartMusicConductorClass;
 	
 private:
 	// The last frame number we were ticked.
@@ -61,7 +65,6 @@ private:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
 	
 public:
 	UFUNCTION()

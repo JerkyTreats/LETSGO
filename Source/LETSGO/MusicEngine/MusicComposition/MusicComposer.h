@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ComposerData.h"
 #include "MusicComposerState.h"
+#include "MusicStrategy.h"
 #include "GameFramework/Actor.h"
 #include "MusicComposer.generated.h"
 
@@ -32,9 +33,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AInstrument> InstrumentClass;
 
+	UPROPERTY()
+	UQuartzClockHandle* Clock;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void BeginDestroy() override;
 
 	bool Started = false;
 

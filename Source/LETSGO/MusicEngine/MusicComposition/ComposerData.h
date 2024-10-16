@@ -1,11 +1,8 @@
 ﻿#pragma once
 
-#include "MusicStrategy.h"
-#include "LETSGO/LETSGO.h"
 #include "LETSGO/Instruments/Instrument.h"
 #include "LETSGO/Instruments/InstrumentNote.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
-#include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "ComposerData.generated.h"
 
 UENUM()
@@ -94,11 +91,13 @@ struct FComposerData
 	int OctaveMax = 5;
 
 	UPROPERTY()
-	TArray<FInstrumentSchedule> ScheduleData;
+	AInstrument* Instrument; 
+	
+	TArray<TSharedPtr<FInstrumentSchedule>> ScheduleData;
 
 	FComposerData()
 	{
-		ScheduleData = TArray<FInstrumentSchedule>();
+		ScheduleData = TArray<TSharedPtr<FInstrumentSchedule>>();
 	}
 
 	explicit FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData);

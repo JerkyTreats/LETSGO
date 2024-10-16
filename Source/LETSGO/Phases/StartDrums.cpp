@@ -109,34 +109,36 @@ void AStartDrums::Initialize()
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, EnumAsString);	
 	}
 
-
-
 	// Initialize Kick
 	Kick = GetWorld()->SpawnActorDeferred<AInstrument>(InstrumentClass, FTransform());
-	Kick->Initialize(Pattern.Kick, true);
+	Kick->InitializeSingleSchedule(Pattern.Kick);
 	Kick->FinishSpawning(FTransform());
 	
 	//Initialize Snare
 	Snare = GetWorld()->SpawnActorDeferred<AInstrument>(InstrumentClass, FTransform());
-	Snare->Initialize(Pattern.Snare, true);
+	Snare->InitializeSingleSchedule(Pattern.Snare);
 	Snare->FinishSpawning(FTransform());	
 
 	//Initialize HiHatOpen
 	HiHatOpen = GetWorld()->SpawnActorDeferred<AInstrument>(InstrumentClass, FTransform());
-	HiHatOpen->Initialize(Pattern.HiHatOpen, true);
+	HiHatOpen->InitializeSingleSchedule(Pattern.HiHatOpen);
 	HiHatOpen->FinishSpawning(FTransform());
 
 	//Initialize HiHatOpen
 	HiHatClosed = GetWorld()->SpawnActorDeferred<AInstrument>(InstrumentClass, FTransform());
-	HiHatClosed->Initialize(Pattern.HiHatClosed, true);
+	HiHatClosed->InitializeSingleSchedule(Pattern.HiHatClosed);
 	HiHatClosed->FinishSpawning(FTransform());
 
 	//Initialize Clap
 	Clap = GetWorld()->SpawnActorDeferred<AInstrument>(InstrumentClass, FTransform());
-	Clap->Initialize(Pattern.Clap, true);
+	Clap->InitializeSingleSchedule(Pattern.Clap);
 	Clap->FinishSpawning(FTransform());
-	
-	
+
+	Kick->Initialize(true);
+	Snare->Initialize(true);
+	HiHatOpen->Initialize(true);
+	HiHatClosed->Initialize(true);
+	Clap->Initialize(true);
 }
 
 
@@ -181,11 +183,7 @@ void AStartDrums::InitiateDestroy()
 void AStartDrums::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType,
 	int32 NumBars, int32 Beat, float BeatFraction)
 {
-	Kick->StartPlaying();
-	Snare->StartPlaying();
-	HiHatOpen->StartPlaying();
-	HiHatClosed->StartPlaying();
-	Clap->StartPlaying();
+
 	IsComplete = true;
 }
 
