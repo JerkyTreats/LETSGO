@@ -28,8 +28,6 @@ void AMusicComposer::BeginDestroy()
 	if (Clock)
 		Clock->StopClock(GetWorld(), true, Clock);
 
-	ComposerState->ComposerDataObjects.Empty();
-	
 	Super::BeginDestroy();
 }
 
@@ -128,7 +126,7 @@ void AMusicComposer::InitializeStrategies()
 	};
 }
 
-IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(const TSharedPtr<FComposerData>& ComposerData, float& AppropriatenessOut)
+IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(const FComposerData& ComposerData, float& AppropriatenessOut)
 {
 	IMusicStrategy* ChosenStrategy = MusicalStrategies[0];
 
@@ -147,7 +145,7 @@ IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(const TSharedPtr<FComposer
 	return ChosenStrategy;
 }
 
-FInstrumentSchedule AMusicComposer::GenerateBars(TSharedPtr<FComposerData>& ComposerData, IMusicStrategy* ChosenStrategy, const int StartAtBar, const int TimesToRepeat)
+FInstrumentSchedule AMusicComposer::GenerateBars(FComposerData& ComposerData, IMusicStrategy* ChosenStrategy, const int StartAtBar, const int TimesToRepeat)
 {
 	FPerBarSchedule Bar = ChosenStrategy->GenerateBar(ComposerData, ComposerState);
 	FInstrumentSchedule InstrumentSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bar, TimesToRepeat, StartAtBar);
@@ -162,12 +160,12 @@ void AMusicComposer::CheckAndGenerateBars(const int32 CurrentBar)
 	// Does this ComposerData need more bars defined? 
 	for (int i = 0; i < ComposerState->ComposerDataObjects.Num(); i++ )
 	{
-		TSharedPtr<FComposerData> ComposerData = MakeShared<FComposerData>(ComposerState->ComposerDataObjects[i]);
+		FComposerData ComposerData = ComposerState->ComposerDataObjects[i];
 
 		// Peer into each ComposerDatas InstrumentSchedules to determine how many bars we have
-		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData->ScheduleData.Num(); ScheduleIndex++)
+		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData.ScheduleData.Num(); ScheduleIndex++)
 		{
-			const TSharedPtr<FInstrumentSchedule> ScheduleData = ComposerData->ScheduleData[ScheduleIndex];
+			const TSharedPtr<FInstrumentSchedule> ScheduleData = ComposerData.ScheduleData[ScheduleIndex];
 			if(const int32 BarSchedule = ScheduleData->StartAtBar * ScheduleData->BeatSchedule.Num(); BarSchedule > BarsDefined)
 			{
 				BarsDefined = BarSchedule;

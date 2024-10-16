@@ -57,9 +57,9 @@ public:
 	UFUNCTION()
 	void InitializeStrategies();
 	
-	IMusicStrategy* ChooseMusicalStrategy(const TSharedPtr<FComposerData>& ComposerDataPtr, float& AppropriatenessOut);
+	IMusicStrategy* ChooseMusicalStrategy(const FComposerData& ComposerDataPtr, float& AppropriatenessOut);
 	
-	FInstrumentSchedule GenerateBars(TSharedPtr<FComposerData>& ComposerData, IMusicStrategy* ChosenStrategy, int StartAtBar, int TimesToRepeat);
+	FInstrumentSchedule GenerateBars(FComposerData& ComposerData, IMusicStrategy* ChosenStrategy, int StartAtBar, int TimesToRepeat);
 
 	UFUNCTION()
 	void GenerateScale();

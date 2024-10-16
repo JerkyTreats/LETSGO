@@ -7,11 +7,11 @@
 #include "MusicComposerState.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
-FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(TSharedPtr<FComposerData> CurrentComposerData, const AMusicComposerState* State)
+FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(const FComposerData& CurrentComposerData, const AMusicComposerState* State)
 {
 	// Filter the array
-	TArray<FInstrumentNote> FilteredNotes = CurrentComposerData->InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
-		return InstrumentNote.Octave == CurrentComposerData->OctaveMin && InstrumentNote.Note == State->Scale.Tonic.Note;
+	TArray<FInstrumentNote> FilteredNotes = CurrentComposerData.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
+		return InstrumentNote.Octave == CurrentComposerData.OctaveMin && InstrumentNote.Note == State->Scale.Tonic.Note;
 	});
 	
 	FPerBarSchedule Bar =  FPerBarSchedule({
@@ -24,21 +24,21 @@ FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(TSharedPtr<FCompose
 	return Bar;
 }
 
-float UStrategy_PedalPointComposition::GetStrategyAppropriateness(TSharedPtr<FComposerData> CurrentComposerData, const AMusicComposerState* State)
+float UStrategy_PedalPointComposition::GetStrategyAppropriateness(const FComposerData& CurrentComposerData, const AMusicComposerState* State)
 {
-	if (! CurrentComposerData->IsMultiNoteInstrument() || State->AllowableNoteIndices.Num() == 0)
+	if (! CurrentComposerData.IsMultiNoteInstrument() || State->AllowableNoteIndices.Num() == 0)
 	{
 		return 0.0f;
 	}
 
 	float Weight = 0.2f;
 
-	if (CurrentComposerData->InstrumentRole == Bass)
+	if (CurrentComposerData.InstrumentRole == Bass)
 	{
 		Weight += 0.3f;
 	}
 
-	if (CurrentComposerData->ScheduleData.Num() == 0)
+	if (CurrentComposerData.ScheduleData.Num() == 0)
 	{
 		Weight += 0.3;
 	}
@@ -56,7 +56,7 @@ float UStrategy_PedalPointComposition::GetStrategyAppropriateness(TSharedPtr<FCo
 }
 
 // This strategy doesn't need input from other instruments
-float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(TSharedPtr<FComposerData> CurrentComposerData,
+float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(const FComposerData& CurrentComposerData,
 	const AMusicComposerState* State)
 {
 	return 0.0f;
