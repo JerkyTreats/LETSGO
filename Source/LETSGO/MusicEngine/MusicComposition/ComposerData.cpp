@@ -28,15 +28,6 @@ bool FComposerData::IsMultiNoteInstrument() const
 	}
 }
 
-FInstrumentScheduleData::FInstrumentScheduleData(const FInstrumentSchedule& Schedule, const int InStartAtBars, const int InTimesToRepeat)
-{
-	InstrumentSchedule = Schedule;
-	StartAtBar = InStartAtBars;
-	TimesToRepeat = InTimesToRepeat;
-
-	IsValid = true;
-}
-
 /*
 FInstrumentInputData::FInstrumentInputData(const FComposerData& InputData)
 {
@@ -49,7 +40,7 @@ FMusicStrategyData::FMusicStrategyData(): Strategy(nullptr)
 }
 */
 
-FMusicStrategyData::FMusicStrategyData()
+/*FMusicStrategyData::FMusicStrategyData()
 {
 }
 
@@ -59,7 +50,7 @@ FMusicStrategyData::FMusicStrategyData(IMusicStrategy* InputStrategy, const floa
 	Strategy = InputStrategy;
 	StrategyAppropriateness = Appropriateness;
 	StrategyType = InStrategyType;
-}
+}*/
 
 /*
 void FMusicStrategyData::GenerateInstrumentInputs(const TArray<FComposerData> ComposerDataSet)

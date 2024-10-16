@@ -14,6 +14,8 @@ void ALetsGoGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	State = GetGameState<ALetsGoGameState>();
+
 	PhaseManager = GetWorld()->SpawnActor<APhaseManager>(PhaseManagerClass);
 	
 	FTimerHandle TimerHandle;
@@ -27,125 +29,66 @@ void ALetsGoGameMode::InitializeGameplay()
 	PhaseManager->Initialize();
 }
 
-// MUSICAL STATE
-#pragma region MusicalState
-
 // Tonic 
 void ALetsGoGameMode::SetTonic(const FLetsGoMusicNotes Note) const
 {
-	GetGameState<ALetsGoGameState>()->Tonic = Note;
-	OnMusicalStateUpdated.Broadcast();
+	State->Tonic = Note;
+	State->ChromaticScale = FLetsGoGeneratedScale(Note, ULetsGoMusicEngine::Chromatic);
+	State->IsTonicSet = true;
+
+	OnTonicSet.Broadcast();
 }
 
 FLetsGoMusicNotes ALetsGoGameMode::GetTonic() const
 {
-	return GetGameState<ALetsGoGameState>()->Tonic;
+	if (! State->IsTonicSet)
+		UE_LOG(LogLetsgo, Error, TEXT("GameMode GetTonic Called before set."))
+
+	return State->Tonic;
 }
 
-// Second
-void ALetsGoGameMode::SetSecond(FLetsGoMusicNotes Note) const
+FLetsGoGeneratedScale ALetsGoGameMode::GetChromaticScale() const
 {
-	GetGameState<ALetsGoGameState>()->Second = Note;
-	OnMusicalStateUpdated.Broadcast();
+	if (! State->IsTonicSet)
+		UE_LOG(LogLetsgo, Error, TEXT("GameMode GetChromaticScale called before set."))
+	
+	return State->ChromaticScale;
 }
 
-FLetsGoMusicNotes ALetsGoGameMode::GetSecond() const
+void ALetsGoGameMode::SetInterval(const int Interval) const
 {
-	return GetGameState<ALetsGoGameState>()->Second;
+	OnIntervalSet.Broadcast(Interval);
 }
 
-// Third
-void ALetsGoGameMode::SetThird(FLetsGoMusicNotes Note) const
-{
-	GetGameState<ALetsGoGameState>()->Third = Note;
-	OnMusicalStateUpdated.Broadcast();
-}
-
-FLetsGoMusicNotes ALetsGoGameMode::GetThird() const
-{
-	return GetGameState<ALetsGoGameState>()->Third;
-}
-
-// Fourth
-void ALetsGoGameMode::SetFourth(FLetsGoMusicNotes Note) const
-{
-	GetGameState<ALetsGoGameState>()->Fourth = Note;
-	OnMusicalStateUpdated.Broadcast();
-}
-
-
-FLetsGoMusicNotes ALetsGoGameMode::GetFourth() const
-{
-	return GetGameState<ALetsGoGameState>()->Fourth;
-}
-
-// Fifth
-void ALetsGoGameMode::SetFifth(FLetsGoMusicNotes Note) const
-{
-	GetGameState<ALetsGoGameState>()->Fifth = Note;
-	OnMusicalStateUpdated.Broadcast();
-}
-
-FLetsGoMusicNotes ALetsGoGameMode::GetFifth() const
-{
-	return GetGameState<ALetsGoGameState>()->Fifth;
-}
-
-// Sixth
-void ALetsGoGameMode::SetSixth(FLetsGoMusicNotes Note) const
-{
-	GetGameState<ALetsGoGameState>()->Sixth = Note;
-	OnMusicalStateUpdated.Broadcast();
-}
-
-FLetsGoMusicNotes ALetsGoGameMode::GetSixth() const
-{
-	return GetGameState<ALetsGoGameState>()->Sixth;
-}
-
-// Seventh
-void ALetsGoGameMode::SetSeventh(FLetsGoMusicNotes Note) const
-{
-	GetGameState<ALetsGoGameState>()->Seventh = Note;
-	OnMusicalStateUpdated.Broadcast();
-}
-
-FLetsGoMusicNotes ALetsGoGameMode::GetSeventh() const
-{
-	return GetGameState<ALetsGoGameState>()->Seventh;
-}
-
-#pragma endregion  
-
-
+// Clock
 AClockSettings* ALetsGoGameMode::GetClockSettings() const
 {
-	return GetGameState<ALetsGoGameState>()->ClockSettings;
+	return State->ClockSettings;
 }
 
 void ALetsGoGameMode::SetClockSettings(AClockSettings* Clock)
 {
-	GetGameState<ALetsGoGameState>()->ClockSettings = Clock;
+	State->ClockSettings = Clock;
 }
 
 void ALetsGoGameMode::SetInstrumentRack(UInstrumentRack* Rack)
 {
-	GetGameState<ALetsGoGameState>()->InstrumentRack = Rack;
+	State->InstrumentRack = Rack;
 }
 
 UInstrumentRack* ALetsGoGameMode::GetInstrumentRack()
 {
-	return GetGameState<ALetsGoGameState>()->InstrumentRack;
+	return State->InstrumentRack;
 }
 
 void ALetsGoGameMode::SetInstrumentData_CheeseKey(ACheeseKeySoundCueMapping* DataToSet)
 {
-	GetGameState<ALetsGoGameState>()->InstrumentData_CheeseKey = DataToSet;
+	State->InstrumentData_CheeseKey = DataToSet;
 }
 
 ACheeseKeySoundCueMapping* ALetsGoGameMode::GetInstrumentData_CheeseKey()
 {
-	ACheeseKeySoundCueMapping* DataMap = GetGameState<ALetsGoGameState>()->InstrumentData_CheeseKey;
+	ACheeseKeySoundCueMapping* DataMap = State->InstrumentData_CheeseKey;
 	if (! DataMap)
 	{
 		UE_LOG(LogLetsgo, Error, TEXT("InstrumentData_CheeseKey not set in State, returning nullptr"))
@@ -155,12 +98,12 @@ ACheeseKeySoundCueMapping* ALetsGoGameMode::GetInstrumentData_CheeseKey()
 
 void ALetsGoGameMode::SetInstrumentData_Drums(ADrumSoundCueMapping* DataToSet)
 {
-	GetGameState<ALetsGoGameState>()->InstrumentData_Drums = DataToSet;
+	State->InstrumentData_Drums = DataToSet;
 }
 
 ADrumSoundCueMapping* ALetsGoGameMode::GetInstrumentData_Drums()
 {
-	ADrumSoundCueMapping* DataMap = GetGameState<ALetsGoGameState>()->InstrumentData_Drums;
+	ADrumSoundCueMapping* DataMap = State->InstrumentData_Drums;
 	if (! DataMap)
 	{
 		UE_LOG(LogLetsgo, Error, TEXT("InstrumentData_Drums not set in State, returning nullptr"))
@@ -170,10 +113,10 @@ ADrumSoundCueMapping* ALetsGoGameMode::GetInstrumentData_Drums()
 
 AMusicComposer* ALetsGoGameMode::GetMusicComposer()
 {
-	return GetGameState<ALetsGoGameState>()->MusicComposer;
+	return State->MusicComposer;
 }
 
 void ALetsGoGameMode::SetMusicComposer(AMusicComposer* Composer)
 {
-	GetGameState<ALetsGoGameState>()->MusicComposer = Composer;
+	State->MusicComposer = Composer;
 }

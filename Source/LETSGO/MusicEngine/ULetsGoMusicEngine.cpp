@@ -3,6 +3,34 @@
 
 #include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 
+void FLetsGoGeneratedScale::GenerateScale(const FLetsGoMusicNotes& InTonic, const FLetsGoMusicScale& Scale)
+{
+	Notes = TArray
+	{
+		InTonic,
+	};
+	
+	FLetsGoMusicNotes CurrentNote = InTonic;
+		
+	for (FLetsGoMusicScaleStep i : Scale.Steps)
+	{
+		// Get whole = 2 half = 1
+		const int Step = i.Step.GetValue();
+			
+		// Get next step, wrap around to beginning if >12
+		int Next = (CurrentNote.Note.GetValue() + Step) % 12;
+			
+		// Get the Note enum at position "Next"
+		FLetsGoMusicNotes NextNote = FLetsGoMusicNotes(static_cast<ELetsGoMusicNotes>(Next));
+			
+		// Add to Scale
+		Notes.Add(NextNote);
+			
+		// Update CurrentNote for next iteration
+		CurrentNote = NextNote;
+	}
+}
+
 ULetsGoMusicEngine::ULetsGoMusicEngine()
 {
 }
@@ -170,29 +198,6 @@ FLetsGoGeneratedScale ULetsGoMusicEngine::GenerateScale(const FLetsGoMusicScale&
 {
 	FLetsGoGeneratedScale GeneratedScale = FLetsGoGeneratedScale(Tonic, Scale);
 	
-	GeneratedScale.Notes = TArray<FLetsGoMusicNotes>();
-	GeneratedScale.Notes.Add(Tonic);
-	
-	FLetsGoMusicNotes CurrentNote = Tonic;
-		
-	for (FLetsGoMusicScaleStep i : Scale.Steps)
-	{
-		// Get whole = 2 half = 1
-		const int Step = i.Step.GetValue();
-			
-		// Get next step, wrap around to beginning if >12
-		int Next = (CurrentNote.Note.GetValue() + Step) % 12;
-			
-		// Get the Note enum at position "Next"
-		FLetsGoMusicNotes NextNote = FLetsGoMusicNotes(static_cast<ELetsGoMusicNotes>(Next));
-			
-		// Add to Scale
-		GeneratedScale.Notes.Add(NextNote);
-			
-		// Update CurrentNote for next iteration
-		CurrentNote = NextNote;
-	}
-
 	return GeneratedScale;
 }
 
@@ -229,22 +234,15 @@ TArray<FLetsGoGeneratedScale> ULetsGoMusicEngine::GenerateAllScales(const FLetsG
 //          2nd      3rd      4th     5th      6th   7th
 // "{ C, [Db, D], [Eb, E], [Fb, F], [G, G#], [A, A#], B }"
 //    1  ♯1   2    ♯2  3    4♯  4    5  ♯5    6 ♯6    7  (Chromatic Scale Intervals)
-
-// C + 2 [ +1, +2 ] <- 3rds
-
-//   1   ♯1  2    ♯2  3    4♯  4    5  ♯5    6 ♯6   7  
-// "{A, [A♯, B], [C, C♯], [D, D♯], [E, F], [F♯, G], G♯ }"
-//        2nd      3rd      4th      5th     6th    7th 
-TArray<FLetsGoMusicNotes> ULetsGoMusicEngine::GetInterval(const FLetsGoMusicNotes Tonic, const int DesiredInterval)
+TArray<int> ULetsGoMusicEngine::GetInterval(const int DesiredInterval)
 {
-	//                       5th                3    Scale[6] = F
+	// Get one less than the Desired interval 
+	// ex. 5th IntervalBase = Scale[6] (D# if Tonic = C)
 	const int IntervalBase = (DesiredInterval - 2) * 2;
 
-	// return {F + 1, F + 2}
-	FLetsGoGeneratedScale ChromaticScale = GenerateScale(Chromatic, Tonic);
 	TArray Interval = {
-		ChromaticScale.Notes[IntervalBase + 1], // 7 = "G" or "E" depending on Tonics C, A respectively
-		ChromaticScale.Notes[IntervalBase + 2]  // 8 = "G#" or "F"
+		IntervalBase + 1, // Scale[7] = "G" for Tonic = C
+		IntervalBase + 2  // Scale[8] = "G#"
 	};
 
 	return Interval;
