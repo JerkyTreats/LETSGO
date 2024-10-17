@@ -93,11 +93,11 @@ struct FComposerData
 	UPROPERTY()
 	AInstrument* Instrument; 
 	
-	TArray<TSharedPtr<FInstrumentSchedule>> ScheduleData;
+	TArray<FInstrumentSchedule> ScheduleData;
 
 	FComposerData()
 	{
-		ScheduleData = TArray<TSharedPtr<FInstrumentSchedule>>();
+		ScheduleData = TArray<FInstrumentSchedule>();
 	}
 
 	explicit FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData);

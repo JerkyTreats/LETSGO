@@ -25,8 +25,8 @@ void AMusicComposer::BeginPlay()
 
 void AMusicComposer::BeginDestroy()
 {
-	if (Clock)
-		Clock->StopClock(GetWorld(), true, Clock);
+	/*if (Clock)
+		Clock->StopClock(GetWorld(), true, Clock);*/
 
 	Super::BeginDestroy();
 }
@@ -35,6 +35,12 @@ void AMusicComposer::BeginDestroy()
 void AMusicComposer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (ComposerState->CurrentBar > LastProcessedBar)
+	{
+		CheckAndGenerateBars();
+		LastProcessedBar = ComposerState->CurrentBar;
+	}
 }
 
 
@@ -62,12 +68,13 @@ void AMusicComposer::Initialize()
 	GameMode->OnTonicSet.AddDynamic(this, &AMusicComposer::GenerateScale);
 	GameMode->OnIntervalSet.AddUniqueDynamic(this, &AMusicComposer::UpdateAllowableNoteIndices);
 
+	/*
 	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
 	Clock = ClockSettings->GetNewClock(FName(TEXT("ComposerClock")));
 	Clock->StartClock(World, Clock);
 	Clock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, OnBeatQuantizationDelegate, Clock);
+	*/
 
-	// Default Scale to C Major
 	ComposerState->Initialize();
 	
 	InitializeStrategies();
@@ -153,7 +160,7 @@ FInstrumentSchedule AMusicComposer::GenerateBars(FComposerData& ComposerData, IM
 	return InstrumentSchedule;
 }
 
-void AMusicComposer::CheckAndGenerateBars(const int32 CurrentBar)
+void AMusicComposer::CheckAndGenerateBars()
 {
 	int32 BarsDefined = 0;
 
@@ -165,15 +172,15 @@ void AMusicComposer::CheckAndGenerateBars(const int32 CurrentBar)
 		// Peer into each ComposerDatas InstrumentSchedules to determine how many bars we have
 		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData.ScheduleData.Num(); ScheduleIndex++)
 		{
-			const TSharedPtr<FInstrumentSchedule> ScheduleData = ComposerData.ScheduleData[ScheduleIndex];
-			if(const int32 BarSchedule = ScheduleData->StartAtBar * ScheduleData->BeatSchedule.Num(); BarSchedule > BarsDefined)
+			const FInstrumentSchedule ScheduleData = ComposerData.ScheduleData[ScheduleIndex];
+			if(const int32 BarSchedule = ScheduleData.StartAtBar * ScheduleData.BeatSchedule.Num(); BarSchedule > BarsDefined)
 			{
 				BarsDefined = BarSchedule;
 			}
 		}
 
 		// Define bars for this instrument
-		if (BarsDefined - CurrentBar < ComposerState->BarCreationThreshold)
+		if (BarsDefined - ComposerState->CurrentBar < ComposerState->BarCreationThreshold)
 		{
 			float StrategyAppropriateness = 0.0f;
 			IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy(ComposerData, StrategyAppropriateness);
@@ -183,11 +190,12 @@ void AMusicComposer::CheckAndGenerateBars(const int32 CurrentBar)
 			
 			//TODO Times to Repeat magic number
 			FInstrumentSchedule NewSchedule = GenerateBars(ComposerData, ChosenStrategy, BarsDefined + 1, 2);
-			ComposerState->ComposerDataObjects[i].ScheduleData.Emplace(&NewSchedule);
+			ComposerState->ComposerDataObjects[i].ScheduleData.Emplace(NewSchedule);
 		}
 	}
 }
 
+/*
 // - Checks the set of ComposerData’s
 // - If there are no objects, trigger some CreationStrategy
 // - If there are objects, check if there are more than 2 bars worth of data for those instruments to play
@@ -210,3 +218,4 @@ void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCom
 	
 	CheckAndGenerateBars(StartAtBar);
 }
+*/

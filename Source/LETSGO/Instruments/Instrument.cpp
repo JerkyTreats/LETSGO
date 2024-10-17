@@ -68,30 +68,31 @@ void AInstrument::Initialize(const bool IsRepeating, const int InCurrentBar)
 
 void AInstrument::InitializeSingleSchedule(const FInstrumentSchedule& Schedule)
 {
-	InstrumentSchedules = {MakeShared<FInstrumentSchedule>(Schedule)};
+	TArray Schedules = {Schedule};
+	InstrumentSchedules = MakeShared<TArray<FInstrumentSchedule>>(Schedules) ;
 }
 
-void AInstrument::InitializeMultipleSchedules(const TArray<TSharedPtr<FInstrumentSchedule>>& Schedules)
+void AInstrument::InitializeMultipleSchedules(const TSharedPtr<TArray<FInstrumentSchedule>>& Schedules)
 {
 	InstrumentSchedules = Schedules;
 }
 
-void AInstrument::PlayBar(const int BarIndexToPlay, const TSharedPtr<FInstrumentSchedule>& InstrumentSchedule)
+void AInstrument::PlayBar(const int BarIndexToPlay, const FInstrumentSchedule& InstrumentSchedule)
 {
-	if (BarIndexToPlay >= InstrumentSchedule->BeatSchedule.Num())
+	if (BarIndexToPlay >= InstrumentSchedule.BeatSchedule.Num())
 	{
 		UE_LOG(LogLetsgo, Error, TEXT("Instrument PlayBar exceeded index"))
 		return;
 	} 
 	
-	const FPerBarSchedule BarSchedule = InstrumentSchedule->BeatSchedule[BarIndexToPlay];
+	const FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[BarIndexToPlay];
 
 	for (int i = 0; i < BarSchedule.NotesInBar.Num(); i++)
 	{
 		const FNotesPerBar Notes = BarSchedule.NotesInBar[i];
 		
 		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
-			InstrumentSchedule->QuantizationDivision,
+			InstrumentSchedule.QuantizationDivision,
 			Notes.Beat,
 			RelativeQuantizationReference,
 			true
@@ -109,15 +110,21 @@ void AInstrument::PlayBar(const int BarIndexToPlay, const TSharedPtr<FInstrument
 void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType,
                                                   int32 NumBars, int32 Beat, float BeatFraction)
 {
-	if (InstrumentSchedules.Num() == 0)
+	if (InstrumentSchedules->Num() == 0)
 		return;
 
-	const TSharedPtr<FInstrumentSchedule> InstrumentSchedule = InstrumentSchedules[InstrumentScheduleIndex];
+	const FInstrumentSchedule InstrumentSchedule = (*InstrumentSchedules)[InstrumentScheduleIndex];
 
-	const int CurrentScheduleEnds = CurrentBar + (InstrumentSchedule->BeatSchedule.Num() - 1);
-	const int CurrentRelativeBar = CurrentBar - InstrumentSchedule->StartAtBar;
-	const int RelativeEnd = CurrentBar - InstrumentSchedule->BeatSchedule.Num() - 1;
-	const int AbsoluteEnd = InstrumentSchedule->StartAtBar + InstrumentSchedule->BeatSchedule.Num() - 1;
+	if (InstrumentSchedule.StartAtBar < CurrentBar)
+	{
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Bar [%i], StartAtBar [%i]"), CurrentBar, InstrumentSchedule.StartAtBar ));
+	}
+
+	const int CurrentScheduleEnds = CurrentBar + (InstrumentSchedule.BeatSchedule.Num() - 1);
+	const int CurrentRelativeBar = CurrentBar - InstrumentSchedule.StartAtBar;
+	const int RelativeEnd = CurrentBar - InstrumentSchedule.BeatSchedule.Num() - 1;
+	const int AbsoluteEnd = InstrumentSchedule.StartAtBar + InstrumentSchedule.BeatSchedule.Num() - 1;
 
 	if (CurrentBar <= AbsoluteEnd)
 	{
@@ -133,7 +140,7 @@ void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzComman
 			return;
 		}
 
-		if (InstrumentSchedules.Num() != InstrumentScheduleIndex + 1)
+		if (InstrumentSchedules->Num() != InstrumentScheduleIndex + 1)
 		{
 			InstrumentScheduleIndex++;
 		}

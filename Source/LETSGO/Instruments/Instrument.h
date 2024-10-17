@@ -43,7 +43,7 @@ public:
 	};
 	
 	
-	TArray<TSharedPtr<FInstrumentSchedule>> InstrumentSchedules;
+	TSharedPtr<TArray<FInstrumentSchedule>> InstrumentSchedules;
 
 	int InstrumentScheduleIndex = 0;
 	
@@ -68,7 +68,7 @@ protected:
 	virtual void BeginDestroy() override;
 
 	void InitializeClock();
-	void PlayBar(int BarIndexToPlay, const TSharedPtr<FInstrumentSchedule>& InstrumentSchedule);
+	void PlayBar(int BarIndexToPlay, const FInstrumentSchedule& InstrumentSchedule);
 	
 public:
 	// Called every frame
@@ -80,7 +80,7 @@ public:
 	UFUNCTION()
 	void InitializeSingleSchedule(const FInstrumentSchedule& Schedule);
 
-	void InitializeMultipleSchedules(const TArray<TSharedPtr<FInstrumentSchedule>>& Schedules);
+	void InitializeMultipleSchedules(const TSharedPtr<TArray<FInstrumentSchedule>>& Schedules);
 	
 
 	/**

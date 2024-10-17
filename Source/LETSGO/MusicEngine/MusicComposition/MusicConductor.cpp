@@ -64,7 +64,8 @@ void AMusicConductor::Initialize()
 	for(int i = 0; i < ComposerState->ComposerDataObjects.Num(); i++)
 	{
 		AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>();
-		Instrument->InitializeMultipleSchedules(ComposerState->ComposerDataObjects[i].ScheduleData);
+		TSharedPtr<TArray<FInstrumentSchedule>> Ptr = MakeShared<TArray<FInstrumentSchedule>>(ComposerState->ComposerDataObjects[i].ScheduleData);
+		Instrument->InitializeMultipleSchedules(Ptr);
 		
 		ConductorDatas.Emplace(
 			MakeShared<FComposerData>(ComposerState->ComposerDataObjects[i]),

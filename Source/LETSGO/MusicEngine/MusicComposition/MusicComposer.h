@@ -33,8 +33,8 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AInstrument> InstrumentClass;
 
-	UPROPERTY()
-	UQuartzClockHandle* Clock;
+	/*UPROPERTY()
+	UQuartzClockHandle* Clock;*/
 	
 protected:
 	// Called when the game starts or when spawned
@@ -43,6 +43,8 @@ protected:
 	virtual void BeginDestroy() override;
 
 	bool Started = false;
+
+	int LastProcessedBar = 0;
 
 public:
 	// Called every frame
@@ -68,8 +70,11 @@ public:
 	void UpdateAllowableNoteIndices(int Interval);
 
 	UFUNCTION()
-	void CheckAndGenerateBars(int32 CurrentBar);
+	void CheckAndGenerateBars();
 
+	/*
 	UFUNCTION()
 	void OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
+	*/
+
 };
