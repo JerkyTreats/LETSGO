@@ -121,9 +121,7 @@ void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzComman
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Bar [%i], StartAtBar [%i]"), CurrentBar, InstrumentSchedule.StartAtBar ));
 	}
 
-	const int CurrentScheduleEnds = CurrentBar + (InstrumentSchedule.BeatSchedule.Num() - 1);
 	const int CurrentRelativeBar = CurrentBar - InstrumentSchedule.StartAtBar;
-	const int RelativeEnd = CurrentBar - InstrumentSchedule.BeatSchedule.Num() - 1;
 	const int AbsoluteEnd = InstrumentSchedule.StartAtBar + InstrumentSchedule.BeatSchedule.Num() - 1;
 
 	if (CurrentBar <= AbsoluteEnd)

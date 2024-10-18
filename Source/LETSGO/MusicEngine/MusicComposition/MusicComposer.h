@@ -59,7 +59,7 @@ public:
 	UFUNCTION()
 	void InitializeStrategies();
 	
-	IMusicStrategy* ChooseMusicalStrategy(const FComposerData& ComposerDataPtr, float& AppropriatenessOut);
+	IMusicStrategy* ChooseMusicalStrategy(const FComposerData& ComposerData, float& AppropriatenessOut);
 	
 	FInstrumentSchedule GenerateBars(FComposerData& ComposerData, IMusicStrategy* ChosenStrategy, int StartAtBar, int TimesToRepeat);
 

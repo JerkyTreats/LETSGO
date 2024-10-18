@@ -28,6 +28,17 @@ bool FComposerData::IsMultiNoteInstrument() const
 	}
 }
 
+int FComposerData::GetBarsDefined() const
+{
+	return BarsDefined;
+}
+
+void FComposerData::EmplaceScheduleData(FInstrumentSchedule Schedule)
+{
+	ScheduleData.Emplace(Schedule);
+	BarsDefined = Schedule.StartAtBar + Schedule.BeatSchedule.Num();
+}
+
 /*
 FInstrumentInputData::FInstrumentInputData(const FComposerData& InputData)
 {

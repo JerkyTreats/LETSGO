@@ -36,7 +36,20 @@ void AMusicComposer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (ComposerState->CurrentBar > LastProcessedBar)
+	if (! ComposerState->IsTonicSet)
+		return;
+	
+	int StartAtBar = ComposerState->CurrentBar;
+
+	if (! Started)
+	{
+		StartAtBar += 2;
+		Started = true;
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Started")));
+	}
+	
+	if (StartAtBar > LastProcessedBar)
 	{
 		CheckAndGenerateBars();
 		LastProcessedBar = ComposerState->CurrentBar;
@@ -169,7 +182,8 @@ void AMusicComposer::CheckAndGenerateBars()
 	{
 		FComposerData ComposerData = ComposerState->ComposerDataObjects[i];
 
-		// Peer into each ComposerDatas InstrumentSchedules to determine how many bars we have
+		
+		/*// Peer into each ComposerDatas InstrumentSchedules to determine how many bars we have
 		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData.ScheduleData.Num(); ScheduleIndex++)
 		{
 			const FInstrumentSchedule ScheduleData = ComposerData.ScheduleData[ScheduleIndex];
@@ -177,10 +191,10 @@ void AMusicComposer::CheckAndGenerateBars()
 			{
 				BarsDefined = BarSchedule;
 			}
-		}
+		}*/
 
 		// Define bars for this instrument
-		if (BarsDefined - ComposerState->CurrentBar < ComposerState->BarCreationThreshold)
+		if (ComposerData.BarsDefined - ComposerState->CurrentBar <= ComposerState->BarCreationThreshold)
 		{
 			float StrategyAppropriateness = 0.0f;
 			IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy(ComposerData, StrategyAppropriateness);
@@ -189,8 +203,8 @@ void AMusicComposer::CheckAndGenerateBars()
 				return;
 			
 			//TODO Times to Repeat magic number
-			FInstrumentSchedule NewSchedule = GenerateBars(ComposerData, ChosenStrategy, BarsDefined + 1, 2);
-			ComposerState->ComposerDataObjects[i].ScheduleData.Emplace(NewSchedule);
+			const FInstrumentSchedule NewSchedule = GenerateBars(ComposerData, ChosenStrategy, BarsDefined + 1, 2);
+			ComposerState->ComposerDataObjects[i].EmplaceScheduleData(NewSchedule);
 		}
 	}
 }

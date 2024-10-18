@@ -100,7 +100,13 @@ struct FComposerData
 		ScheduleData = TArray<FInstrumentSchedule>();
 	}
 
+	int BarsDefined = 0;
+	
 	explicit FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData);
 
 	bool IsMultiNoteInstrument() const;
+
+	int GetBarsDefined() const;
+
+	void EmplaceScheduleData(FInstrumentSchedule);
 };
