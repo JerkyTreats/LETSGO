@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "ComposerData.h"
+#include "MusicComposerState.h"
+#include "MusicStrategy.h"
 #include "GameFramework/Actor.h"
-#include "LETSGO/Instruments/Drum/DrumSoundCueMapping.h"
-#include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
 #include "MusicComposer.generated.h"
-
-
 
 UCLASS()
 class LETSGO_API AMusicComposer : public AActor
@@ -21,16 +19,13 @@ public:
 	AMusicComposer();
 
 	UPROPERTY()
-	int32 BarCreationThreshold = 4;
-	
-	UPROPERTY()
-	FLetsGoGeneratedScale Scale; 
+	AMusicComposerState* ComposerState;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AMusicComposerState> ComposerStateClass;
 
 	UPROPERTY()
-	TArray<FComposerData> ComposerDataObjects;
-
-	UPROPERTY()
-	TArray<FMusicStrategyData> MusicalStrategies;
+	TArray<IMusicStrategy*> MusicalStrategies;
 	
 	UPROPERTY()
 	FOnQuartzMetronomeEventBP OnBeatQuantizationDelegate;
@@ -38,11 +33,18 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AInstrument> InstrumentClass;
 
+	/*UPROPERTY()
+	UQuartzClockHandle* Clock;*/
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	virtual void BeginDestroy() override;
+
 	bool Started = false;
+
+	int LastProcessedBar = 0;
 
 public:
 	// Called every frame
@@ -56,14 +58,23 @@ public:
 	
 	UFUNCTION()
 	void InitializeStrategies();
-
-	UFUNCTION()
-	FInstrumentScheduleData GenerateBars(FComposerData ComposerData, int StartAtBar, int TimesToRepeat);
+	
+	IMusicStrategy* ChooseMusicalStrategy(const FComposerData& ComposerData, float& AppropriatenessOut);
+	
+	FInstrumentSchedule GenerateBars(FComposerData& ComposerData, IMusicStrategy* ChosenStrategy, int StartAtBar, int TimesToRepeat);
 
 	UFUNCTION()
 	void GenerateScale();
-	void CheckAndGenerateBars(int32 NumBars);
 
 	UFUNCTION()
+	void UpdateAllowableNoteIndices(int Interval);
+
+	UFUNCTION()
+	void CheckAndGenerateBars();
+
+	/*
+	UFUNCTION()
 	void OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
+	*/
+
 };

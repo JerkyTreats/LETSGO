@@ -41,6 +41,10 @@ void APhaseManager::BeginPlay()
 	AStartMusicComposer* MusicComposer = World->SpawnActor<AStartMusicComposer>(StartMusicComposerClass);
 	MusicComposer->Initialize();
 	Phases.Emplace(MusicComposer);
+
+	AStartMusicConductor* MusicConductor = World->SpawnActor<AStartMusicConductor>(StartMusicConductorClass);
+	MusicConductor->Initialize();
+	Phases.Emplace(MusicConductor);
 	
 	AStartDrums* StartDrums = World->SpawnActor<AStartDrums>(StartDrumsClass);
 	StartDrums->Initialize();

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LETSGO/LETSGO.h"
 #include "ULetsGoMusicEngine.generated.h"
 
 const FString LetsGoBlueprintCategory = FString("LetsGo Music Theory");
@@ -100,19 +101,29 @@ struct FLetsGoGeneratedScale
 	FLetsGoMusicNotes Tonic;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FLetsGoMusicScale Scale;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FLetsGoMusicNotes> Notes;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsValid = false;
+	FLetsGoGeneratedScale() {}
 
-	FLetsGoGeneratedScale() : Tonic(), Scale(), Notes() {}
+	FLetsGoGeneratedScale(const TArray<FLetsGoMusicNotes>& InNotes)
+	{
+		if (InNotes.Num() == 0)
+		{
+			UE_LOG(LogLetsgo, Error, TEXT("FLetsGoGeneratedScale constructed with 0 sized Note array"))
+			FLetsGoGeneratedScale();
+		} else
+		{
+			Notes = InNotes;
+			Tonic = Notes[0];
+		}
+	}
 
-	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale, const TArray<FLetsGoMusicNotes>& Notes) : Tonic(Tonic), Scale(Scale), Notes(Notes), IsValid(true) {}
+	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale) : Tonic(Tonic)
+	{
+		GenerateScale(Tonic, Scale);
+	}
 
-	FLetsGoGeneratedScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale) : Tonic(Tonic), Scale(Scale), IsValid(true) {}
+	void GenerateScale(const FLetsGoMusicNotes& Tonic, const FLetsGoMusicScale& Scale);
 };
 
 /**
@@ -150,10 +161,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category= LetsGoBlueprintCategory)
 	static TArray<FLetsGoGeneratedScale> GenerateAllScales(const FLetsGoMusicNotes& Tonic);
 
-	/// Given a Tonic ("C") and Interval ("3rd"), retrieve the possible notes for that Interval 
-	/// @param Tonic Key of the Scale
+	/// Given an Interval ("3rd"), retrieve the possible indices for that Interval in a Chromatic Scale
 	/// @param DesiredInterval int of the degree of the scale 
-	/// @return Array of possible notes for desired Interval
+	/// @return Array of possible chromatic scale indices for desired Interval
 	UFUNCTION(BlueprintCallable, Category= LetsGoBlueprintCategory)
-	static TArray<FLetsGoMusicNotes> GetInterval(const FLetsGoMusicNotes Tonic, const int DesiredInterval);
+	static TArray<int> GetInterval(const int DesiredInterval);
 };
