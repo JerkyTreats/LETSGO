@@ -72,7 +72,7 @@ void AInstrument::InitializeSingleSchedule(const FInstrumentSchedule& Schedule)
 	InstrumentSchedules = MakeShared<TArray<FInstrumentSchedule>>(Schedules) ;
 }
 
-void AInstrument::InitializeMultipleSchedules(const TSharedPtr<TArray<FInstrumentSchedule>>& Schedules)
+void AInstrument::InitializeMultipleSchedules(TSharedPtr<TArray<FInstrumentSchedule>> Schedules)
 {
 	InstrumentSchedules = Schedules;
 }

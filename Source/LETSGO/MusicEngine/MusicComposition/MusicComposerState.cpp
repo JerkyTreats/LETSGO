@@ -45,6 +45,7 @@ void AMusicComposerState::Initialize()
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	CheeseKeySoundCueMapping = GameMode->GetInstrumentData_CheeseKey();
 	DrumsSoundCueMapping = GameMode->GetInstrumentData_Drums();
-	
+
+	ComposerDataObjects = MakeShared<TArray<FComposerData>>();
 }
 

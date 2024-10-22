@@ -19,7 +19,7 @@ public:
 	AMusicComposerState();
 	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	int32 BarCreationThreshold = 4;
+	int32 BarCreationThreshold = 8;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
 	float MusicalStrategyAppropriatenessThreshold = 0.5f;
@@ -33,8 +33,7 @@ public:
 	UPROPERTY()
 	TArray<int> AllowableNoteIndices;
 
-	UPROPERTY()
-	TArray<FComposerData> ComposerDataObjects;
+	TSharedPtr<TArray<FComposerData>> ComposerDataObjects;
 
 	UPROPERTY()
 	ACheeseKeySoundCueMapping* CheeseKeySoundCueMapping;

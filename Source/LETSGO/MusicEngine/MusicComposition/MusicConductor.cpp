@@ -61,16 +61,21 @@ void AMusicConductor::Initialize()
 	const AMusicComposer* Composer = GameMode->GetMusicComposer();
 	ComposerState = Composer->ComposerState;
 	
-	for(int i = 0; i < ComposerState->ComposerDataObjects.Num(); i++)
+	for(int i = 0; i < ComposerState->ComposerDataObjects->Num(); i++)
 	{
-		AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>();
-		TSharedPtr<TArray<FInstrumentSchedule>> Ptr = MakeShared<TArray<FInstrumentSchedule>>(ComposerState->ComposerDataObjects[i].ScheduleData);
-		Instrument->InitializeMultipleSchedules(Ptr);
+		AInstrument* Instrument = GetWorld()->SpawnActor<AInstrument>(InstrumentClass);
 		
+		TSharedPtr<FComposerData> ComposerData = MakeShared<FComposerData>((*ComposerState->ComposerDataObjects)[i]);
+
+		FMusicConductorData ConductorData = FMusicConductorData();
+		ConductorData.ComposerDataIndex = i;
+		ConductorData.Instrument = Instrument;
+
 		ConductorDatas.Emplace(
-			MakeShared<FComposerData>(ComposerState->ComposerDataObjects[i]),
-			Instrument
+			ConductorData
 		);
+		
+		Instrument->InitializeMultipleSchedules((*ComposerState->ComposerDataObjects)[i].ScheduleData);
 		Instrument->Initialize(false, ComposerState->CurrentBar);
 	}
 }
@@ -79,5 +84,16 @@ void AMusicConductor::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCo
                                                       int32 NumBars, int32 Beat, float BeatFraction)
 {
 	ComposerState->CurrentBar = NumBars;
+
+	for (int i = 0; i < ComposerState->ComposerDataObjects->Num(); i++)
+	{
+		TArray<FComposerData> Datas = (*ComposerState->ComposerDataObjects);
+		int Test = Datas[i].ScheduleData->Num();
+		if(GEngine)
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("Number of SchedulesDatas in Conductor: [%i]"), Test));
+	}
+	
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Bar [%i]"), NumBars));
 }
 

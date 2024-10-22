@@ -38,7 +38,7 @@ float UStrategy_PedalPointComposition::GetStrategyAppropriateness(const FCompose
 		Weight += 0.3f;
 	}
 
-	if (CurrentComposerData.ScheduleData.Num() == 0)
+	if (CurrentComposerData.ScheduleData->Num() == 0)
 	{
 		Weight += 0.3;
 	}

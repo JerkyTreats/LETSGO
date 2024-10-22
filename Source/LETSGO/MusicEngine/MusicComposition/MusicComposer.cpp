@@ -31,32 +31,6 @@ void AMusicComposer::BeginDestroy()
 	Super::BeginDestroy();
 }
 
-// Called every frame
-void AMusicComposer::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	if (! ComposerState->IsTonicSet)
-		return;
-	
-	int StartAtBar = ComposerState->CurrentBar;
-
-	if (! Started)
-	{
-		StartAtBar += 2;
-		Started = true;
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Started")));
-	}
-	
-	if (StartAtBar > LastProcessedBar)
-	{
-		CheckAndGenerateBars();
-		LastProcessedBar = ComposerState->CurrentBar;
-	}
-}
-
-
 void AMusicComposer::GenerateScale()
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
@@ -87,11 +61,10 @@ void AMusicComposer::Initialize()
 	Clock->StartClock(World, Clock);
 	Clock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, OnBeatQuantizationDelegate, Clock);
 	*/
-
-	ComposerState->Initialize();
 	
-	InitializeStrategies();
+	ComposerState->Initialize();
 	InitializeComposerData();
+	InitializeStrategies();
 	
 }
 
@@ -111,6 +84,9 @@ void AMusicComposer::InitializeComposerData()
 	FComposerData Bass = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
 	Bass.OctaveMin = 2;
 	Bass.OctaveMax = 2;
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("Bass: [%i]"), Bass.ScheduleData->Num()));
+
 	
 	FComposerData Tenor = FComposerData(EInstrumentRoles::Tenor, CheeseInstrumentData);
 	Tenor.OctaveMin = 3;
@@ -123,9 +99,9 @@ void AMusicComposer::InitializeComposerData()
 	FComposerData Soprano = FComposerData(EInstrumentRoles::Soprano, CheeseInstrumentData);
 	Soprano.OctaveMin = 5;
 	Soprano.OctaveMax = 5;
-
-	ComposerState->ComposerDataObjects = TArray<FComposerData>
-	{
+	
+	
+	TArray Roles {
 		/*Snare,
 		Kick,
 		HiHatClosed,
@@ -137,6 +113,11 @@ void AMusicComposer::InitializeComposerData()
 		Alto,
 		Soprano
 	};
+
+	for (FComposerData Data : Roles)
+	{
+		ComposerState->ComposerDataObjects->Emplace(Data);
+	}
 }
 
 void AMusicComposer::InitializeStrategies()
@@ -165,71 +146,69 @@ IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(const FComposerData& Compo
 	return ChosenStrategy;
 }
 
-FInstrumentSchedule AMusicComposer::GenerateBars(FComposerData& ComposerData, IMusicStrategy* ChosenStrategy, const int StartAtBar, const int TimesToRepeat)
+//FInstrumentSchedule AMusicComposer::GenerateBars(FComposerData Data)
+///{
+
+	//
+	// Data->EmplaceScheduleData(NewSchedule);
+	// Data->BarsDefined = LastProcessedBar + TimesToRepeat;
+	//
+	// if(GEngine)
+	// 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Emplaced New Schedule at bar [%i]"), NewSchedule.StartAtBar));/
+//}
+
+// Called every frame
+void AMusicComposer::Tick(float DeltaTime)
 {
-	FPerBarSchedule Bar = ChosenStrategy->GenerateBar(ComposerData, ComposerState);
-	FInstrumentSchedule InstrumentSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bar, TimesToRepeat, StartAtBar);
+	Super::Tick(DeltaTime);
 
-	return InstrumentSchedule;
-}
-
-void AMusicComposer::CheckAndGenerateBars()
-{
-	int32 BarsDefined = 0;
-
-	// Does this ComposerData need more bars defined? 
-	for (int i = 0; i < ComposerState->ComposerDataObjects.Num(); i++ )
-	{
-		FComposerData ComposerData = ComposerState->ComposerDataObjects[i];
-
-		
-		/*// Peer into each ComposerDatas InstrumentSchedules to determine how many bars we have
-		for(int ScheduleIndex = 0; ScheduleIndex < ComposerData.ScheduleData.Num(); ScheduleIndex++)
-		{
-			const FInstrumentSchedule ScheduleData = ComposerData.ScheduleData[ScheduleIndex];
-			if(const int32 BarSchedule = ScheduleData.StartAtBar * ScheduleData.BeatSchedule.Num(); BarSchedule > BarsDefined)
-			{
-				BarsDefined = BarSchedule;
-			}
-		}*/
-
-		// Define bars for this instrument
-		if (ComposerData.BarsDefined - ComposerState->CurrentBar <= ComposerState->BarCreationThreshold)
-		{
-			float StrategyAppropriateness = 0.0f;
-			IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy(ComposerData, StrategyAppropriateness);
-
-			if (StrategyAppropriateness < ComposerState->MusicalStrategyAppropriatenessThreshold)
-				return;
-			
-			//TODO Times to Repeat magic number
-			const FInstrumentSchedule NewSchedule = GenerateBars(ComposerData, ChosenStrategy, BarsDefined + 1, 2);
-			ComposerState->ComposerDataObjects[i].EmplaceScheduleData(NewSchedule);
-		}
-	}
-}
-
-/*
-// - Checks the set of ComposerData’s
-// - If there are no objects, trigger some CreationStrategy
-// - If there are objects, check if there are more than 2 bars worth of data for those instruments to play
-// - If not, trigger an UpdateStrategy
-void AMusicComposer::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat,
-	float BeatFraction)
-{
 	if (! ComposerState->IsTonicSet)
 		return;
 	
-	int StartAtBar = ComposerState->CurrentBar;
+	int ThisBar = ComposerState->CurrentBar + 4;
 
-	if (! Started)
+	/*if (! Started)
 	{
-		StartAtBar += 2;
+		ThisBar += 2;
 		Started = true;
 		if(GEngine)
 			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Started")));
-	}
+	}*/
 	
-	CheckAndGenerateBars(StartAtBar);
+	if (ThisBar > LastProcessedBar)
+	{
+		// Does this ComposerData need more bars defined? 
+		for (int i = 0; i < ComposerState->ComposerDataObjects->Num(); i++ )
+		{
+			// TSharedPtr<FComposerData> ComposerData = MakeShared<FComposerData>((*ComposerState->ComposerDataObjects)[i]);
+
+			// Define bars for this instrument
+			if ((*ComposerState->ComposerDataObjects)[i].BarsDefined - LastProcessedBar <= ComposerState->BarCreationThreshold)
+			{
+
+				float StrategyAppropriateness = 0.0f;
+				IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy((*ComposerState->ComposerDataObjects)[i], StrategyAppropriateness);
+
+				if (StrategyAppropriateness < ComposerState->MusicalStrategyAppropriatenessThreshold)
+					return;
+
+				FComposerData Data = (*ComposerState->ComposerDataObjects)[i];
+				FPerBarSchedule Bar = ChosenStrategy->GenerateBar(Data, ComposerState);
+	
+				//TODO Times to Repeat magic number
+				const int TimesToRepeat = 2;
+
+				FInstrumentSchedule NewSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bar, TimesToRepeat, LastProcessedBar + 1);
+				
+				(*ComposerState->ComposerDataObjects)[i].EmplaceScheduleData(NewSchedule);
+				(*ComposerState->ComposerDataObjects)[i].BarsDefined = LastProcessedBar + TimesToRepeat;
+				
+				if(GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Turquoise, FString::Printf(TEXT("Number of SchedulesDatas in Composer: [%i]"), (*ComposerState->ComposerDataObjects)[i].ScheduleData->Num()));
+
+			}
+		}
+		
+		LastProcessedBar = ThisBar;
+	}
 }
-*/

@@ -6,7 +6,6 @@
 #include "AudioCuePlayer.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
-#include "MetasoundSource.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ClockSettings.h"
 #include "Instrument.generated.h"
@@ -80,7 +79,7 @@ public:
 	UFUNCTION()
 	void InitializeSingleSchedule(const FInstrumentSchedule& Schedule);
 
-	void InitializeMultipleSchedules(const TSharedPtr<TArray<FInstrumentSchedule>>& Schedules);
+	void InitializeMultipleSchedules(TSharedPtr<TArray<FInstrumentSchedule>> Schedules);
 	
 
 	/**

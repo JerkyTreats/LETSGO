@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "MusicComposerState.h"
 #include "GameFramework/Actor.h"
+#include "LETSGO/Instruments/Instrument.h"
 #include "MusicConductor.generated.h"
 
 USTRUCT()
@@ -12,7 +13,9 @@ struct FMusicConductorData
 {
 	GENERATED_BODY()
 
-	TSharedPtr<FComposerData> ComposerData;
+	UPROPERTY()
+	int ComposerDataIndex;
+	//TSharedPtr<FComposerData> ComposerData;
 
 	UPROPERTY()
 	AInstrument* Instrument;
@@ -38,6 +41,9 @@ public:
 
 	UPROPERTY()
 	FOnQuartzMetronomeEventBP QuantizationDelegate;
+
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
+	TSubclassOf<AInstrument> InstrumentClass;
 	
 protected:
 	// Called when the game starts or when spawned

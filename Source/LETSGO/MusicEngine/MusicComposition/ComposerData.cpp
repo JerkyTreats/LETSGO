@@ -3,10 +3,9 @@
 
 FComposerData::FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData)
 {
-	FComposerData();
 	InstrumentRole = InRole;
 	InstrumentData = InData;
-
+	ScheduleData = MakeShared<TArray<FInstrumentSchedule>>();
 }
 
 bool FComposerData::IsMultiNoteInstrument() const
@@ -35,7 +34,7 @@ int FComposerData::GetBarsDefined() const
 
 void FComposerData::EmplaceScheduleData(FInstrumentSchedule Schedule)
 {
-	ScheduleData.Emplace(Schedule);
+	ScheduleData->Emplace(Schedule);
 	BarsDefined = Schedule.StartAtBar + Schedule.BeatSchedule.Num();
 }
 
