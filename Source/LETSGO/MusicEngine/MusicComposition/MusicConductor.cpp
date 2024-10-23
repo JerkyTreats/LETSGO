@@ -85,15 +85,9 @@ void AMusicConductor::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCo
 {
 	ComposerState->CurrentBar = NumBars;
 
-	for (int i = 0; i < ComposerState->ComposerDataObjects->Num(); i++)
-	{
-		TArray<FComposerData> Datas = (*ComposerState->ComposerDataObjects);
-		int Test = Datas[i].ScheduleData->Num();
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("Number of SchedulesDatas in Conductor: [%i]"), Test));
-	}
-	
+	/*
 	if(GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Bar [%i]"), NumBars));
+	*/
 }
 

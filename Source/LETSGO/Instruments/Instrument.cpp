@@ -87,6 +87,11 @@ void AInstrument::PlayBar(const int BarIndexToPlay, const FInstrumentSchedule& I
 	
 	const FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[BarIndexToPlay];
 
+	/*
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Playing Bar [%i]"), BarIndexToPlay));
+	*/
+	
 	for (int i = 0; i < BarSchedule.NotesInBar.Num(); i++)
 	{
 		const FNotesPerBar Notes = BarSchedule.NotesInBar[i];
@@ -111,20 +116,27 @@ void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzComman
                                                   int32 NumBars, int32 Beat, float BeatFraction)
 {
 	if (InstrumentSchedules->Num() == 0)
+	{
 		return;
+	}
 
 	const FInstrumentSchedule InstrumentSchedule = (*InstrumentSchedules)[InstrumentScheduleIndex];
 
+	/*
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("InstrumentSchedules [%i]"), InstrumentSchedules->Num()));
+	*/
+
+	
 	if (InstrumentSchedule.StartAtBar < CurrentBar)
 	{
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Bar [%i], StartAtBar [%i]"), CurrentBar, InstrumentSchedule.StartAtBar ));
+		UE_LOG(LogLetsgo, Error, TEXT("Instrument StartAtBar < Current Bar"))
 	}
 
 	const int CurrentRelativeBar = CurrentBar - InstrumentSchedule.StartAtBar;
 	const int AbsoluteEnd = InstrumentSchedule.StartAtBar + InstrumentSchedule.BeatSchedule.Num() - 1;
 
-	if (CurrentBar <= AbsoluteEnd)
+	if (CurrentRelativeBar >= 0 && CurrentBar <= AbsoluteEnd)
 	{
 		PlayBar(CurrentRelativeBar, InstrumentSchedule);
 	}

@@ -25,8 +25,6 @@ void AMusicComposer::BeginPlay()
 
 void AMusicComposer::BeginDestroy()
 {
-	/*if (Clock)
-		Clock->StopClock(GetWorld(), true, Clock);*/
 
 	Super::BeginDestroy();
 }
@@ -54,13 +52,6 @@ void AMusicComposer::Initialize()
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(World->GetAuthGameMode());
 	GameMode->OnTonicSet.AddDynamic(this, &AMusicComposer::GenerateScale);
 	GameMode->OnIntervalSet.AddUniqueDynamic(this, &AMusicComposer::UpdateAllowableNoteIndices);
-
-	/*
-	const AClockSettings* ClockSettings = GameMode->GetClockSettings();
-	Clock = ClockSettings->GetNewClock(FName(TEXT("ComposerClock")));
-	Clock->StartClock(World, Clock);
-	Clock->SubscribeToQuantizationEvent(World, EQuartzCommandQuantization::Bar, OnBeatQuantizationDelegate, Clock);
-	*/
 	
 	ComposerState->Initialize();
 	InitializeComposerData();
@@ -84,9 +75,6 @@ void AMusicComposer::InitializeComposerData()
 	FComposerData Bass = FComposerData(EInstrumentRoles::Bass, CheeseInstrumentData);
 	Bass.OctaveMin = 2;
 	Bass.OctaveMax = 2;
-	if(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Magenta, FString::Printf(TEXT("Bass: [%i]"), Bass.ScheduleData->Num()));
-
 	
 	FComposerData Tenor = FComposerData(EInstrumentRoles::Tenor, CheeseInstrumentData);
 	Tenor.OctaveMin = 3;
@@ -146,17 +134,6 @@ IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(const FComposerData& Compo
 	return ChosenStrategy;
 }
 
-//FInstrumentSchedule AMusicComposer::GenerateBars(FComposerData Data)
-///{
-
-	//
-	// Data->EmplaceScheduleData(NewSchedule);
-	// Data->BarsDefined = LastProcessedBar + TimesToRepeat;
-	//
-	// if(GEngine)
-	// 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Emplaced New Schedule at bar [%i]"), NewSchedule.StartAtBar));/
-//}
-
 // Called every frame
 void AMusicComposer::Tick(float DeltaTime)
 {
@@ -166,31 +143,24 @@ void AMusicComposer::Tick(float DeltaTime)
 		return;
 	
 	int ThisBar = ComposerState->CurrentBar + 4;
-
-	/*if (! Started)
-	{
-		ThisBar += 2;
-		Started = true;
-		if(GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Started")));
-	}*/
 	
 	if (ThisBar > LastProcessedBar)
 	{
 		// Does this ComposerData need more bars defined? 
 		for (int i = 0; i < ComposerState->ComposerDataObjects->Num(); i++ )
 		{
-			// TSharedPtr<FComposerData> ComposerData = MakeShared<FComposerData>((*ComposerState->ComposerDataObjects)[i]);
-
 			// Define bars for this instrument
-			if ((*ComposerState->ComposerDataObjects)[i].BarsDefined - LastProcessedBar <= ComposerState->BarCreationThreshold)
+			if ((*ComposerState->ComposerDataObjects)[i].BarsDefined - ThisBar <= ComposerState->BarCreationThreshold)
 			{
 
 				float StrategyAppropriateness = 0.0f;
 				IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy((*ComposerState->ComposerDataObjects)[i], StrategyAppropriateness);
 
 				if (StrategyAppropriateness < ComposerState->MusicalStrategyAppropriatenessThreshold)
+				{
+					LastProcessedBar = ThisBar;
 					return;
+				}
 
 				FComposerData Data = (*ComposerState->ComposerDataObjects)[i];
 				FPerBarSchedule Bar = ChosenStrategy->GenerateBar(Data, ComposerState);
@@ -198,13 +168,15 @@ void AMusicComposer::Tick(float DeltaTime)
 				//TODO Times to Repeat magic number
 				const int TimesToRepeat = 2;
 
-				FInstrumentSchedule NewSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bar, TimesToRepeat, LastProcessedBar + 1);
+				FInstrumentSchedule NewSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bar, TimesToRepeat, ThisBar);
 				
 				(*ComposerState->ComposerDataObjects)[i].EmplaceScheduleData(NewSchedule);
-				(*ComposerState->ComposerDataObjects)[i].BarsDefined = LastProcessedBar + TimesToRepeat;
+				(*ComposerState->ComposerDataObjects)[i].BarsDefined = ThisBar + TimesToRepeat;
 				
+				/*
 				if(GEngine)
 					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Turquoise, FString::Printf(TEXT("Number of SchedulesDatas in Composer: [%i]"), (*ComposerState->ComposerDataObjects)[i].ScheduleData->Num()));
+				*/
 
 			}
 		}
