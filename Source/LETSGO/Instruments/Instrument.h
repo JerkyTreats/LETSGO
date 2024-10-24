@@ -6,7 +6,6 @@
 #include "AudioCuePlayer.h"
 #include "GameFramework/Actor.h"
 #include "Quartz/AudioMixerClockHandle.h"
-#include "MetasoundSource.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 #include "LETSGO/MusicEngine/ClockSettings.h"
 #include "Instrument.generated.h"
@@ -41,13 +40,18 @@ public:
 		EQuarztQuantizationReference::BarRelative,
 		true
 	};
+	
+	
+	TSharedPtr<TArray<FInstrumentSchedule>> InstrumentSchedules;
 
-	UPROPERTY()
-	FInstrumentSchedule InstrumentSchedule;
-
+	int InstrumentScheduleIndex = 0;
+	
 	UPROPERTY()
 	int CurrentBar = 0;
 
+	UPROPERTY()
+	bool Repeat = false;
+	
 	UPROPERTY()
 	EQuartzCommandQuantization RelativeQuantizationResolution;
 
@@ -60,22 +64,24 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	virtual void BeginDestroy() override;
 
-	void SetClock();
-
+	void InitializeClock();
+	void PlayBar(int BarIndexToPlay, const FInstrumentSchedule& InstrumentSchedule);
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION()
-	void Initialize(const FInstrumentSchedule& Schedule);
-	
-	UFUNCTION()
-	void StartPlaying();
+	void Initialize(const bool IsRepeating = false, const int InCurrentBar = 0);
 
 	UFUNCTION()
-	void StopPlaying();
+	void InitializeSingleSchedule(const FInstrumentSchedule& Schedule);
+
+	void InitializeMultipleSchedules(TSharedPtr<TArray<FInstrumentSchedule>> Schedules);
 	
+
 	/**
 	 * Function intended to trigger on Clock Quantization Subscription event
 	 * ie. Fire this function on every Beat
@@ -88,5 +94,7 @@ public:
 	 */
 	UFUNCTION()
 	void OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType, int32 NumBars, int32 Beat, float BeatFraction);
-	
+
+	UFUNCTION()
+	void InitiateDestroy();
 };

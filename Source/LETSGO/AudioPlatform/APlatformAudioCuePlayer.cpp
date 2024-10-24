@@ -30,18 +30,18 @@ void APlatformAudioCuePlayer::BeginPlay()
 
 	// Set Instrument to play on next beat, defaults wait for next bar
 	Instrument->QuartzQuantizationBoundary = QuartzQuantizationBoundary;
-	Instrument-> RelativeQuantizationResolution = EQuartzCommandQuantization::Beat;
+	Instrument->RelativeQuantizationResolution = EQuartzCommandQuantization::Beat;
 	Instrument->RelativeQuantizationReference = EQuarztQuantizationReference::Count;
-	const FInstrumentSchedule Schedule = BuildInstrumentSchedule(AudioPlatformReference->Note.Note);
-	Instrument->Initialize(Schedule);
+	
 }
 
 void APlatformAudioCuePlayer::OnAudioPlatformTriggered(const FLetsGoMusicNotes IncomingNote)
 {
 	UE_LOG(LogLetsgo, Display, TEXT("AudioCuePlayer Recieved OnAudioPLatformTrigger"));
-
-	Instrument->StartPlaying();
 	
+	const FInstrumentSchedule Schedule = BuildInstrumentSchedule(IncomingNote.Note);
+	Instrument->InitializeSingleSchedule(Schedule);
+	Instrument->Initialize();
 }
 
 FInstrumentSchedule APlatformAudioCuePlayer::BuildInstrumentSchedule(TEnumAsByte<ELetsGoMusicNotes> ENote) const

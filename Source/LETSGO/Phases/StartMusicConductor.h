@@ -5,40 +5,41 @@
 #include "CoreMinimal.h"
 #include "PhaseController.h"
 #include "GameFramework/Actor.h"
-#include "LETSGO/AudioPlatform/AAudioPlatformSpawner.h"
-#include "LETSGO/MusicEngine/ULetsGoMusicEngine.h"
-#include "SetThird.generated.h"
+#include "LETSGO/MusicEngine/MusicComposition/MusicConductor.h"
+#include "StartMusicConductor.generated.h"
 
 UCLASS()
-class LETSGO_API ASetThird : public AActor, public IPhaseController
+class LETSGO_API AStartMusicConductor : public AActor, public IPhaseController
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this actor's properties
-	ASetThird();
-	
+	AStartMusicConductor();
+
 	UPROPERTY()
-	AAudioPlatformSpawner* Spawner;
+	AMusicConductor* Conductor;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
-	TSubclassOf<AAudioPlatformSpawner> AudioPlatformSpawnerClass;
-	
+	TSubclassOf<AMusicConductor> MusicConductorClass;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	bool Completed = false;
-	bool Active = false;
-	
+	bool Completed;
+	bool Active;
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// IPhase Controller 
+	
+	UFUNCTION()
+	void Initialize();
+	
 	UFUNCTION()
 	virtual void Activate() override;
-
+	
 	UFUNCTION()
 	virtual bool IsActivated() override;
 
@@ -53,11 +54,4 @@ public:
 
 	UFUNCTION()
 	virtual void InitiateDestroy() override;
-	// End IPhaseController
-
-	UFUNCTION()
-	void Initialize();
-	
-	UFUNCTION()
-	void SetThird(FLetsGoMusicNotes Note);
 };

@@ -26,7 +26,18 @@ void AInstrument::BeginPlay()
 	UE_LOG(LogLetsgo, Display, TEXT("Instrument BeginPlay Complete"))
 }
 
-void AInstrument::SetClock()
+void AInstrument::BeginDestroy()
+{
+	if (Clock)
+		Clock->StopClock(GetWorld(), true, Clock);
+	
+	Super::BeginDestroy();
+
+	// 
+	//InstrumentSchedules.Empty();
+}
+
+void AInstrument::InitializeClock()
 {
 	// Build Clock Name
 	FString Name = GetName();
@@ -37,6 +48,9 @@ void AInstrument::SetClock()
 	ClockSettings = GameMode->GetClockSettings();
 
 	Clock = ClockSettings->GetNewClock(FName(Name));
+
+	Clock->StartClock(GetWorld(), Clock);
+	Clock->SubscribeToQuantizationEvent(GetWorld(), QuartzQuantizationBoundary.Quantization, PlayQuantizationDelegate, Clock);
 }
 
 // Called every frame
@@ -45,36 +59,45 @@ void AInstrument::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AInstrument::Initialize(const FInstrumentSchedule& Schedule)
+void AInstrument::Initialize(const bool IsRepeating, const int InCurrentBar)
 {
-	SetClock();
-	InstrumentSchedule = Schedule;
-	RelativeQuantizationResolution = Schedule.QuantizationDivision;
+	InitializeClock();
+	Repeat = IsRepeating;
+	CurrentBar = InCurrentBar;
 }
 
-void AInstrument::StartPlaying()
+void AInstrument::InitializeSingleSchedule(const FInstrumentSchedule& Schedule)
 {
-	Clock->StartClock(GetWorld(), Clock);
-	Clock->SubscribeToQuantizationEvent(GetWorld(), QuartzQuantizationBoundary.Quantization, PlayQuantizationDelegate, Clock);
+	TArray Schedules = {Schedule};
+	InstrumentSchedules = MakeShared<TArray<FInstrumentSchedule>>(Schedules) ;
 }
 
-void AInstrument::StopPlaying()
+void AInstrument::InitializeMultipleSchedules(TSharedPtr<TArray<FInstrumentSchedule>> Schedules)
 {
-	Clock->UnsubscribeFromAllTimeDivisions(GetWorld(), Clock);
-	Clock->StopClock(GetWorld(), true, Clock);
+	InstrumentSchedules = Schedules;
 }
 
-void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType,
-                                                  int32 NumBars, int32 Beat, float BeatFraction)
+void AInstrument::PlayBar(const int BarIndexToPlay, const FInstrumentSchedule& InstrumentSchedule)
 {
-	const FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[CurrentBar];
+	if (BarIndexToPlay >= InstrumentSchedule.BeatSchedule.Num())
+	{
+		UE_LOG(LogLetsgo, Error, TEXT("Instrument PlayBar exceeded index"))
+		return;
+	} 
+	
+	const FPerBarSchedule BarSchedule = InstrumentSchedule.BeatSchedule[BarIndexToPlay];
 
+	/*
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Playing Bar [%i]"), BarIndexToPlay));
+	*/
+	
 	for (int i = 0; i < BarSchedule.NotesInBar.Num(); i++)
 	{
 		const FNotesPerBar Notes = BarSchedule.NotesInBar[i];
 		
 		const FQuartzQuantizationBoundary RelativeQuartzBoundary = {
-			RelativeQuantizationResolution,
+			InstrumentSchedule.QuantizationDivision,
 			Notes.Beat,
 			RelativeQuantizationReference,
 			true
@@ -87,13 +110,56 @@ void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzComman
 		AudioCuePlayer->Initialize(Notes.SoundData, Clock, RelativeQuartzBoundary);
 		AudioCuePlayer->PlayAndDestroy();
 	}
+}
 
-	if (CurrentBar == InstrumentSchedule.BeatSchedule.Num() - 1)
+void AInstrument::OnQuantizationBoundaryTriggered(FName ClockName, EQuartzCommandQuantization QuantizationType,
+                                                  int32 NumBars, int32 Beat, float BeatFraction)
+{
+	if (InstrumentSchedules->Num() == 0)
 	{
-		CurrentBar = 0;
+		return;
 	}
-	else
+
+	const FInstrumentSchedule InstrumentSchedule = (*InstrumentSchedules)[InstrumentScheduleIndex];
+
+	/*
+	if(GEngine)
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("InstrumentSchedules [%i]"), InstrumentSchedules->Num()));
+	*/
+
+	
+	if (InstrumentSchedule.StartAtBar < CurrentBar)
 	{
-		CurrentBar++;
+		UE_LOG(LogLetsgo, Error, TEXT("Instrument StartAtBar < Current Bar"))
 	}
+
+	const int CurrentRelativeBar = CurrentBar - InstrumentSchedule.StartAtBar;
+	const int AbsoluteEnd = InstrumentSchedule.StartAtBar + InstrumentSchedule.BeatSchedule.Num() - 1;
+
+	if (CurrentRelativeBar >= 0 && CurrentBar <= AbsoluteEnd)
+	{
+		PlayBar(CurrentRelativeBar, InstrumentSchedule);
+	}
+
+	if (CurrentBar >= AbsoluteEnd)
+	{
+		if (Repeat)
+		{
+			InstrumentScheduleIndex = 0;
+			CurrentBar = 0;
+			return;
+		}
+
+		if (InstrumentSchedules->Num() != InstrumentScheduleIndex + 1)
+		{
+			InstrumentScheduleIndex++;
+		}
+	}
+	
+	CurrentBar++;
+}
+
+void AInstrument::InitiateDestroy()
+{
+	Destroy();
 }

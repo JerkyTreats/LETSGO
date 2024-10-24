@@ -3,10 +3,9 @@
 
 FComposerData::FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData)
 {
-	FComposerData();
 	InstrumentRole = InRole;
 	InstrumentData = InData;
-
+	ScheduleData = MakeShared<TArray<FInstrumentSchedule>>();
 }
 
 bool FComposerData::IsMultiNoteInstrument() const
@@ -28,13 +27,15 @@ bool FComposerData::IsMultiNoteInstrument() const
 	}
 }
 
-FInstrumentScheduleData::FInstrumentScheduleData(const FInstrumentSchedule& Schedule, const int InStartAtBars, const int InTimesToRepeat)
+int FComposerData::GetBarsDefined() const
 {
-	InstrumentSchedule = Schedule;
-	StartAtBar = InStartAtBars;
-	TimesToRepeat = InTimesToRepeat;
+	return BarsDefined;
+}
 
-	IsValid = true;
+void FComposerData::EmplaceScheduleData(FInstrumentSchedule Schedule)
+{
+	ScheduleData->Emplace(Schedule);
+	BarsDefined = Schedule.StartAtBar + Schedule.BeatSchedule.Num();
 }
 
 /*
@@ -49,7 +50,7 @@ FMusicStrategyData::FMusicStrategyData(): Strategy(nullptr)
 }
 */
 
-FMusicStrategyData::FMusicStrategyData()
+/*FMusicStrategyData::FMusicStrategyData()
 {
 }
 
@@ -59,7 +60,7 @@ FMusicStrategyData::FMusicStrategyData(IMusicStrategy* InputStrategy, const floa
 	Strategy = InputStrategy;
 	StrategyAppropriateness = Appropriateness;
 	StrategyType = InStrategyType;
-}
+}*/
 
 /*
 void FMusicStrategyData::GenerateInstrumentInputs(const TArray<FComposerData> ComposerDataSet)

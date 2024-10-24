@@ -4,19 +4,16 @@
 #include "Strategy_PedalPointComposition.h"
 
 #include "ComposerData.h"
+#include "MusicComposerState.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
-#include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
 
-FInstrumentSchedule UStrategy_PedalPointComposition::Apply(FComposerData& ComposerData, FInstrumentScheduleData InstrumentScheduleData)
+FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(const FComposerData& CurrentComposerData, const AMusicComposerState* State)
 {
 	// Filter the array
-	TArray<FInstrumentNote> FilteredNotes = ComposerData.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
-		return InstrumentNote.Octave == ComposerData.OctaveMin && InstrumentNote.Note == ComposerData.Scale.Tonic.Note;
+	TArray<FInstrumentNote> FilteredNotes = CurrentComposerData.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
+		return InstrumentNote.Octave == CurrentComposerData.OctaveMin && InstrumentNote.Note == State->Scale.Tonic.Note;
 	});
 	
-	FInstrumentSchedule Schedule = FInstrumentSchedule();
-
-	Schedule.QuantizationDivision = EQuartzCommandQuantization::QuarterNote;
 	FPerBarSchedule Bar =  FPerBarSchedule({
 		FNotesPerBar(1.0f, FilteredNotes[0].SoundData),
 		FNotesPerBar(2.0f, FilteredNotes[0].SoundData),
@@ -24,43 +21,43 @@ FInstrumentSchedule UStrategy_PedalPointComposition::Apply(FComposerData& Compos
 		FNotesPerBar(4.0f, FilteredNotes[0].SoundData),
 	});
 	
-	for (int i = 0; i < InstrumentScheduleData.TimesToRepeat; i++ )
-	{
-		Schedule.BeatSchedule.Emplace(Bar);
-	}
-	
-	return Schedule;
+	return Bar;
 }
 
-float UStrategy_PedalPointComposition::GetStrategyAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet, FLetsGoGeneratedScale Scale)
+float UStrategy_PedalPointComposition::GetStrategyAppropriateness(const FComposerData& CurrentComposerData, const AMusicComposerState* State)
 {
-	if (Scale.IsValid ||
-		! Scale.Tonic.Note ||
-		! CurrentComposerData.IsMultiNoteInstrument())
+	if (! CurrentComposerData.IsMultiNoteInstrument() || State->AllowableNoteIndices.Num() == 0)
 	{
 		return 0.0f;
 	}
 
-	float Weight = 1.0f;
+	float Weight = 0.2f;
 
-	for (int i = 0; i < ComposerDataSet.Num(); i++)
+	if (CurrentComposerData.InstrumentRole == Bass)
 	{
-		FComposerData ComposerData = ComposerDataSet[i];
+		Weight += 0.3f;
+	}
+
+	if (CurrentComposerData.ScheduleData->Num() == 0)
+	{
+		Weight += 0.3;
+	}
+
+	/*for (int i = 0; i < State->ComposerDataObjects.Num(); i++)
+	{
+		FComposerData ComposerData = State->ComposerDataObjects[i];
 		for (int ScheduleDataIndex = 0; ScheduleDataIndex < ComposerData.ScheduleData.Num(); ScheduleDataIndex++)
 		{
-			if (FInstrumentScheduleData ScheduleData = ComposerData.ScheduleData[i]; ScheduleData.StrategyData.StrategyType == CreateMotif)
-			{
-				Weight = 0.5f;
-			}
+
 		}
-	}
+	}*/
 	
 	return Weight;
 }
 
 // This strategy doesn't need input from other instruments
-float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(FComposerData CurrentComposerData,
-	TArray<FComposerData> ComposerDataSet)
+float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(const FComposerData& CurrentComposerData,
+	const AMusicComposerState* State)
 {
 	return 0.0f;
 }

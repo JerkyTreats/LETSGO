@@ -7,6 +7,7 @@
 #include "UObject/Interface.h"
 #include "MusicStrategy.generated.h"
 
+class AMusicComposerState;
 struct FInstrumentScheduleData;
 struct FLetsGoGeneratedScale;
 struct FComposerData;
@@ -27,9 +28,9 @@ class LETSGO_API IMusicStrategy
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual FInstrumentSchedule Apply(FComposerData& ComposerData, FInstrumentScheduleData InstrumentScheduleData) = 0;
+	virtual FPerBarSchedule GenerateBar(const FComposerData& CurrentComposerData, const AMusicComposerState* State) = 0;
 
-	virtual float GetStrategyAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet, FLetsGoGeneratedScale Scale) = 0;
+	virtual float GetStrategyAppropriateness(const FComposerData& CurrentComposerData, const AMusicComposerState* State) = 0;
 
-	virtual float GetInstrumentAppropriateness(FComposerData CurrentComposerData, TArray<FComposerData> ComposerDataSet) = 0;
+	virtual float GetInstrumentAppropriateness(const FComposerData& CurrentComposerData, const AMusicComposerState* State) = 0;
 };

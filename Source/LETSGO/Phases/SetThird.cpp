@@ -40,9 +40,18 @@ void ASetThird::Activate()
 {
 	Active = true;
 
-	SetTonic();
+	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
+	const FLetsGoMusicNotes Tonic = GameMode->GetTonic();
 
-	const TArray<FLetsGoMusicNotes> PlatformNotes = ULetsGoMusicEngine::GetInterval(Tonic, 3);
+	FLetsGoGeneratedScale Chromatic = FLetsGoGeneratedScale(Tonic, ULetsGoMusicEngine::Chromatic);
+
+	const TArray<int> Intervals = ULetsGoMusicEngine::GetInterval(3);
+
+	const TArray PlatformNotes = {
+		Chromatic.Notes[Intervals[0]],
+		Chromatic.Notes[Intervals[1]]
+	};
+	
 	TArray<AAudioPlatform*> AudioPlatforms = Spawner->SpawnPlatforms(PlatformNotes);
 	
 	for (int i = 0; i < AudioPlatforms.Num(); i++)
@@ -80,23 +89,21 @@ void ASetThird::InitiateDestroy()
 	Destroy();
 }
 
-void ASetThird::SetTonic()
-{
-	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode()); 
-	Tonic = GameMode->GetTonic();
-
-	if ( ! Tonic.Note )
-	{
-		UE_LOG(LogLetsgo, Error, TEXT("Phase SetThird Initialized with no Tonic retrieved from GameMode"));
-	}
-}
-
-
 void ASetThird::SetThird(FLetsGoMusicNotes Note)
 {
 	const ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
-	GameMode->SetThird(Note);
+	const int Interval = GameMode->GetChromaticScale().Notes.IndexOfByPredicate([&](const FLetsGoMusicNotes& InNote)
+	{
+		return InNote.Note == Note.Note;
+	});
+
+	if (Interval == INDEX_NONE )
+	{
+		UE_LOG(LogLetsgo, Error, TEXT("GetThird could not find Predicate Note"))
+		Complete();		
+	}
 	
+	GameMode->SetInterval(Interval);
 	Complete();
 }
 

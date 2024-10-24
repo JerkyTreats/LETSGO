@@ -10,7 +10,8 @@
 #include "LETSGO/Phases/PhaseManager.h"
 #include "ALetsGoGameMode.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMusicalStateUpdateDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTonicSet);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FIntervalSet, int, Interval);
 
 /**
  * Custom Game Mode for LETSGO.
@@ -25,6 +26,9 @@ class LETSGO_API ALetsGoGameMode : public AGameModeBase
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+	ALetsGoGameState* State;
+	
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO | Audio Platform Spawner")
 	TSubclassOf<APhaseManager> PhaseManagerClass;
 
@@ -32,7 +36,10 @@ public:
 	APhaseManager* PhaseManager;
 
 	UPROPERTY()
-	FMusicalStateUpdateDelegate OnMusicalStateUpdated;
+	FTonicSet OnTonicSet;
+
+	UPROPERTY()
+	FIntervalSet OnIntervalSet;
 
 protected:
 	// Called when the game starts or when spawned
@@ -41,6 +48,7 @@ protected:
 public:
 	ALetsGoGameMode();
 
+
 	// MUSICAL STATE
 	// Tonic
 	UFUNCTION(BlueprintCallable, Category="LETSGO")
@@ -48,51 +56,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category="LETSGO")
 	FLetsGoMusicNotes GetTonic() const; 
-
-	// Second
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	void SetSecond(FLetsGoMusicNotes Note) const;
-
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	FLetsGoMusicNotes GetSecond() const; 
 	
-	// Third
 	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	void SetThird(FLetsGoMusicNotes Note) const;
-
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	FLetsGoMusicNotes GetThird() const;
-
-	// Fourth
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	void SetFourth(FLetsGoMusicNotes Note) const;
+	FLetsGoGeneratedScale GetChromaticScale() const;
 
 	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	FLetsGoMusicNotes GetFourth() const; 
+	void SetInterval(int Interval) const;
 
-	// Fifth
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	void SetFifth(FLetsGoMusicNotes Note) const;
-
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	FLetsGoMusicNotes GetFifth() const;
-
-	// Sixth
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	void SetSixth(FLetsGoMusicNotes Note) const;
-
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	FLetsGoMusicNotes GetSixth() const;
-
-	// Seventh
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	void SetSeventh(FLetsGoMusicNotes Note) const;
-
-	UFUNCTION(BlueprintCallable, Category="LETSGO")
-	FLetsGoMusicNotes GetSeventh() const; 
-
-
-
+	
 	
 	// Clock
 	UFUNCTION(BlueprintCallable, Category="LETSGO")
