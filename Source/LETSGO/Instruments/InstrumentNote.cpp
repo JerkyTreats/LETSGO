@@ -45,3 +45,25 @@ FInstrumentData FInstrumentData::GenerateKeys(TArray<USoundWave*> Sounds)
 
 	return FInstrumentData(KeyData);
 }
+
+FInstrumentNote FInstrumentData::GetNote(const int Octave, const FLetsGoMusicNotes Note) const
+{
+	// Filter the array
+	TArray<FInstrumentNote> FilteredNotes = Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
+		return InstrumentNote.Octave == Octave && InstrumentNote.Note == Note.Note;
+	});
+
+	if (FilteredNotes.Num() > 1)
+	{
+		UE_LOG(LogLetsgo, Error, TEXT("FInstrumentData::GetNote returned >1 sized filter array, returning first value"));
+		return FilteredNotes[0];
+	}
+
+	if (FilteredNotes.Num() == 0)
+	{
+		UE_LOG(LogLetsgo, Error, TEXT("FInstrumentData::GetNote return 0 sized filter array, returning nullish value"));
+		return FInstrumentNote();
+	}
+
+	return FilteredNotes[0];
+}

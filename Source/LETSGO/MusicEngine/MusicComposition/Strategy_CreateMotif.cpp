@@ -73,6 +73,26 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 		BeatStrength.Add(Beat, Strength); // [ 0.75, 0.5, 0.25, 0.75, , 0.5, 0.25 ] 16 note beat strength array
 	}
 
+	State->AllowableNoteIndices;
+	TMap<int, float> AllowableNoteMap;
+
+	for (int i = 0; i < State->AllowableNoteIndices.Num(); i++)
+	{
+		float ScaleDegree = ScaleDegreeResolution.FindRef(State->AllowableNoteIndices[i]); 
+		AllowableNoteMap.Add(State->AllowableNoteIndices[i], ScaleDegree);
+	}
+
+	float TensionBudget = 0.3;
+	float CurrentTension = 0.0f;
+
+	int Octave = FMath::RandRange(CurrentComposerData.OctaveMin, CurrentComposerData.OctaveMax);
+	
+	FInstrumentNote Note = CurrentComposerData.InstrumentData.GetNote(Octave, State->Scale.Notes[State->AllowableNoteIndices[0]]);
+	FPerBarSchedule Schedule;
+	FNotesPerBar Test = FNotesPerBar(0, Note.SoundData);
+	Schedule.NotesInBar.Add(Test);
+	
+
 	// With beat strength and scale degree resolution, we can form a motif
 	// We need to return a FPerBarSchedule, which require a set of FNotesPerBar
 	// FNotesPerBar need a Beat and SoundData
