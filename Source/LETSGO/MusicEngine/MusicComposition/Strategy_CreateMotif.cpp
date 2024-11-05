@@ -33,6 +33,7 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 		EQuartzCommandQuantization::SixteenthNote,
 	};
 
+	float MaxBeatStrength = 0;
 	// This is choosing a subdivision at random
 	EQuartzCommandQuantization Division = SubDivisions[FMath::RandRange(0, SubDivisions.Num() - 1)];
 	int Beats = 0;
@@ -41,10 +42,13 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 	{
 	case EQuartzCommandQuantization::QuarterNote:
 		Beats = 4;
+		MaxBeatStrength = 0.25f;
 	case EQuartzCommandQuantization::EighthNote:
 		Beats = 8;
+		MaxBeatStrength = 0.5f;
 	case EQuartzCommandQuantization::SixteenthNote:
 		Beats = 16;
+		MaxBeatStrength = 0.75f;
 	default:
 		Beats = 0;
 	}
@@ -70,7 +74,7 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 			Strength += Base;
 			Beat /= 2;
 		}
-		BeatStrength.Add(Beat, Strength); // [ 0.75, 0.5, 0.25, 0.75, , 0.5, 0.25 ] 16 note beat strength array
+		BeatStrength.Add(Beat, Strength); // [ 0.75, 0.25, 0.5, 0.25, 0.75, 0.25, 0.5, 0.25 ] 16 beat strength array
 	}
 
 	State->AllowableNoteIndices;
@@ -86,13 +90,33 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 	float CurrentTension = 0.0f;
 
 	int Octave = FMath::RandRange(CurrentComposerData.OctaveMin, CurrentComposerData.OctaveMax);
-	
+
+	// Add tonic as first note for now 
 	FInstrumentNote Note = CurrentComposerData.InstrumentData.GetNote(Octave, State->Scale.Notes[State->AllowableNoteIndices[0]]);
 	FPerBarSchedule Schedule;
 	FNotesPerBar Test = FNotesPerBar(0, Note.SoundData);
 	Schedule.NotesInBar.Add(Test);
-	
 
+	float MaxResolution = MaxBeatStrength + ScaleDegreeResolution.FindRef(0);
+	float CumulativeResolution = 0.0f;
+	
+	for (int i = 0; i < Beats; i++)
+	{
+		// [0] = 0; [1] = 0.25, etc.
+		float Tension = MaxBeatStrength - BeatStrength[i];
+		
+		// The higher the BeatTension, the more likely we are to rest
+		float DefaultRestChance = 0.25; // Convert to non-magic number (put in state)
+		float TotalRestChance = DefaultRestChance + Tension;
+
+		int RestChoice = FMath::RandRange(0, 100);
+		if (RestChoice >= TotalRestChance * 100)
+		{
+			continue;
+		}
+	}
+	
+	
 	// With beat strength and scale degree resolution, we can form a motif
 	// We need to return a FPerBarSchedule, which require a set of FNotesPerBar
 	// FNotesPerBar need a Beat and SoundData
@@ -129,7 +153,14 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 	// Cumulative budget [ 1.25, 2.5, 3.75, 5 ]
 	// [ .75, 1.05, 1.25, 1.25 ] ii = .5, V = .8, i = 1
 	// [ 0.75, 1.8, 3.05, 4.3 ]
+	// [ 0.75, .75
 	// This tells us cumulative total doesn't really work, it's always max max
+	// But it does give us the maximum resolution
+	// We may not reach maximum resolution, but the desire to resolve
+
+	// Let's think about chance to resovle 
+
+	
 	// We need something that says "beat 1 has more tension relative to beat 2, resolving in beat 3-4"]
 	// Remember, these floats represent their desire to resolve
 	// The smaller the number, the stronger the pull to a bigger NEXT number 
