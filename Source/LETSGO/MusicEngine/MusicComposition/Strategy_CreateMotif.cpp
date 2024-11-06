@@ -5,6 +5,19 @@
 
 #include "MusicComposerState.h"
 
+USTRUCT()
+struct FPickRange
+{
+	int Min;
+	int Max;
+	bool In (int Num)
+	{
+		return Num >= Min && Num <= Max;
+	}
+
+	FPickRange(const int InMin, const int InMax): Min(InMin), Max(InMax) {}
+};
+
 FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentComposerData,
                                                    const AMusicComposerState* State)
 {
@@ -77,18 +90,6 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 		BeatStrength.Add(Beat, Strength); // [ 0.75, 0.25, 0.5, 0.25, 0.75, 0.25, 0.5, 0.25 ] 16 beat strength array
 	}
 
-	State->AllowableNoteIndices;
-	TMap<int, float> AllowableNoteMap;
-
-	for (int i = 0; i < State->AllowableNoteIndices.Num(); i++)
-	{
-		float ScaleDegree = ScaleDegreeResolution.FindRef(State->AllowableNoteIndices[i]); 
-		AllowableNoteMap.Add(State->AllowableNoteIndices[i], ScaleDegree);
-	}
-
-	float TensionBudget = 0.3;
-	float CurrentTension = 0.0f;
-
 	int Octave = FMath::RandRange(CurrentComposerData.OctaveMin, CurrentComposerData.OctaveMax);
 
 	// Add tonic as first note for now 
@@ -100,7 +101,7 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 	float MaxResolution = MaxBeatStrength + ScaleDegreeResolution.FindRef(0);
 	float CumulativeResolution = 0.0f;
 	
-	for (int i = 0; i < Beats; i++)
+	for (int i = 1; i < Beats; i++)
 	{
 		// [0] = 0; [1] = 0.25, etc.
 		float Tension = MaxBeatStrength - BeatStrength[i];
@@ -109,73 +110,38 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 		float DefaultRestChance = 0.25; // Convert to non-magic number (put in state)
 		float TotalRestChance = DefaultRestChance + Tension;
 
-		int RestChoice = FMath::RandRange(0, 100);
-		if (RestChoice >= TotalRestChance * 100)
+		if (FMath::RandRange(0, 100) >= TotalRestChance * 100)
 		{
 			continue;
 		}
+		
+		TArray<FPickRange> Ranges;
+		int PickSum = 0;
+		for ( int n = 0; n < State->AllowableNoteIndices.Num(); n++)
+		{
+			float ResolutionWeight = ScaleDegreeResolution.FindRef(State->AllowableNoteIndices[i]);
+			ResolutionWeight *= 100;
+
+			Ranges.Add(FPickRange(PickSum +1, PickSum + ResolutionWeight ));
+			PickSum += ResolutionWeight;
+		}
+
+		int Selection = FMath::RandRange(1, PickSum);
+
+		FInstrumentNote SelectedNote;
+		
+		for (int n = 0; n < Ranges.Num(); n++)
+		{
+			if (Ranges[0].In(Selection))
+			{
+				SelectedNote = CurrentComposerData.InstrumentData.GetNote(Octave, State->Scale.Notes[State->AllowableNoteIndices[i]]);
+			}
+		}
+
+		Schedule.NotesInBar.Add(FNotesPerBar(i, SelectedNote.SoundData));
 	}
-	
-	
-	// With beat strength and scale degree resolution, we can form a motif
-	// We need to return a FPerBarSchedule, which require a set of FNotesPerBar
-	// FNotesPerBar need a Beat and SoundData
 
-	// So how do we choose a beat + note?
-	// Each has a score: Beat "0" (first beat in bar) and the Tonic would have "strong resolution"
-	// Beat[0] = .5f
-	// Tonic = 1.0f 
-	// [ 1.5f ] // Sum of those two things
-	// The higher each sum, the less "tension" there is
-	
-	// Beat[1] = 0.25
-	// 6th = 0.3f
-	// [ 1.5f, 0.55f ]
-	// Hitting the 6th on the offbeat presents much more tension- we will want it to resolve
-
-	// It could resolve to the Tonic again - [ 1.5f, 0.55f, 1.5f ]
-	// However, we could also resolve to - [ 1.5f, 0.55f, 0.95f ]
-	// Where the sum of 0.55 and .95 = 1.5
-	// Beat[3] is .5, giving us a Note budget of [ 0.55 + .5 ] = 1.05 = 0.45
-	// Candidate notes are 3rd (.4f) and 2nd (.5f), maybe even 4th (.6f)
-	// So if chosen 2nd [ 1.5f, 0.55f, 1.0f ]
-
-	// Consider also - [ 1.5, 1.5, 1.5, 1.5 ... ] - The "Max" value
-	// Consider the sum - [ 1.5, 3.0, 4.5, 6 ... ] Cumulative max 
-	// Against ours: [ 1.5f, 0.55f, 1.0f ]
-	// Summing our [ 1.5, 2.05, 3.05 ]
-
-	// Gives us a resolution budget?
-	// Cumulative sum - constructed motif:
-	// [ 0, 0.95, 1.45, ] Gives us total note budget in the bar
-
-	// Let's try a real example - ii - V - i - i
-	// Cumulative budget [ 1.25, 2.5, 3.75, 5 ]
-	// [ .75, 1.05, 1.25, 1.25 ] ii = .5, V = .8, i = 1
-	// [ 0.75, 1.8, 3.05, 4.3 ]
-	// [ 0.75, .75
-	// This tells us cumulative total doesn't really work, it's always max max
-	// But it does give us the maximum resolution
-	// We may not reach maximum resolution, but the desire to resolve
-
-	// Let's think about chance to resovle 
-
-	
-	// We need something that says "beat 1 has more tension relative to beat 2, resolving in beat 3-4"]
-	// Remember, these floats represent their desire to resolve
-	// The smaller the number, the stronger the pull to a bigger NEXT number 
-	
-	// Provides the current instruments Notes.
-	// Notes lets us find the SoundData based on Note and Octave
-	TArray<FInstrumentNote> Notes = CurrentComposerData.InstrumentData.Notes;
-
-	
-
-	FPerBarSchedule Schedule = FPerBarSchedule();
-	
-	
-	
-	
+	return FPerBarSchedule(Schedule);
 }
 
 float UStrategy_CreateMotif::GetStrategyAppropriateness(const FComposerData& CurrentComposerData,
