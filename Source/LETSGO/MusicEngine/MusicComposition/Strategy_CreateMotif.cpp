@@ -99,7 +99,11 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 	Schedule.NotesInBar.Add(Test);
 
 	float MaxResolution = MaxBeatStrength + ScaleDegreeResolution.FindRef(0);
-	float CumulativeResolution = 0.0f;
+	float CurrentResolution = MaxResolution;
+	float TensionBudget = 0.3f;
+	float OptimalTensionPoint = 0.5f;
+	int OptimalTensionBonus = 25;
+	int WithinTensionBudgetBonus = 50;
 	
 	for (int i = 1; i < Beats; i++)
 	{
@@ -119,11 +123,35 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 		int PickSum = 0;
 		for ( int n = 0; n < State->AllowableNoteIndices.Num(); n++)
 		{
+			// ex. 2nd - 0.5
 			float ResolutionWeight = ScaleDegreeResolution.FindRef(State->AllowableNoteIndices[i]);
-			ResolutionWeight *= 100;
 
-			Ranges.Add(FPickRange(PickSum +1, PickSum + ResolutionWeight ));
-			PickSum += ResolutionWeight;
+			float CandidateTotalResolution = CurrentResolution + ResolutionWeight + Tension; // 1.8
+			float CurrentMaxResolution = MaxResolution + CurrentResolution; // 2.0
+			
+			float ResolutionDelta = CurrentMaxResolution - CandidateTotalResolution; // 0.2
+			float CandidateTension = ResolutionDelta / CurrentMaxResolution; // 0.1
+			
+			// Now to determine relationship between 0.1 (CandidateTension) and 0.3 (TensionBudget)
+			// If CT < TB, good
+			// If current beat count is low, leaving more budget is good
+			// If good, multiply chance to pick increased more than less good/bad.
+			float BeatPercentage = i / Beats; // Beats[5] = 0.31 - 31%
+			float DiffFromOptimalTensionPoint = FMath::Abs(OptimalTensionPoint - BeatPercentage); // .29
+
+			int CandidateWeight = OptimalTensionBonus * DiffFromOptimalTensionPoint; // 7
+
+			if (TensionBudget - CandidateTension > 0)
+			{
+				CandidateWeight += WithinTensionBudgetBonus;
+			}
+
+			// This isn't totally correct. All notes within TensionBudget are flattened to same value.
+			// This should probably be corrected in the above if statement
+			CandidateWeight *= 100;
+
+			Ranges.Add(FPickRange(PickSum +1, PickSum + CandidateWeight ));
+			PickSum += CandidateWeight;
 		}
 
 		int Selection = FMath::RandRange(1, PickSum);
@@ -135,6 +163,7 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 			if (Ranges[0].In(Selection))
 			{
 				SelectedNote = CurrentComposerData.InstrumentData.GetNote(Octave, State->Scale.Notes[State->AllowableNoteIndices[i]]);
+				break;
 			}
 		}
 
