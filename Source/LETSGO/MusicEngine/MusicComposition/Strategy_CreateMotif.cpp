@@ -6,16 +6,20 @@
 #include "MusicComposerState.h"
 
 USTRUCT()
-struct FPickRange
+struct FNoteCandidate
 {
 	int Min;
 	int Max;
+
+	float Resolution;
+	float Tension;
+	
 	bool In (int Num)
 	{
 		return Num >= Min && Num <= Max;
 	}
 
-	FPickRange(const int InMin, const int InMax): Min(InMin), Max(InMax) {}
+	FNoteCandidate(const int InMin, const int InMax, const float InResolution, const float InTension): Min(InMin), Max(InMax), Resolution(InResolution), Tension(InTension) {}
 };
 
 FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentComposerData,
@@ -119,7 +123,7 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 			continue;
 		}
 		
-		TArray<FPickRange> Ranges;
+		TArray<FNoteCandidate> Ranges;
 		int PickSum = 0;
 		for ( int n = 0; n < State->AllowableNoteIndices.Num(); n++)
 		{
@@ -139,18 +143,14 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 			float BeatPercentage = i / Beats; // Beats[5] = 0.31 - 31%
 			float DiffFromOptimalTensionPoint = FMath::Abs(OptimalTensionPoint - BeatPercentage); // .29
 
-			int CandidateWeight = OptimalTensionBonus * DiffFromOptimalTensionPoint; // 7
+			int CandidateWeight = (CandidateTension * 100) + (OptimalTensionBonus * DiffFromOptimalTensionPoint); // 10 + 7
 
 			if (TensionBudget - CandidateTension > 0)
 			{
 				CandidateWeight += WithinTensionBudgetBonus;
 			}
 
-			// This isn't totally correct. All notes within TensionBudget are flattened to same value.
-			// This should probably be corrected in the above if statement
-			CandidateWeight *= 100;
-
-			Ranges.Add(FPickRange(PickSum +1, PickSum + CandidateWeight ));
+			Ranges.Add(FNoteCandidate(PickSum +1, PickSum + CandidateWeight, ResolutionWeight + BeatStrength[i], CandidateTension));
 			PickSum += CandidateWeight;
 		}
 
@@ -160,9 +160,11 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 		
 		for (int n = 0; n < Ranges.Num(); n++)
 		{
-			if (Ranges[0].In(Selection))
+			if (Ranges[n].In(Selection))
 			{
 				SelectedNote = CurrentComposerData.InstrumentData.GetNote(Octave, State->Scale.Notes[State->AllowableNoteIndices[i]]);
+				CurrentResolution += Ranges[n].Resolution;
+				TensionBudget -= Ranges[n].Tension;
 				break;
 			}
 		}
