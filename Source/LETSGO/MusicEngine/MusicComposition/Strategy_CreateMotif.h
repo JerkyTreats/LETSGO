@@ -17,9 +17,9 @@ class LETSGO_API UStrategy_CreateMotif : public UObject, public IMusicStrategy
 
 public:
 	virtual FPerBarSchedule
-	GenerateBar(const FComposerData& CurrentComposerData, const AMusicComposerState* State) override;
+	GenerateBar(FComposerData& CurrentComposerData, const AMusicComposerState* State) override;
 	virtual float
-	GetStrategyAppropriateness(const FComposerData& CurrentComposerData, const AMusicComposerState* State) override;
-	virtual float GetInstrumentAppropriateness(const FComposerData& CurrentComposerData,
+	GetStrategyAppropriateness(FComposerData& CurrentComposerData, const AMusicComposerState* State) override;
+	virtual float GetInstrumentAppropriateness(FComposerData& CurrentComposerData,
 		const AMusicComposerState* State) override;
 };

@@ -7,7 +7,7 @@
 #include "MusicComposerState.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
-FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(const FComposerData& CurrentComposerData, const AMusicComposerState* State)
+FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(FComposerData& CurrentComposerData, const AMusicComposerState* State)
 {
 	// Filter the array
 	TArray<FInstrumentNote> FilteredNotes = CurrentComposerData.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
@@ -24,7 +24,7 @@ FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(const FComposerData
 	return Bar;
 }
 
-float UStrategy_PedalPointComposition::GetStrategyAppropriateness(const FComposerData& CurrentComposerData, const AMusicComposerState* State)
+float UStrategy_PedalPointComposition::GetStrategyAppropriateness(FComposerData& CurrentComposerData, const AMusicComposerState* State)
 {
 	if (! CurrentComposerData.IsMultiNoteInstrument() || State->AllowableNoteIndices.Num() == 0)
 	{
@@ -42,21 +42,12 @@ float UStrategy_PedalPointComposition::GetStrategyAppropriateness(const FCompose
 	{
 		Weight += 0.3;
 	}
-
-	/*for (int i = 0; i < State->ComposerDataObjects.Num(); i++)
-	{
-		FComposerData ComposerData = State->ComposerDataObjects[i];
-		for (int ScheduleDataIndex = 0; ScheduleDataIndex < ComposerData.ScheduleData.Num(); ScheduleDataIndex++)
-		{
-
-		}
-	}*/
 	
 	return Weight;
 }
 
 // This strategy doesn't need input from other instruments
-float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(const FComposerData& CurrentComposerData,
+float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(FComposerData& CurrentComposerData,
 	const AMusicComposerState* State)
 {
 	return 0.0f;

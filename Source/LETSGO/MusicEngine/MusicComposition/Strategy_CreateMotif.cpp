@@ -22,7 +22,7 @@ struct FNoteCandidate
 	FNoteCandidate(const int InMin, const int InMax, const float InResolution, const float InTension): Min(InMin), Max(InMax), Resolution(InResolution), Tension(InTension) {}
 };
 
-FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentComposerData,
+FPerBarSchedule UStrategy_CreateMotif::GenerateBar(FComposerData& CurrentComposerData,
                                                    const AMusicComposerState* State)
 {
 	FLetsGoGeneratedScale Scale = State->Scale;
@@ -172,15 +172,40 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(const FComposerData& CurrentC
 		Schedule.NotesInBar.Add(FNotesPerBar(i, SelectedNote.SoundData));
 	}
 
+	CurrentComposerData.CreateMotifCount++;
+	
 	return FPerBarSchedule(Schedule);
 }
 
-float UStrategy_CreateMotif::GetStrategyAppropriateness(const FComposerData& CurrentComposerData,
+float UStrategy_CreateMotif::GetStrategyAppropriateness(FComposerData& CurrentComposerData,
 	const AMusicComposerState* State)
 {
+	if (! CurrentComposerData.IsMultiNoteInstrument() || State->AllowableNoteIndices.Num() == 0)
+	{
+		return 0.0f;
+	}
+
+	float Weight = 0.5f;
+
+	if (CurrentComposerData.InstrumentRole == Bass)
+	{
+		Weight -= 0.1f;
+	}
+
+	for (int i = 0; i < State->ComposerDataObjects->Num(); i++)
+	{
+		if ((*State->ComposerDataObjects)[i].CreateMotifCount > 0) {
+			Weight -= 0.3f;
+			break;
+		}
+		
+	}
+
+	return Weight;
 }
 
-float UStrategy_CreateMotif::GetInstrumentAppropriateness(const FComposerData& CurrentComposerData,
+float UStrategy_CreateMotif::GetInstrumentAppropriateness(FComposerData& CurrentComposerData,
 	const AMusicComposerState* State)
 {
+	return 0.0f;
 }
