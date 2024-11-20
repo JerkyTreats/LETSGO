@@ -2,6 +2,8 @@
 
 
 #include "MusicComposer.h"
+
+#include "Strategy_CreateMotif.h"
 #include "Strategy_PedalPointComposition.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
@@ -111,11 +113,12 @@ void AMusicComposer::InitializeComposerData()
 void AMusicComposer::InitializeStrategies()
 {
 	MusicalStrategies = {
-		NewObject<UStrategy_PedalPointComposition>()
+		NewObject<UStrategy_PedalPointComposition>(),
+		NewObject<UStrategy_CreateMotif>()
 	};
 }
 
-IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(const FComposerData& ComposerData, float& AppropriatenessOut)
+IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(FComposerData& ComposerData, float& AppropriatenessOut)
 {
 	IMusicStrategy* ChosenStrategy = MusicalStrategies[0];
 
@@ -142,7 +145,7 @@ void AMusicComposer::Tick(float DeltaTime)
 	if (! ComposerState->IsTonicSet)
 		return;
 	
-	int ThisBar = ComposerState->CurrentBar + 4;
+	int ThisBar = ComposerState->CurrentBar + 2;
 	
 	if (ThisBar > LastProcessedBar)
 	{
@@ -152,31 +155,30 @@ void AMusicComposer::Tick(float DeltaTime)
 			// Define bars for this instrument
 			if ((*ComposerState->ComposerDataObjects)[i].BarsDefined - ThisBar <= ComposerState->BarCreationThreshold)
 			{
-
+				UE_LOG(LogLetsgo, Display, TEXT("Composer Creating new bars " ))
+				
 				float StrategyAppropriateness = 0.0f;
 				IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy((*ComposerState->ComposerDataObjects)[i], StrategyAppropriateness);
 
 				if (StrategyAppropriateness < ComposerState->MusicalStrategyAppropriatenessThreshold)
 				{
-					LastProcessedBar = ThisBar;
-					return;
+					if (i == ComposerState->ComposerDataObjects->Num() - 1)
+					{
+						LastProcessedBar = ThisBar;
+						break;
+					}
+					
+					continue;
 				}
 
 				FComposerData Data = (*ComposerState->ComposerDataObjects)[i];
-				FPerBarSchedule Bar = ChosenStrategy->GenerateBar(Data, ComposerState);
-	
-				//TODO Times to Repeat magic number
-				const int TimesToRepeat = 2;
+				FInstrumentSchedule NewSchedule = ChosenStrategy->GenerateInstrumentSchedule(Data, ComposerState, ThisBar);
 
-				FInstrumentSchedule NewSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bar, TimesToRepeat, ThisBar);
-				
 				(*ComposerState->ComposerDataObjects)[i].EmplaceScheduleData(NewSchedule);
-				(*ComposerState->ComposerDataObjects)[i].BarsDefined = ThisBar + TimesToRepeat;
+				(*ComposerState->ComposerDataObjects)[i].BarsDefined = ThisBar;
 				
-				/*
 				if(GEngine)
 					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Turquoise, FString::Printf(TEXT("Number of SchedulesDatas in Composer: [%i]"), (*ComposerState->ComposerDataObjects)[i].ScheduleData->Num()));
-				*/
 
 			}
 		}

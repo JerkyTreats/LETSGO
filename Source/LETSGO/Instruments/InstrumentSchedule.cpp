@@ -13,10 +13,19 @@ FPerBarSchedule::FPerBarSchedule(USoundWave* SoundCue, TArray<float> Beats)
 	}
 }
 
-FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quantization, const TArray<FPerBarSchedule>& Pattern)
+FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quantization,
+	const TArray<FPerBarSchedule>& Pattern)
 {
 	QuantizationDivision = Quantization;
 	BeatSchedule = Pattern;
+	StartAtBar = 0;
+}
+
+FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quantization, const TArray<FPerBarSchedule>& Pattern, const int BarStart)
+{
+	QuantizationDivision = Quantization;
+	BeatSchedule = Pattern;
+	StartAtBar = BarStart;
 }
 
 FInstrumentSchedule::FInstrumentSchedule(const EQuartzCommandQuantization Quantization,

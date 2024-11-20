@@ -22,8 +22,8 @@ struct FNoteCandidate
 	FNoteCandidate(const int InMin, const int InMax, const float InResolution, const float InTension): Min(InMin), Max(InMax), Resolution(InResolution), Tension(InTension) {}
 };
 
-FPerBarSchedule UStrategy_CreateMotif::GenerateBar(FComposerData& CurrentComposerData,
-                                                   const AMusicComposerState* State)
+FInstrumentSchedule UStrategy_CreateMotif::GenerateInstrumentSchedule(FComposerData& CurrentComposerData,
+                                                   const AMusicComposerState* State, const int StartAtBar)
 {
 	FLetsGoGeneratedScale Scale = State->Scale;
 
@@ -174,7 +174,9 @@ FPerBarSchedule UStrategy_CreateMotif::GenerateBar(FComposerData& CurrentCompose
 
 	CurrentComposerData.CreateMotifCount++;
 	
-	return FPerBarSchedule(Schedule);
+	TArray<FPerBarSchedule> PerBarSchedules = TArray { FPerBarSchedule(Schedule) };
+	FInstrumentSchedule InstrumentSchedule = FInstrumentSchedule(Division, PerBarSchedules, StartAtBar);
+	return InstrumentSchedule;
 }
 
 float UStrategy_CreateMotif::GetStrategyAppropriateness(FComposerData& CurrentComposerData,

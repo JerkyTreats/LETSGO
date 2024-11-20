@@ -28,7 +28,7 @@ class LETSGO_API IMusicStrategy
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual FPerBarSchedule GenerateBar(FComposerData& CurrentComposerData, const AMusicComposerState* State) = 0;
+	virtual FInstrumentSchedule GenerateInstrumentSchedule(FComposerData& CurrentComposerData, const AMusicComposerState* State, const int StartAtBar) = 0;
 
 	virtual float GetStrategyAppropriateness(FComposerData& CurrentComposerData, const AMusicComposerState* State) = 0;
 

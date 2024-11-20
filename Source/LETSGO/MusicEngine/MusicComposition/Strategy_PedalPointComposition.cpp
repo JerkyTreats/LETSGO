@@ -7,7 +7,7 @@
 #include "MusicComposerState.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
-FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(FComposerData& CurrentComposerData, const AMusicComposerState* State)
+FInstrumentSchedule UStrategy_PedalPointComposition::GenerateInstrumentSchedule(FComposerData& CurrentComposerData, const AMusicComposerState* State, const int StartAtBar)
 {
 	// Filter the array
 	TArray<FInstrumentNote> FilteredNotes = CurrentComposerData.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
@@ -20,8 +20,10 @@ FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(FComposerData& Curr
 		FNotesPerBar(3.0f, FilteredNotes[0].SoundData),
 		FNotesPerBar(4.0f, FilteredNotes[0].SoundData),
 	});
-	
-	return Bar;
+
+	TArray<FPerBarSchedule> Bars = TArray { Bar };
+	FInstrumentSchedule InstrumentSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bars, StartAtBar);
+	return InstrumentSchedule;
 }
 
 float UStrategy_PedalPointComposition::GetStrategyAppropriateness(FComposerData& CurrentComposerData, const AMusicComposerState* State)

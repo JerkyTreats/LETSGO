@@ -55,6 +55,7 @@ struct FInstrumentSchedule
 	FInstrumentSchedule(): QuantizationDivision() {} ;
 
 	explicit FInstrumentSchedule(const EQuartzCommandQuantization Quantization, const TArray<FPerBarSchedule>& Pattern);
+	explicit FInstrumentSchedule(const EQuartzCommandQuantization Quantization, const TArray<FPerBarSchedule>& Pattern, const int BarStart);
 	explicit FInstrumentSchedule(const EQuartzCommandQuantization Quantization, const FPerBarSchedule& Pattern, const int TimesToRepeat, const int BarStart);
 
 };
