@@ -122,17 +122,36 @@ IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(FComposerData& ComposerDat
 {
 	IMusicStrategy* ChosenStrategy = MusicalStrategies[0];
 
+	TArray<TArray<int>> Candidates;
+	
+	int Sum = 0;
+	
 	for(int i = 0; i < MusicalStrategies.Num(); i++)
 	{
 		IMusicStrategy* CandidateStrategy = MusicalStrategies[i];
 		const float CandidateAppropriateness = CandidateStrategy->GetStrategyAppropriateness(
 			ComposerData, ComposerState);
-		if ( CandidateAppropriateness > AppropriatenessOut)
+
+		UE_LOG(LogLetsgo, Display, TEXT("Candidate: [%s], Appropriateness: [%f]"), *FString(CandidateStrategy->_getUObject()->GetName()), CandidateAppropriateness)
+
+		int Candidate = CandidateAppropriateness * 100;
+		
+		Candidates.Emplace(TArray {Sum + 1, Sum + Candidate});
+		Sum += Candidate;
+		
+	}
+
+	const int Pick = FMath::RandRange(1, Sum);
+	
+	for (int i = 0; i < Candidates.Num(); i++)
+	{
+		if (Pick >= Candidates[i][0] && Pick <= Candidates[i][1])
 		{
-			AppropriatenessOut = CandidateAppropriateness;
-			ChosenStrategy = CandidateStrategy;
+			return MusicalStrategies[i];		
 		}
 	}
+	
+	UE_LOG(LogLetsgo, Display, TEXT("Chosen Candidate: [%s], Appropriateness: [%f]"), *FString(ChosenStrategy->_getUObject()->GetName()), AppropriatenessOut)
 
 	return ChosenStrategy;
 }
