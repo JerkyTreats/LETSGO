@@ -22,7 +22,7 @@ public:
 	int32 BarCreationThreshold = 4;
 
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly)
-	float MusicalStrategyAppropriatenessThreshold = 0.5f;
+	float MusicalStrategyAppropriatenessThreshold = 0.4f;
 	
 	UPROPERTY()
 	FLetsGoGeneratedScale Scale;

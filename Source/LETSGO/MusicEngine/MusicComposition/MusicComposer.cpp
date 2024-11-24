@@ -145,9 +145,16 @@ IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(FComposerData& ComposerDat
 	
 	for (int i = 0; i < Candidates.Num(); i++)
 	{
-		if (Pick >= Candidates[i][0] && Pick <= Candidates[i][1])
+		const int Min = Candidates[i][0];
+		const int Max = Candidates[i][1];
+		
+		if (Pick >= Min && Pick <= Max)
 		{
-			return MusicalStrategies[i];		
+			ChosenStrategy = MusicalStrategies[i];
+			float Val = Max - (Min - 1);
+			Val /= 100;
+			AppropriatenessOut = Val;
+			break;
 		}
 	}
 	
@@ -174,24 +181,19 @@ void AMusicComposer::Tick(float DeltaTime)
 			// Define bars for this instrument
 			if ((*ComposerState->ComposerDataObjects)[i].BarsDefined - ThisBar <= ComposerState->BarCreationThreshold)
 			{
-				UE_LOG(LogLetsgo, Display, TEXT("Composer Creating new bars " ))
+				UE_LOG(LogLetsgo, Display, TEXT("Composer: Choosing Musical Strategy" ))
 				
 				float StrategyAppropriateness = 0.0f;
 				IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy((*ComposerState->ComposerDataObjects)[i], StrategyAppropriateness);
 
 				if (StrategyAppropriateness < ComposerState->MusicalStrategyAppropriatenessThreshold)
 				{
-					if (i == ComposerState->ComposerDataObjects->Num() - 1)
-					{
-						LastProcessedBar = ThisBar;
-						break;
-					}
-					
 					continue;
 				}
 
-				FComposerData Data = (*ComposerState->ComposerDataObjects)[i];
-				FInstrumentSchedule NewSchedule = ChosenStrategy->GenerateInstrumentSchedule(Data, ComposerState, ThisBar);
+				UE_LOG(LogLetsgo, Display, TEXT("Composer: Creating InstrumentSchedule with Strategy [%s]" ), *FString(ChosenStrategy->_getUObject()->GetName()))
+
+				FInstrumentSchedule NewSchedule = ChosenStrategy->GenerateInstrumentSchedule((*ComposerState->ComposerDataObjects)[i], ComposerState, ThisBar);
 
 				(*ComposerState->ComposerDataObjects)[i].EmplaceScheduleData(NewSchedule);
 				(*ComposerState->ComposerDataObjects)[i].BarsDefined = ThisBar;
