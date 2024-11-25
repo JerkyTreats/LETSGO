@@ -21,9 +21,6 @@ struct FCreateMotifData
 	int WithinTensionBudgetBonus = 50;
 
 	UPROPERTY()
-	FLetsGoGeneratedScale Scale;
-
-	UPROPERTY()
 	TMap<int, float>ScaleDegreeResolution;
 
 	UPROPERTY()
@@ -65,6 +62,7 @@ struct FCreateMotifData
         // This is choosing a subdivision at random
         Division = SubDivisions[FMath::RandRange(0, SubDivisions.Num() - 1)];
 
+		// For some reason debugger shows MaxBeatStrength as Zero
 		switch (Division)
         {
         case EQuartzCommandQuantization::QuarterNote:
@@ -91,16 +89,19 @@ struct FCreateMotifData
 		// 16th note [6] resolves to the 8th note [3] which does not resolve to the quarter note
 		// So we recursively modulus check if note is even, increasing strength value each time its divisible
 		// This fills our BeatStrengths
-		for (int Beat = 0; Beat < Beats; Beat++)
+		for (int b = 0; b < Beats; b++)
 		{
 			const float Base = 0.25f;
 			float Strength = Base;
+			int Beat = b;
 			while(Beat % 2 != 0)
 			{
 				Strength += Base;
 				Beat /= 2;
 			}
-			BeatStrength.Add(Beat, Strength); // [ 0.75, 0.25, 0.5, 0.25, 0.75, 0.25, 0.5, 0.25 ] 16 beat strength array
+			BeatStrength.Add(b, Strength); // [ 0.75, 0.25, 0.5, 0.25, 0.75, 0.25, 0.5, 0.25 ] 16 beat strength array
+			// Actual results
+			// [ 0.25, 0.5, 0.25, 0.75 ]
 		}
 	}
 };
@@ -125,7 +126,7 @@ struct FNoteCandidate
 FInstrumentSchedule UStrategy_CreateMotif::GenerateInstrumentSchedule(FComposerData& CurrentComposerData,
                                                                       const AMusicComposerState* State, const int StartAtBar)
 {
-	const FCreateMotifData Data = FCreateMotifData();
+	FCreateMotifData Data = FCreateMotifData();
 	
 	FLetsGoGeneratedScale Scale = State->Scale;
 
