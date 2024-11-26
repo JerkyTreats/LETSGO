@@ -30,7 +30,7 @@ struct FCreateMotifData
 	int Beats;
 
 	UPROPERTY()
-	int MaxBeatStrength;
+	float MaxBeatStrength;
 
 	UPROPERTY()
 	TMap<int, float> BeatStrength;
