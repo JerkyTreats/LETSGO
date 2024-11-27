@@ -21,6 +21,9 @@ struct FCreateMotifData
 	int WithinTensionBudgetBonus = 50;
 
 	UPROPERTY()
+	float BaseBeatStrength = 0.25f;
+	
+	UPROPERTY()
 	TMap<int, float>ScaleDegreeResolution;
 
 	UPROPERTY()
@@ -52,56 +55,67 @@ struct FCreateMotifData
 		ScaleDegreeResolution.Add(9, 0.3f); // 6
 		ScaleDegreeResolution.Add(10, 0.3f); // 6
 		ScaleDegreeResolution.Add(11, 0.9f); // 7
-		
+
+		// Ordered
 		const TArray SubDivisions {
         	EQuartzCommandQuantization::QuarterNote,
-        	EQuartzCommandQuantization::EighthNote,
-        	EQuartzCommandQuantization::SixteenthNote,
+			EQuartzCommandQuantization::EighthNote,
+			EQuartzCommandQuantization::SixteenthNote,
         };
-        
-        // This is choosing a subdivision at random
-        Division = SubDivisions[FMath::RandRange(0, SubDivisions.Num() - 1)];
 
-		// For some reason debugger shows MaxBeatStrength as Zero
+
+		const int DivPick = FMath::RandRange(0, SubDivisions.Num() - 1);
+        // This is choosing a subdivision at random
+        Division = SubDivisions[DivPick];
+
 		switch (Division)
         {
         case EQuartzCommandQuantization::QuarterNote:
         	Beats = 4;
-        	MaxBeatStrength = 0.25f;
-			break;
+        	break;
         case EQuartzCommandQuantization::EighthNote:
-        	Beats = 8;
-        	MaxBeatStrength = 0.5f;
-			break;
+	        Beats = 8;
+        	break;
         case EQuartzCommandQuantization::SixteenthNote:
-        	Beats = 16;
-        	MaxBeatStrength = 0.75f;
-			break;
+	        Beats = 16;
+        	break;
         default:
-        	Beats = 0;
-			MaxBeatStrength = 0;
+	        Beats = 0;
         }
 
+		MaxBeatStrength = BaseBeatStrength * (DivPick + 1); 
 		BeatStrength = TMap<int, float>();
-		
-		// For zero based arrays, an even number will resolve to the stronger beat of a larger scale degree
-		// 16th note [8] resolves to the 8th note [4] resolves to the quarter note [2]
-		// 16th note [6] resolves to the 8th note [3] which does not resolve to the quarter note
-		// So we recursively modulus check if note is even, increasing strength value each time its divisible
-		// This fills our BeatStrengths
+
+		// This probably doesn't scale to 32, but I think this works
 		for (int b = 0; b < Beats; b++)
 		{
-			const float Base = 0.25f;
-			float Strength = Base;
-			int Beat = b;
-			while(Beat % 2 != 0)
+			float Strength;
+			const float SmallestStrength = MaxBeatStrength / SubDivisions.Num();
+
+			// This (Beats / 4) is somewhat magical, but works.
+			// At least if the time signature is 4/4
+			switch (b % (Beats / 4)) 
 			{
-				Strength += Base;
-				Beat /= 2;
+			case(0):
+				Strength = MaxBeatStrength;
+				break;
+			case(2):
+				Strength = MaxBeatStrength - SmallestStrength;
+				break;
+			case(1):
+				Strength = MaxBeatStrength - (SmallestStrength * 2);
+				break;
+			case(3):
+				Strength = MaxBeatStrength - (SmallestStrength * 2);
+				break;
+			default:
+				Strength = 0.0f;
 			}
-			BeatStrength.Add(b, Strength); // [ 0.75, 0.25, 0.5, 0.25, 0.75, 0.25, 0.5, 0.25 ] 16 beat strength array
-			// Actual results
-			// [ 0.25, 0.5, 0.25, 0.75 ]
+			
+			BeatStrength.Add(b, Strength);
+			// [ 0.75, 0.25, 0.5, 0.25, 0.75, 0.25, 0.5, 0.25... ] 16 beat strength array
+			// [ 0.50, 0.25, 0.5, 0.25...] 8 beat strength array
+			// [ 0.25, 0.25, 0.25, 0.25 ] 4 beat 
 		}
 	}
 };
