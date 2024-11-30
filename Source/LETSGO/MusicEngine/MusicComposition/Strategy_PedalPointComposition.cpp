@@ -7,7 +7,7 @@
 #include "MusicComposerState.h"
 #include "LETSGO/Instruments/InstrumentSchedule.h"
 
-FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(const FComposerData& CurrentComposerData, const AMusicComposerState* State)
+FInstrumentSchedule UStrategy_PedalPointComposition::GenerateInstrumentSchedule(FComposerData& CurrentComposerData, const AMusicComposerState* State, const int StartAtBar)
 {
 	// Filter the array
 	TArray<FInstrumentNote> FilteredNotes = CurrentComposerData.InstrumentData.Notes.FilterByPredicate([&] (const FInstrumentNote& InstrumentNote){
@@ -20,11 +20,13 @@ FPerBarSchedule UStrategy_PedalPointComposition::GenerateBar(const FComposerData
 		FNotesPerBar(3.0f, FilteredNotes[0].SoundData),
 		FNotesPerBar(4.0f, FilteredNotes[0].SoundData),
 	});
-	
-	return Bar;
+
+	TArray<FPerBarSchedule> Bars = TArray { Bar };
+	FInstrumentSchedule InstrumentSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bars, StartAtBar);
+	return InstrumentSchedule;
 }
 
-float UStrategy_PedalPointComposition::GetStrategyAppropriateness(const FComposerData& CurrentComposerData, const AMusicComposerState* State)
+float UStrategy_PedalPointComposition::GetStrategyAppropriateness(FComposerData& CurrentComposerData, const AMusicComposerState* State)
 {
 	if (! CurrentComposerData.IsMultiNoteInstrument() || State->AllowableNoteIndices.Num() == 0)
 	{
@@ -42,21 +44,12 @@ float UStrategy_PedalPointComposition::GetStrategyAppropriateness(const FCompose
 	{
 		Weight += 0.3;
 	}
-
-	/*for (int i = 0; i < State->ComposerDataObjects.Num(); i++)
-	{
-		FComposerData ComposerData = State->ComposerDataObjects[i];
-		for (int ScheduleDataIndex = 0; ScheduleDataIndex < ComposerData.ScheduleData.Num(); ScheduleDataIndex++)
-		{
-
-		}
-	}*/
 	
 	return Weight;
 }
 
 // This strategy doesn't need input from other instruments
-float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(const FComposerData& CurrentComposerData,
+float UStrategy_PedalPointComposition::GetInstrumentAppropriateness(FComposerData& CurrentComposerData,
 	const AMusicComposerState* State)
 {
 	return 0.0f;

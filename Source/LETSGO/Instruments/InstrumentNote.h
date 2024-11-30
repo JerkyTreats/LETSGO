@@ -58,4 +58,5 @@ struct FInstrumentData
 	}
 
 	static FInstrumentData GenerateKeys(TArray<USoundWave*> Sounds);
+	FInstrumentNote GetNote(int Octave, FLetsGoMusicNotes Note) const;
 };

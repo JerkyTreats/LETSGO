@@ -60,8 +60,8 @@ FInstrumentSchedule APlatformAudioCuePlayer::BuildInstrumentSchedule(TEnumAsByte
 	}
 
 	FNotesPerBar NotesPerBar = FNotesPerBar(1.0f, FilteredNotes[0].SoundData);
-	FPerBarSchedule PerBar = FPerBarSchedule({NotesPerBar});
-	FInstrumentSchedule Schedule = FInstrumentSchedule(EQuartzCommandQuantization::Beat, {PerBar});
+	const TArray<FPerBarSchedule> PerBar = TArray {FPerBarSchedule({NotesPerBar}) };
+	FInstrumentSchedule Schedule = FInstrumentSchedule(EQuartzCommandQuantization::Beat, PerBar, 0);
 	return Schedule;
 }
 

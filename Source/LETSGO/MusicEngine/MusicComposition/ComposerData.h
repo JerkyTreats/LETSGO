@@ -39,6 +39,12 @@ struct FComposerData
 
 	UPROPERTY()
 	int OctaveMax = 5;
+
+	UPROPERTY()
+	int BarsDefined = 0;
+
+	UPROPERTY()
+	int CreateMotifCount = 0;
 	
 	TSharedPtr<TArray<FInstrumentSchedule>> ScheduleData;
 
@@ -46,8 +52,6 @@ struct FComposerData
 	{
 		ScheduleData = MakeShared<TArray<FInstrumentSchedule>>();
 	}
-
-	int BarsDefined = 0;
 	
 	explicit FComposerData(const EInstrumentRoles InRole, const FInstrumentData& InData);
 

@@ -56,7 +56,7 @@ public:
 	UFUNCTION()
 	void InitializeStrategies();
 	
-	IMusicStrategy* ChooseMusicalStrategy(const FComposerData& ComposerData, float& AppropriatenessOut);
+	IMusicStrategy* ChooseMusicalStrategy(FComposerData& ComposerData, float& AppropriatenessOut);
 	
 	UFUNCTION()
 	void GenerateScale();

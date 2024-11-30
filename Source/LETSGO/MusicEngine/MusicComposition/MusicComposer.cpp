@@ -2,6 +2,8 @@
 
 
 #include "MusicComposer.h"
+
+#include "Strategy_CreateMotif.h"
 #include "Strategy_PedalPointComposition.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
 
@@ -111,25 +113,52 @@ void AMusicComposer::InitializeComposerData()
 void AMusicComposer::InitializeStrategies()
 {
 	MusicalStrategies = {
-		NewObject<UStrategy_PedalPointComposition>()
+		NewObject<UStrategy_PedalPointComposition>(),
+		NewObject<UStrategy_CreateMotif>()
 	};
 }
 
-IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(const FComposerData& ComposerData, float& AppropriatenessOut)
+IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(FComposerData& ComposerData, float& AppropriatenessOut)
 {
 	IMusicStrategy* ChosenStrategy = MusicalStrategies[0];
 
+	TArray<TArray<int>> Candidates;
+	
+	int Sum = 0;
+	
 	for(int i = 0; i < MusicalStrategies.Num(); i++)
 	{
 		IMusicStrategy* CandidateStrategy = MusicalStrategies[i];
 		const float CandidateAppropriateness = CandidateStrategy->GetStrategyAppropriateness(
 			ComposerData, ComposerState);
-		if ( CandidateAppropriateness > AppropriatenessOut)
+
+		UE_LOG(LogLetsgo, Display, TEXT("Candidate: [%s], Appropriateness: [%f]"), *FString(CandidateStrategy->_getUObject()->GetName()), CandidateAppropriateness)
+
+		int Candidate = CandidateAppropriateness * 100;
+		
+		Candidates.Emplace(TArray {Sum + 1, Sum + Candidate});
+		Sum += Candidate;
+		
+	}
+
+	const int Pick = FMath::RandRange(1, Sum);
+	
+	for (int i = 0; i < Candidates.Num(); i++)
+	{
+		const int Min = Candidates[i][0];
+		const int Max = Candidates[i][1];
+		
+		if (Pick >= Min && Pick <= Max)
 		{
-			AppropriatenessOut = CandidateAppropriateness;
-			ChosenStrategy = CandidateStrategy;
+			ChosenStrategy = MusicalStrategies[i];
+			float Val = Max - (Min - 1);
+			Val /= 100;
+			AppropriatenessOut = Val;
+			break;
 		}
 	}
+	
+	UE_LOG(LogLetsgo, Display, TEXT("Chosen Candidate: [%s], Appropriateness: [%f]"), *FString(ChosenStrategy->_getUObject()->GetName()), AppropriatenessOut)
 
 	return ChosenStrategy;
 }
@@ -142,7 +171,7 @@ void AMusicComposer::Tick(float DeltaTime)
 	if (! ComposerState->IsTonicSet)
 		return;
 	
-	int ThisBar = ComposerState->CurrentBar + 4;
+	int ThisBar = ComposerState->CurrentBar + 2;
 	
 	if (ThisBar > LastProcessedBar)
 	{
@@ -152,31 +181,25 @@ void AMusicComposer::Tick(float DeltaTime)
 			// Define bars for this instrument
 			if ((*ComposerState->ComposerDataObjects)[i].BarsDefined - ThisBar <= ComposerState->BarCreationThreshold)
 			{
-
+				UE_LOG(LogLetsgo, Display, TEXT("Composer: Choosing Musical Strategy" ))
+				
 				float StrategyAppropriateness = 0.0f;
 				IMusicStrategy* ChosenStrategy = ChooseMusicalStrategy((*ComposerState->ComposerDataObjects)[i], StrategyAppropriateness);
 
 				if (StrategyAppropriateness < ComposerState->MusicalStrategyAppropriatenessThreshold)
 				{
-					LastProcessedBar = ThisBar;
-					return;
+					continue;
 				}
 
-				FComposerData Data = (*ComposerState->ComposerDataObjects)[i];
-				FPerBarSchedule Bar = ChosenStrategy->GenerateBar(Data, ComposerState);
-	
-				//TODO Times to Repeat magic number
-				const int TimesToRepeat = 2;
+				UE_LOG(LogLetsgo, Display, TEXT("Composer: Creating InstrumentSchedule with Strategy [%s]" ), *FString(ChosenStrategy->_getUObject()->GetName()))
 
-				FInstrumentSchedule NewSchedule = FInstrumentSchedule(EQuartzCommandQuantization::QuarterNote, Bar, TimesToRepeat, ThisBar);
-				
+				FInstrumentSchedule NewSchedule = ChosenStrategy->GenerateInstrumentSchedule((*ComposerState->ComposerDataObjects)[i], ComposerState, ThisBar);
+
 				(*ComposerState->ComposerDataObjects)[i].EmplaceScheduleData(NewSchedule);
-				(*ComposerState->ComposerDataObjects)[i].BarsDefined = ThisBar + TimesToRepeat;
+				(*ComposerState->ComposerDataObjects)[i].BarsDefined = ThisBar;
 				
-				/*
 				if(GEngine)
 					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Turquoise, FString::Printf(TEXT("Number of SchedulesDatas in Composer: [%i]"), (*ComposerState->ComposerDataObjects)[i].ScheduleData->Num()));
-				*/
 
 			}
 		}
