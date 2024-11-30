@@ -125,16 +125,18 @@ struct FNoteCandidate
 {
 	int Min;
 	int Max;
-
+	
 	float Resolution;
 	float Tension;
+
+	FInstrumentNote Note;
 	
 	bool In (int Num)
 	{
 		return Num >= Min && Num <= Max;
 	}
 
-	FNoteCandidate(const int InMin, const int InMax, const float InResolution, const float InTension): Min(InMin), Max(InMax), Resolution(InResolution), Tension(InTension) {}
+	FNoteCandidate(const int InMin, const int InMax, const float InResolution, const float InTension, FInstrumentNote InNote): Min(InMin), Max(InMax), Resolution(InResolution), Tension(InTension), Note(InNote) {}
 };
 
 FInstrumentSchedule UStrategy_CreateMotif::GenerateInstrumentSchedule(FComposerData& CurrentComposerData,
@@ -157,7 +159,7 @@ FInstrumentSchedule UStrategy_CreateMotif::GenerateInstrumentSchedule(FComposerD
 
 	float CurrentTensionBudget = Data.TensionBudget;
 	
-	for (int i = 1; i < Data.Beats; i++)
+	for (int i = 0; i < Data.Beats; i++)
 	{
 		// [0] = 0; [1] = 0.25, etc.
 		float Tension = Data.MaxBeatStrength - Data.BeatStrength[i];
@@ -176,7 +178,7 @@ FInstrumentSchedule UStrategy_CreateMotif::GenerateInstrumentSchedule(FComposerD
 		for ( int n = 0; n < State->AllowableNoteIndices.Num(); n++)
 		{
 			// ex. 2nd - 0.5
-			float ResolutionWeight = Data.ScaleDegreeResolution.FindRef(State->AllowableNoteIndices[i]);
+			float ResolutionWeight = Data.ScaleDegreeResolution.FindRef(State->AllowableNoteIndices[n]);
 
 			float CandidateTotalResolution = CurrentResolution + ResolutionWeight + Tension; // 1.8
 			float CurrentMaxResolution = MaxResolution + CurrentResolution; // 2.0
@@ -198,7 +200,7 @@ FInstrumentSchedule UStrategy_CreateMotif::GenerateInstrumentSchedule(FComposerD
 				CandidateWeight += Data.WithinTensionBudgetBonus;
 			}
 
-			Ranges.Add(FNoteCandidate(PickSum +1, PickSum + CandidateWeight, ResolutionWeight + Data.BeatStrength[i], CandidateTension));
+			Ranges.Add(FNoteCandidate(PickSum +1, PickSum + CandidateWeight, ResolutionWeight + Data.BeatStrength[i], CandidateTension, CurrentComposerData.InstrumentData.GetNote(Octave, State->Scale.Notes[State->AllowableNoteIndices[n]])));
 			PickSum += CandidateWeight;
 		}
 
@@ -210,7 +212,7 @@ FInstrumentSchedule UStrategy_CreateMotif::GenerateInstrumentSchedule(FComposerD
 		{
 			if (Ranges[n].In(Selection))
 			{
-				SelectedNote = CurrentComposerData.InstrumentData.GetNote(Octave, State->Scale.Notes[State->AllowableNoteIndices[i]]);
+				SelectedNote = Ranges[n].Note;
 				CurrentResolution += Ranges[n].Resolution;
 				CurrentTensionBudget -= Ranges[n].Tension;
 				break;
