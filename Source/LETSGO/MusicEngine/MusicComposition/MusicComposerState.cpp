@@ -47,5 +47,7 @@ void AMusicComposerState::Initialize()
 	DrumsSoundCueMapping = GameMode->GetInstrumentData_Drums();
 
 	ComposerDataObjects = MakeShared<TArray<FComposerData>>();
+
+	SongSections = FSongSections::InitializeSongSections();
 }
 
