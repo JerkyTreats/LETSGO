@@ -17,10 +17,14 @@ FSongSections FSongSections::InitializeSongSections()
 		NewObject<UStrategy_CreateMotif>(),
 		0.5f
 	);
-
-	FSongSection Intro = FSongSection(ESongSection::Intro, {PedalPoint, CreateMotif});
-
+	
 	FSongSections ToReturn = FSongSections();
-	ToReturn.SongSections = {Intro};
+	ToReturn.SongSections = {
+		FSongSection(ESongSection::Intro, {PedalPoint}), 
+		FSongSection(ESongSection::Outro, {PedalPoint}),
+		FSongSection(ESongSection::Refrain, {CreateMotif}), //RepeatMotif, 
+		FSongSection(ESongSection::Episode, {CreateMotif}), //EvolveMotif, RepeatMotif
+		FSongSection(ESongSection::Bridge, {CreateMotif}) // RepeatMotif
+	};
 	return ToReturn;
 }
