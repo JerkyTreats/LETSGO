@@ -33,8 +33,7 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category="LETSGO")
 	TSubclassOf<AInstrument> InstrumentClass;
 
-	UPROPERTY()
-	TArray<int> MusicalIdeaSeed;
+
 	
 protected:
 	// Called when the game starts or when spawned
@@ -58,9 +57,6 @@ public:
 	
 	UFUNCTION()
 	void InitializeStrategies();
-
-	UFUNCTION()
-	void GenerateMusicalIdea();
 	
 	IMusicStrategy* ChooseMusicalStrategy(FComposerData& ComposerData, float& AppropriatenessOut);
 	

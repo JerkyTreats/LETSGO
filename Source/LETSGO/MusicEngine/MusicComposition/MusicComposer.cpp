@@ -120,49 +120,7 @@ void AMusicComposer::InitializeStrategies()
 	};
 }
 
-void AMusicComposer::GenerateMusicalIdea()
-{
-	/*
-	Common chord patterns. Not currently handling multi-bar patterns
-	1-5-6-4 
-	1-4-5-4
-	2-5-1
-	1-1-1-1, 4-4-1-1, 5-4-1-1
-	1-6-4-5
-	1-5-6-3, 4-1-4-5
-	*/
 
-	int Pick = FMath::RandRange(1, 5);
-	switch (Pick)
-	{
-	case 1:
-		{
-			MusicalIdeaSeed = { 2, 5, 1, 1 };
-			break;
-		}
-	case 2:
-		{
-			MusicalIdeaSeed = { 1, 5, 6, 4 }; 
-			break;
-		}
-	case 3:
-		{
-			MusicalIdeaSeed = { 1, 4, 5, 4 }; 
-			break;
-		}
-	case 4:
-		{
-			MusicalIdeaSeed = { 1, 6, 4, 5 }; 
-			break;
-		}
-	case 5:
-		{
-			MusicalIdeaSeed = { 1, 5, 6, 3 }; 
-			break;
-		}
-	default: MusicalIdeaSeed = { 1, 1, 1, 1};
-	}
-}
 
 IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(FComposerData& ComposerData, float& AppropriatenessOut)
 {

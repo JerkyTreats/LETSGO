@@ -47,6 +47,9 @@ public:
 
 	UPROPERTY()
 	FSongSections SongSections;
+
+	UPROPERTY()
+	TArray<int> MusicalIdeaSeed;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -59,4 +62,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Initialize();
+
+	UFUNCTION()
+	void GenerateMusicalIdea();
 };
