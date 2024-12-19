@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "SongSection.h"
 #include "GameFramework/Actor.h"
 #include "LETSGO/Instruments/Cheese Keys/CheeseKeySoundCueMapping.h"
 #include "LETSGO/Instruments/Drum/DrumSoundCueMapping.h"
@@ -43,6 +44,12 @@ public:
 
 	UPROPERTY()
 	int CurrentBar;
+
+	UPROPERTY()
+	FSongSections SongSections;
+
+	UPROPERTY()
+	TArray<int> MusicalIdeaSeed;
 	
 protected:
 	// Called when the game starts or when spawned
@@ -55,4 +62,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	void Initialize();
+
+	UFUNCTION()
+	void GenerateMusicalIdea();
 };

@@ -3,6 +3,8 @@
 
 #include "MusicComposer.h"
 
+#include <functional>
+
 #include "Strategy_CreateMotif.h"
 #include "Strategy_PedalPointComposition.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
@@ -117,6 +119,8 @@ void AMusicComposer::InitializeStrategies()
 		NewObject<UStrategy_CreateMotif>()
 	};
 }
+
+
 
 IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(FComposerData& ComposerData, float& AppropriatenessOut)
 {
