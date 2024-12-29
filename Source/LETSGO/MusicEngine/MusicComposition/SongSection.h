@@ -3,13 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ComposerData.h"
 #include "MusicStrategy.h"
+#include "Strategy_CreateMotif.h"
+#include "Strategy_PedalPointComposition.h"
 #include "UObject/Object.h"
 #include "SongSection.generated.h"
 
 UENUM()
 enum ESongSection
 {
+	Null,
 	Intro,
 	Episode,
 	Refrain,
@@ -26,10 +30,34 @@ struct FSectionStrategy
 
 	float Appropriateness;
 
-	FSectionStrategy(IMusicStrategy* InStrategy, float Appropriateness);
+	FSectionStrategy(): MusicStrategy(nullptr), Appropriateness(0)
+	{
+	}
+
+	FSectionStrategy(IMusicStrategy* InStrategy, float InAppropriateness)
+	{
+		MusicStrategy = InStrategy;
+		Appropriateness = InAppropriateness;
+	}
 };
 
+USTRUCT()
+struct FSectionInstrumentPlan
+{
+	GENERATED_BODY()
 
+	UPROPERTY()
+	TEnumAsByte<EInstrumentRoles> InstrumentRole = None;
+
+	UPROPERTY()
+	int StartAtBar = -1;
+
+	UPROPERTY()
+	int EndAtBar = -1; 
+
+	UPROPERTY()
+	TScriptInterface<IMusicStrategy> MusicStrategy;
+};
 
 /**
  * 
@@ -42,13 +70,20 @@ struct FSongSection
 	UPROPERTY()
 	TEnumAsByte<ESongSection> Type;
 
-	TArray<FSectionStrategy> MusicStrategies;
+	UPROPERTY()
+	TArray<FSectionInstrumentPlan> InstrumentPlans;
 
-	FSongSection(ESongSection InType, TArray<FSectionStrategy> InStrategies)
+	UPROPERTY()
+	TArray<FSectionStrategy> CandidateStrategies;
+
+	FSongSection(): Type(Null) {}
+
+	FSongSection(ESongSection InType)
 	{
 		Type = InType;
-		MusicStrategies = InStrategies;
 	}
+
+	void GenerateInstrumentPlans(TArray<TEnumAsByte<EInstrumentRoles>> InstrumentRoles);
 };
 
 USTRUCT()
@@ -56,7 +91,18 @@ struct FSongSections
 {
 	GENERATED_BODY()
 
+	IMusicStrategy* PedalPoint;
+	IMusicStrategy* CreateMotif;
+
+	TArray<TEnumAsByte<EInstrumentRoles>> InstrumentRoles;
+
 	TArray<FSongSection> SongSections;
 
-	static FSongSections InitializeSongSections();
+	FSongSections()
+	{
+		PedalPoint = NewObject<UStrategy_PedalPointComposition>();
+		CreateMotif = NewObject<UStrategy_CreateMotif>();
+	};
+	
+	void InitializeSongSections();
 };

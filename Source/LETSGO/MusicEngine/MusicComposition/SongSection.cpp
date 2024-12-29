@@ -6,25 +6,22 @@
 #include "Strategy_CreateMotif.h"
 #include "Strategy_PedalPointComposition.h"
 
-FSongSections FSongSections::InitializeSongSections()
+void FSongSection::GenerateInstrumentPlans(TArray<TEnumAsByte<EInstrumentRoles>> InstrumentRoles)
 {
-	// Intro
-	FSectionStrategy PedalPoint = FSectionStrategy(
-		NewObject<UStrategy_PedalPointComposition>(),
-		0.5f
-	);
-	FSectionStrategy CreateMotif = FSectionStrategy(
-		NewObject<UStrategy_CreateMotif>(),
-		0.5f
-	);
+	for (int i = 0; i < InstrumentRoles.Num(); i++)
+	{
+		FSectionInstrumentPlan InstrumentPlan = FSectionInstrumentPlan();
+		InstrumentPlan.InstrumentRole = InstrumentRoles[i];
+		
+	}
+}
+
+void FSongSections::InitializeSongSections()
+{
+	//Intro
+	FSongSection Intro = FSongSection(ESongSection::Intro);
+	Intro.CandidateStrategies.Emplace(FSectionStrategy(PedalPoint, 0.5f));
+	Intro.CandidateStrategies.Emplace(FSectionStrategy(CreateMotif, 0.5f));
 	
-	FSongSections ToReturn = FSongSections();
-	ToReturn.SongSections = {
-		FSongSection(ESongSection::Intro, {PedalPoint}), 
-		FSongSection(ESongSection::Outro, {PedalPoint}),
-		FSongSection(ESongSection::Refrain, {CreateMotif}), //RepeatMotif, 
-		FSongSection(ESongSection::Episode, {CreateMotif}), //EvolveMotif, RepeatMotif
-		FSongSection(ESongSection::Bridge, {CreateMotif}) // RepeatMotif
-	};
-	return ToReturn;
+	SongSections.Emplace(Intro);
 }

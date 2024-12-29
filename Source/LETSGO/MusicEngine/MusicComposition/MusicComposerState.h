@@ -32,6 +32,9 @@ public:
 	bool IsTonicSet = false;
 
 	UPROPERTY()
+	bool BeComposing = false;
+
+	UPROPERTY()
 	TArray<int> AllowableNoteIndices;
 
 	TSharedPtr<TArray<FComposerData>> ComposerDataObjects;
@@ -47,6 +50,9 @@ public:
 
 	UPROPERTY()
 	FSongSections SongSections;
+
+	UPROPERTY()
+	FSongSections CompositionStructure;
 
 	UPROPERTY()
 	TArray<int> MusicalIdeaSeed;
