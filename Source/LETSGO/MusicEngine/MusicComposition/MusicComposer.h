@@ -46,6 +46,7 @@ protected:
 	int LastProcessedBar = 0;
 
 public:
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -57,6 +58,15 @@ public:
 	
 	UFUNCTION()
 	void InitializeStrategies();
+
+	UFUNCTION()
+	void StartComposing() const;
+
+	UFUNCTION()
+	void StopComposing() const;
+
+	UFUNCTION()
+	void GenerateCompositionStructure();
 	
 	IMusicStrategy* ChooseMusicalStrategy(FComposerData& ComposerData, float& AppropriatenessOut);
 	
