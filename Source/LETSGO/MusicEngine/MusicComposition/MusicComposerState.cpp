@@ -48,7 +48,8 @@ void AMusicComposerState::Initialize()
 
 	ComposerDataObjects = MakeShared<TArray<FComposerData>>();
 
-	SongSections = FSongSections::InitializeSongSections();
+	SongSections = FSongSections();
+	SongSections.InitializeSongSections();
 
 	GenerateMusicalIdea();
 }

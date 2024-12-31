@@ -132,7 +132,9 @@ void AMusicComposer::StopComposing() const
 
 void AMusicComposer::GenerateCompositionStructure()
 {
-	ComposerState->CompositionStructure;
+	ComposerState->SongSections.GenerateSongSections();
+
+	
 	
 	// { Intro, Chorus, Episode, Chorus, EvolveEpisode, Bridge, Episode, Chorus, EvolveEpisode, Outro }
 	//   0 - 3, 4 - 7,   8 - 
@@ -189,7 +191,7 @@ void AMusicComposer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!ComposerState->BeComposing || ! ComposerState->IsTonicSet)
+	if ( ! ComposerState->BeComposing || ! ComposerState->IsTonicSet)
 		return;
 
 	GenerateCompositionStructure();

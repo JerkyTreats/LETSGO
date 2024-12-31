@@ -12,7 +12,7 @@ void FSongSection::GenerateInstrumentPlans(TArray<TEnumAsByte<EInstrumentRoles>>
 	{
 		FSectionInstrumentPlan InstrumentPlan = FSectionInstrumentPlan();
 		InstrumentPlan.InstrumentRole = InstrumentRoles[i];
-		
+		GeneratedPlans.Emplace(InstrumentPlan);
 	}
 }
 
@@ -23,5 +23,29 @@ void FSongSections::InitializeSongSections()
 	Intro.CandidateStrategies.Emplace(FSectionStrategy(PedalPoint, 0.5f));
 	Intro.CandidateStrategies.Emplace(FSectionStrategy(CreateMotif, 0.5f));
 	
-	SongSections.Emplace(Intro);
+	CandidateSections.Emplace(Intro);
+}
+
+void FSongSections::GenerateSongSections()
+{
+	if (GeneratedSections.Num() == 0)
+	{
+		GeneratedSections.Emplace(CandidateSections[0]);
+		GeneratedSections[0].GenerateInstrumentPlans(InstrumentRoles);
+	}
+
+	while (GeneratedSections.Num() <= DesiredSectionsAmount)
+	{
+		GenerateNextSongSection();
+	}
+}
+
+void FSongSections::GenerateNextSongSection()
+{
+	FSongSection NextSection = GeneratedSections.Last();
+
+	for (int i = 0; i < CandidateSections.Num(); i++)
+	{
+		
+	}
 }

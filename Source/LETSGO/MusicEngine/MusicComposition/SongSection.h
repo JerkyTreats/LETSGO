@@ -71,7 +71,7 @@ struct FSongSection
 	TEnumAsByte<ESongSection> Type;
 
 	UPROPERTY()
-	TArray<FSectionInstrumentPlan> InstrumentPlans;
+	TArray<FSectionInstrumentPlan> GeneratedPlans;
 
 	UPROPERTY()
 	TArray<FSectionStrategy> CandidateStrategies;
@@ -94,15 +94,27 @@ struct FSongSections
 	IMusicStrategy* PedalPoint;
 	IMusicStrategy* CreateMotif;
 
+	UPROPERTY()
+	int DesiredSectionsAmount = 0;
+
+	UPROPERTY()
 	TArray<TEnumAsByte<EInstrumentRoles>> InstrumentRoles;
 
-	TArray<FSongSection> SongSections;
+	UPROPERTY()
+	TArray<FSongSection> CandidateSections;
+
+	UPROPERTY()
+	TArray<FSongSection> GeneratedSections;
 
 	FSongSections()
 	{
 		PedalPoint = NewObject<UStrategy_PedalPointComposition>();
 		CreateMotif = NewObject<UStrategy_CreateMotif>();
 	};
-	
+
 	void InitializeSongSections();
+
+	void GenerateSongSections();
+
+	void GenerateNextSongSection();
 };
