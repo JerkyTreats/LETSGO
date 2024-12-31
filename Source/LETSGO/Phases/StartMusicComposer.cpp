@@ -32,12 +32,13 @@ void AStartMusicComposer::Initialize()
 	AMusicComposer* MusicComposer = GetWorld()->SpawnActor<AMusicComposer>(MusicComposerClass);
 	ALetsGoGameMode* GameMode = Cast<ALetsGoGameMode>(GetWorld()->GetAuthGameMode());
 	Composer = MusicComposer;
+	Composer->Initialize();
 	GameMode->SetMusicComposer(MusicComposer);
 }
 
 void AStartMusicComposer::Activate()
 {
-	Composer->Initialize();
+	Composer->StartComposing();
 
 	Completed = true;
 }

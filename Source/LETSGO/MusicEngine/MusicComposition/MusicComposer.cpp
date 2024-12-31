@@ -3,6 +3,8 @@
 
 #include "MusicComposer.h"
 
+#include <functional>
+
 #include "Strategy_CreateMotif.h"
 #include "Strategy_PedalPointComposition.h"
 #include "LETSGO/GameModes/ALetsGoGameMode.h"
@@ -118,6 +120,27 @@ void AMusicComposer::InitializeStrategies()
 	};
 }
 
+void AMusicComposer::StartComposing() const
+{
+	ComposerState->BeComposing = true;
+}
+
+void AMusicComposer::StopComposing() const
+{
+	ComposerState->BeComposing = false;
+}
+
+void AMusicComposer::GenerateCompositionStructure()
+{
+	ComposerState->SongSections.GenerateSongSections();
+
+	
+	
+	// { Intro, Chorus, Episode, Chorus, EvolveEpisode, Bridge, Episode, Chorus, EvolveEpisode, Outro }
+	//   0 - 3, 4 - 7,   8 - 
+}
+
+
 IMusicStrategy* AMusicComposer::ChooseMusicalStrategy(FComposerData& ComposerData, float& AppropriatenessOut)
 {
 	IMusicStrategy* ChosenStrategy = MusicalStrategies[0];
@@ -168,8 +191,10 @@ void AMusicComposer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (! ComposerState->IsTonicSet)
+	if ( ! ComposerState->BeComposing || ! ComposerState->IsTonicSet)
 		return;
+
+	GenerateCompositionStructure();
 	
 	int ThisBar = ComposerState->CurrentBar + 2;
 	
